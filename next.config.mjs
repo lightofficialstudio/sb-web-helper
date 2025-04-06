@@ -4,20 +4,16 @@ const isProd = process.env.NODE_ENV === "production";
 
 const nextConfig = {
   reactStrictMode: true,
-  swcMinify: true, // Keep this for SWC compiler optimization
 
   // Rewrite API requests to the backend
-  async rewrites() {
-    const backendUrl = process.env.BACKEND_API_URL || "http://localhost:5000"; // ตั้งค่า default
-    console.log("Rewrites to:", backendUrl);
-
-    return [
-      {
-        source: "/api/:path((?!auth).*)",
-        destination: `${backendUrl}/:path*`,
-      },
-    ];
-  },
+  // async rewrites() {
+  //   return [
+  //     {
+  //       source: "/api/:path((?!auth).*)", // ส่งเส้นทางที่ไม่ใช่ /api/auth ไปยัง BACKEND_API_URL
+  //       destination: `${process.env.BACKEND_API_URL}/:path*`,
+  //     },
+  //   ];
+  // },
 
   // Custom Webpack configuration
   webpack(config, { dev }) {

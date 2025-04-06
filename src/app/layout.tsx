@@ -1,36 +1,20 @@
-"use client";
-import "@styles/font.css"; // Import font styles
-import "@styles/globals.css"; // Import global styles
-import { useEffect } from "react";
-import { SessionProvider } from "next-auth/react"; // นำเข้า SessionProvider จาก next-auth
-import { StoreProvider } from "@stores/store-provider";
-import React from "react";
-import { registerServiceWorker } from "@services/progressive-web-app"; // นำเข้าฟังก์ชัน registerServiceWorker จากไฟล์ web-progressive-app.ts
+// app/layout.tsx (or app/layout.jsx if using JavaScript)
+import "@styles/font.css";
+import "@styles/globals.css";
+import { Inter } from "next/font/google";
+import ClientProvider from "@components/providers/client-providers"; // Import the new ClientProvider
+
+const inter = Inter({ subsets: ["latin"] });
 
 export default function RootLayout({
-  children,
-  params: { locale }, // locale params passed to the layout
-}: {
+                                     children,
+                                     params: { locale },
+                                   }: {
   children: React.ReactNode;
   params: { locale: string };
 }) {
-  const [hydrated, setHydrated] = React.useState(false);
-  // Service Worker registration inside useEffect to run only on the client side
-  useEffect(() => {
-    registerServiceWorker();
-  }, []);
-
-  // Hydration: รอให้ Client ทำงานแล้วจึงแสดงผล
-  useEffect(() => {
-    setHydrated(true); // เปิดการแสดงผลเมื่อ Client พร้อมแล้ว
-  }, []);
-
-  if (!hydrated) {
-    return null;
-  }
-
   return (
-    <html lang={locale || "en"}>
+      <html lang={locale || "en"}>
       <head>
         {/* Meta tags for Progressive Web App (PWA) */}
         <meta name="application-name" content="My Web App" />
@@ -45,11 +29,10 @@ export default function RootLayout({
         <link rel="apple-touch-icon" href="/icons/icon-192x192.png" />
         <link rel="icon" href="/icons/icon-512x512.png" sizes="512x512" />
       </head>
-      <body className="antialiased">
-        <StoreProvider>
-          <SessionProvider>{children}</SessionProvider>{" "}
-        </StoreProvider>
+      <body className={`${inter.className} antialiased`}>
+      {/* Move client-related providers to a separate component */}
+      <ClientProvider>{children}</ClientProvider>
       </body>
-    </html>
+      </html>
   );
 }
