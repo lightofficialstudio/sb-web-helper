@@ -5,7 +5,11 @@ const config: Config = {
     "./src/**/*.{js,ts,jsx,tsx}", // ตรวจสอบว่าพาธนี้ยังคงถูกต้อง
   ],
   theme: {
-    extend: {},
+    extend: {
+      animation: {
+        "pulse-slow": "pulse 10s infinite",
+      },
+    },
   },
   plugins: [],
 };

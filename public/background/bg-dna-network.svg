@@ -1,0 +1,23 @@
+<svg width="100%" height="100%" viewBox="0 0 1920 1080" xmlns="http://www.w3.org/2000/svg">
+  <defs>
+    <circle id="dot" r="2" fill="#bbb" />
+  </defs>
+  <g stroke="#ccc" stroke-width="1">
+    <line x1="200" y1="200" x2="400" y2="300" />
+    <line x1="400" y1="300" x2="600" y2="200" />
+    <line x1="600" y1="200" x2="800" y2="400" />
+    <line x1="200" y1="200" x2="600" y2="500" />
+    <line x1="600" y1="500" x2="1000" y2="200" />
+    <line x1="1000" y1="200" x2="1300" y2="400" />
+    <line x1="800" y1="400" x2="1300" y2="400" />
+  </g>
+  <g>
+    <use href="#dot" x="200" y="200" />
+    <use href="#dot" x="400" y="300" />
+    <use href="#dot" x="600" y="200" />
+    <use href="#dot" x="800" y="400" />
+    <use href="#dot" x="600" y="500" />
+    <use href="#dot" x="1000" y="200" />
+    <use href="#dot" x="1300" y="400" />
+  </g>
+</svg>
