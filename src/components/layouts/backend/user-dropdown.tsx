@@ -1,0 +1,87 @@
+"use client";
+
+import { useState } from "react";
+import Image from "next/image";
+import i18n from "@/i18n";
+import { useTranslation} from "react-i18next";
+
+export default function UserDropdown() {
+    const [isOpen, setIsOpen] = useState(false);
+    const { t } = useTranslation(); // ← ถ้าอยากใช้ t ในอนาคต
+    const changeLanguage = (lng: string) => {
+        i18n.changeLanguage(lng);
+        setIsOpen(false); // ปิด dropdown หลังเปลี่ยน
+    };
+
+
+    return (
+        <div className="relative">
+            {/* Avatar & Name */}
+            <div
+                className="flex items-center gap-2 cursor-pointer"
+                onClick={() => setIsOpen(!isOpen)}
+            >
+        <span className="text-sm font-medium text-gray-700 dark:text-orange-400 hidden sm:block">
+          Wilbur Stroman
+        </span>
+                <Image
+                    src="/avatar.jpg"
+                    alt="Avatar"
+                    width={36}
+                    height={36}
+                    className="rounded-full border"
+                />
+                {/* Arrow Icon */}
+                <svg
+                    xmlns="http://www.w3.org/2000/svg"
+                    className={`w-4 h-4 text-gray-600 dark:text-gray-300 transition-transform duration-300 ${
+                        isOpen ? "rotate-180" : "rotate-0"
+                    }`}
+                    fill="none"
+                    viewBox="0 0 24 24"
+                    stroke="currentColor"
+                >
+                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 9l-7 7-7-7" />
+                </svg>
+            </div>
+
+            {/* Dropdown */}
+            {isOpen && (
+                <div className="absolute right-0 mt-3 w-56 bg-white dark:bg-gray-800 shadow-lg rounded-lg z-[60] border border-gray-200 dark:border-gray-700 text-sm animate-fade-in-down transition-all duration-300">
+                    <div className="px-4 py-3 border-b border-gray-200 dark:border-gray-700">
+                        <p className="font-semibold text-gray-800 dark:text-white">Wilbur Stroman</p>
+                        <p className="text-gray-500 dark:text-gray-400 text-xs">wilbur@email.com</p>
+                    </div>
+
+                    <div className="py-2">
+                        <button className="w-full text-left px-4 py-2 hover:bg-gray-100 dark:hover:bg-gray-700 text-gray-700 dark:text-gray-200 transition">
+                            Profile
+                        </button>
+                        <button className="w-full text-left px-4 py-2 text-red-600 hover:bg-red-50 dark:hover:bg-red-900 transition">
+                            Logout
+                        </button>
+                    </div>
+
+                    {/* Language Switcher */}
+                    <div className="py-2 border-t border-gray-200 dark:border-gray-700">
+                        <p className="px-4 pb-2 text-xs text-gray-400 dark:text-gray-500">Language</p>
+                        <div className="flex gap-2 px-4">
+                            <button
+                                onClick={() => changeLanguage("en")}
+                                className="px-3 py-1 rounded-full text-xs font-semibold border hover:bg-gray-100 dark:hover:bg-gray-700 transition"
+                            >
+                                EN
+                            </button>
+                            <button
+                                onClick={() => changeLanguage("th")}
+                                className="px-3 py-1 rounded-full text-xs font-semibold border hover:bg-gray-100 dark:hover:bg-gray-700 transition"
+                            >
+                                TH
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            )}
+        </div>
+    );
+}

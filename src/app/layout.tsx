@@ -1,10 +1,9 @@
 // app/layout.tsx (or app/layout.jsx if using JavaScript)
 import "@styles/font.css";
 import "@styles/globals.css";
-import { Inter } from "next/font/google";
-import ClientProvider from "@components/providers/client-providers"; // Import the new ClientProvider
+import ClientProvider from "@components/providers/client-providers";
+import I18nProvider from "@components/providers/i18n-provider"; // Import the new ClientProvider
 
-const inter = Inter({ subsets: ["latin"] });
 
 export default function RootLayout({
                                      children,
@@ -29,9 +28,11 @@ export default function RootLayout({
         <link rel="apple-touch-icon" href="/icons/icon-192x192.png" />
         <link rel="icon" href="/icons/icon-512x512.png" sizes="512x512" />
       </head>
-      <body className={`${inter.className} antialiased`}>
+      <body className="font-lineseed antialiased">
       {/* Move client-related providers to a separate component */}
-      <ClientProvider>{children}</ClientProvider>
+      <ClientProvider>
+          {children}
+      </ClientProvider>
       </body>
       </html>
   );
