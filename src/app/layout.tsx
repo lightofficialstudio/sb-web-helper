@@ -2,7 +2,8 @@
 import "@styles/font.css";
 import "@styles/globals.css";
 import ClientProvider from "@components/providers/client-providers";
-import I18nProvider from "@components/providers/i18n-provider"; // Import the new ClientProvider
+import I18nProvider from "@components/providers/i18n-provider";
+import LocaleProvider from "@components/providers/i18n-provider"; // Import the new ClientProvider
 
 
 export default function RootLayout({
@@ -31,6 +32,8 @@ export default function RootLayout({
       <body className="font-lineseed antialiased">
       {/* Move client-related providers to a separate component */}
       <ClientProvider>
+          <LocaleProvider locale={locale} />
+
           {children}
       </ClientProvider>
       </body>
