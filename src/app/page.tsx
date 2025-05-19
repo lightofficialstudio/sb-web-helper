@@ -8,40 +8,46 @@ import AboutSection from "@/components/section/about";
 import SkillsSection from "@/components/section/skill";
 import WorksSection from "@/components/section/work-experience";
 import ContactSection from "@/components/section/contact";
+import { useRouter } from "next/navigation";
 
 export default function Home() {
-    useEffect(() => {
-        const handleNavClick = (event: any) => {
-            event.preventDefault();
-            const targetId = event.currentTarget.getAttribute("href").substring(1);
-            const targetElement = document.getElementById(targetId);
-            if (targetElement) {
-                window.scrollTo({
-                    top: targetElement.offsetTop - 50,
-                    behavior: "smooth",
-                });
-            }
-        };
+  const router = useRouter();
+  useEffect(() => {
+    router.replace("/backend");
+  }, [router]);
 
-        document.querySelectorAll("nav a").forEach((anchor) => {
-            anchor.addEventListener("click", handleNavClick);
-        });
+  //   useEffect(() => {
+  //     const handleNavClick = (event: any) => {
+  //       event.preventDefault();
+  //       const targetId = event.currentTarget.getAttribute("href").substring(1);
+  //       const targetElement = document.getElementById(targetId);
+  //       if (targetElement) {
+  //         window.scrollTo({
+  //           top: targetElement.offsetTop - 50,
+  //           behavior: "smooth",
+  //         });
+  //       }
+  //     };
 
-        return () => {
-            document.querySelectorAll("nav a").forEach((anchor) => {
-                anchor.removeEventListener("click", handleNavClick);
-            });
-        };
-    }, []);
+  //     document.querySelectorAll("nav a").forEach((anchor) => {
+  //       anchor.addEventListener("click", handleNavClick);
+  //     });
 
-    return (
-        <div className="bg-gray-100 text-white">
-            <Navbar />
-            <HeroSection />
-            <AboutSection />
-            <SkillsSection />
-            <WorksSection />
-            <ContactSection />
-        </div>
-    );
+  //     return () => {
+  //       document.querySelectorAll("nav a").forEach((anchor) => {
+  //         anchor.removeEventListener("click", handleNavClick);
+  //       });
+  //     };
+  //   }, []);
+
+  return (
+    <div className="bg-gray-100 text-white">
+      <Navbar />
+      <HeroSection />
+      <AboutSection />
+      <SkillsSection />
+      <WorksSection />
+      <ContactSection />
+    </div>
+  );
 }
