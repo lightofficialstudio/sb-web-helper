@@ -1,19 +1,25 @@
-// POST /api/performance/k6/run
+// src/app/api/postman/run/route.ts
 import { NextResponse } from "next/server";
-import { exec } from "child_process";
+import newman from "newman";
 
-export const dynamic = "force-dynamic";
+export const runtime = "nodejs";
 
 export async function POST() {
-  return new Promise((resolve) => {
-    exec(
-      "k6 run path/to/script.js --out json=result.json",
-      (err, stdout, stderr) => {
+  return new Promise<NextResponse>((resolve) => {
+    newman.run(
+      {
+        collection: "41748450-1eb5e606-a55d-4cf9-a867-733117e91551",
+        environment: "41748745-ad6ffcec-bdf7-4d7e-872a-9afb149c12ad",
+        reporters: ["json"],
+      },
+      (err, summary) => {
         if (err) {
-          return resolve(NextResponse.json({ error: stderr }, { status: 500 }));
+          return resolve(
+            NextResponse.json({ error: err.message }, { status: 500 })
+          );
         }
-        // อ่านผลจากไฟล์ result.json หรือ stdout แล้ว return
-        resolve(NextResponse.json({ output: stdout }));
+        // summary.run.executions is your array of results
+        resolve(NextResponse.json({ report: summary.run }));
       }
     );
   });

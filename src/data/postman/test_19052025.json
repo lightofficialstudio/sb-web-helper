@@ -1,0 +1,586 @@
+{
+	"info": {
+		"_postman_id": "884e4169-6819-4abf-b6cc-85238a76ec72",
+		"name": "Test Collection",
+		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json",
+		"_exporter_id": "41748450"
+	},
+	"item": [
+		{
+			"name": "Login (เข้าสู่ระบบ) ✅ Copy",
+			"item": [
+				{
+					"name": "Login ✅",
+					"item": [
+						{
+							"name": "[1] Get School list",
+							"request": {
+								"method": "GET",
+								"header": [],
+								"url": {
+									"raw": "{{base_url}}/api/school",
+									"host": [
+										"{{base_url}}"
+									],
+									"path": [
+										"api",
+										"school"
+									]
+								}
+							},
+							"response": []
+						},
+						{
+							"name": "[2] Login",
+							"request": {
+								"method": "GET",
+								"header": [],
+								"url": {
+									"raw": "{{base_url}}/api/Login?user={{user_username}}&pass={{user_password}}&schoolid=849&imei=",
+									"host": [
+										"{{base_url}}"
+									],
+									"path": [
+										"api",
+										"Login"
+									],
+									"query": [
+										{
+											"key": "user",
+											"value": "{{user_username}}"
+										},
+										{
+											"key": "pass",
+											"value": "{{user_password}}"
+										},
+										{
+											"key": "schoolid",
+											"value": "849"
+										},
+										{
+											"key": "imei",
+											"value": ""
+										}
+									]
+								}
+							},
+							"response": []
+						},
+						{
+							"name": "[3] User status",
+							"request": {
+								"method": "POST",
+								"header": [],
+								"url": {
+									"raw": "{{base_url}}/api/user/Authentication/v2",
+									"host": [
+										"{{base_url}}"
+									],
+									"path": [
+										"api",
+										"user",
+										"Authentication",
+										"v2"
+									]
+								}
+							},
+							"response": []
+						},
+						{
+							"name": "[4.1] Get user information",
+							"request": {
+								"method": "GET",
+								"header": [],
+								"url": {
+									"raw": "{{base_url}}/api/user?userid={{user_id}}",
+									"host": [
+										"{{base_url}}"
+									],
+									"path": [
+										"api",
+										"user"
+									],
+									"query": [
+										{
+											"key": "userid",
+											"value": "{{user_id}}"
+										}
+									]
+								}
+							},
+							"response": []
+						},
+						{
+							"name": "[4.2] Get Employee Info",
+							"request": {
+								"method": "GET",
+								"header": [],
+								"url": {
+									"raw": "{{base_url}}/api/user/GetEmployeeInfo?schoolID={{school_id}}&employeeID=915420&lang=th",
+									"host": [
+										"{{base_url}}"
+									],
+									"path": [
+										"api",
+										"user",
+										"GetEmployeeInfo"
+									],
+									"query": [
+										{
+											"key": "schoolID",
+											"value": "{{school_id}}"
+										},
+										{
+											"key": "employeeID",
+											"value": "915420"
+										},
+										{
+											"key": "lang",
+											"value": "th"
+										}
+									]
+								}
+							},
+							"response": []
+						},
+						{
+							"name": "[5] Get Phone Number",
+							"request": {
+								"method": "GET",
+								"header": [],
+								"url": {
+									"raw": "{{base_url}}/api/user/CheckVerify?schoolID={{school_id}}&userID={{user_id}}&type=1&mode=Email",
+									"host": [
+										"{{base_url}}"
+									],
+									"path": [
+										"api",
+										"user",
+										"CheckVerify"
+									],
+									"query": [
+										{
+											"key": "schoolID",
+											"value": "{{school_id}}"
+										},
+										{
+											"key": "userID",
+											"value": "{{user_id}}"
+										},
+										{
+											"key": "type",
+											"value": "1"
+										},
+										{
+											"key": "mode",
+											"value": "Email"
+										}
+									]
+								}
+							},
+							"response": []
+						},
+						{
+							"name": "[7] Get broadcast banner",
+							"request": {
+								"method": "GET",
+								"header": [],
+								"url": {
+									"raw": "{{base_url}}/api/systemnews/List?userId={{user_id}}&schoolId={{school_id}}",
+									"host": [
+										"{{base_url}}"
+									],
+									"path": [
+										"api",
+										"systemnews",
+										"List"
+									],
+									"query": [
+										{
+											"key": "userId",
+											"value": "{{user_id}}"
+										},
+										{
+											"key": "schoolId",
+											"value": "{{school_id}}"
+										}
+									]
+								}
+							},
+							"response": []
+						},
+						{
+							"name": "[8] Get popup homepage (popup-ที่โชว์หน้าหลักแอป)",
+							"request": {
+								"method": "GET",
+								"header": [],
+								"url": {
+									"raw": "{{base_url}}/api/systemnews/List?userId={{user_id}}&schoolId={{school_id}}",
+									"host": [
+										"{{base_url}}"
+									],
+									"path": [
+										"api",
+										"systemnews",
+										"List"
+									],
+									"query": [
+										{
+											"key": "userId",
+											"value": "{{user_id}}"
+										},
+										{
+											"key": "schoolId",
+											"value": "{{school_id}}"
+										}
+									]
+								}
+							},
+							"response": []
+						}
+					]
+				},
+				{
+					"name": "Check verification 🟡",
+					"item": [
+						{
+							"name": "Step OTP",
+							"item": [
+								{
+									"name": "Get verify Status | ดึงสถานะ Verify แต่ละ Method เช่น เบอร์,ไลน์,อีเมลล์",
+									"item": [
+										{
+											"name": "Get status verify by [phone]",
+											"request": {
+												"method": "GET",
+												"header": [],
+												"url": {
+													"raw": "{{base_url}}/api/user/CheckVerify?schoolID={{school_id}}&userID={{user_id}}&type=phone&mode=undefined",
+													"host": [
+														"{{base_url}}"
+													],
+													"path": [
+														"api",
+														"user",
+														"CheckVerify"
+													],
+													"query": [
+														{
+															"key": "schoolID",
+															"value": "{{school_id}}"
+														},
+														{
+															"key": "userID",
+															"value": "{{user_id}}"
+														},
+														{
+															"key": "type",
+															"value": "phone"
+														},
+														{
+															"key": "mode",
+															"value": "undefined"
+														}
+													]
+												}
+											},
+											"response": []
+										},
+										{
+											"name": "Get status verify by [email]",
+											"request": {
+												"method": "GET",
+												"header": [],
+												"url": {
+													"raw": "{{base_url}}/api/user/CheckVerify?schoolID={{school_id}}&userID={{user_id}}&type=email",
+													"host": [
+														"{{base_url}}"
+													],
+													"path": [
+														"api",
+														"user",
+														"CheckVerify"
+													],
+													"query": [
+														{
+															"key": "schoolID",
+															"value": "{{school_id}}"
+														},
+														{
+															"key": "userID",
+															"value": "{{user_id}}"
+														},
+														{
+															"key": "type",
+															"value": "email"
+														}
+													]
+												}
+											},
+											"response": []
+										},
+										{
+											"name": "(❎ ยกเลิกใช้แล้ว) Get status verify by [line]",
+											"request": {
+												"method": "GET",
+												"header": [],
+												"url": {
+													"raw": "{{base_url}}/api/user/CheckVerify?schoolID={{school_id}}&userID={{user_id}}&type=line&mode=undefined",
+													"host": [
+														"{{base_url}}"
+													],
+													"path": [
+														"api",
+														"user",
+														"CheckVerify"
+													],
+													"query": [
+														{
+															"key": "schoolID",
+															"value": "{{school_id}}"
+														},
+														{
+															"key": "userID",
+															"value": "{{user_id}}"
+														},
+														{
+															"key": "type",
+															"value": "line"
+														},
+														{
+															"key": "mode",
+															"value": "undefined"
+														}
+													]
+												}
+											},
+											"response": []
+										}
+									]
+								},
+								{
+									"name": "Request & Confirm OTP",
+									"item": [
+										{
+											"name": "[1.1] Send request otp by [email] (ส่ง OTP ไปที่ Email)",
+											"request": {
+												"method": "GET",
+												"header": [],
+												"url": {
+													"raw": "{{base_url}}/api/user/RequestOTP?schoolID={{school_id}}&userID={{user_id}}&type=email&email={{user_email}}",
+													"host": [
+														"{{base_url}}"
+													],
+													"path": [
+														"api",
+														"user",
+														"RequestOTP"
+													],
+													"query": [
+														{
+															"key": "schoolID",
+															"value": "{{school_id}}"
+														},
+														{
+															"key": "userID",
+															"value": "{{user_id}}"
+														},
+														{
+															"key": "type",
+															"value": "email"
+														},
+														{
+															"key": "email",
+															"value": "{{user_email}}"
+														}
+													]
+												}
+											},
+											"response": []
+										},
+										{
+											"name": "[1.2] Send request OTP By [phone_number] (ส่ง OTP ไปที่มือถือ)",
+											"request": {
+												"method": "GET",
+												"header": [],
+												"url": {
+													"raw": "{{base_url}}/api/user/RequestOTP?schoolID={{school_id}}&userID={{user_id}}&type=phone&phoneNumber={{user_phonenumber}}",
+													"host": [
+														"{{base_url}}"
+													],
+													"path": [
+														"api",
+														"user",
+														"RequestOTP"
+													],
+													"query": [
+														{
+															"key": "schoolID",
+															"value": "{{school_id}}"
+														},
+														{
+															"key": "userID",
+															"value": "{{user_id}}"
+														},
+														{
+															"key": "type",
+															"value": "phone"
+														},
+														{
+															"key": "phoneNumber",
+															"value": "{{user_phonenumber}}"
+														}
+													]
+												}
+											},
+											"response": []
+										},
+										{
+											"name": "[2] Confirm OTP | หน้ายืนยัน OTP",
+											"request": {
+												"method": "GET",
+												"header": [],
+												"url": {
+													"raw": "{{base_url}}/api/user/VerifyOTP?schoolID={{school_id}}&userID={{user_id}}&type=0&requestCode=100&otp=123",
+													"host": [
+														"{{base_url}}"
+													],
+													"path": [
+														"api",
+														"user",
+														"VerifyOTP"
+													],
+													"query": [
+														{
+															"key": "schoolID",
+															"value": "{{school_id}}"
+														},
+														{
+															"key": "userID",
+															"value": "{{user_id}}"
+														},
+														{
+															"key": "type",
+															"value": "0"
+														},
+														{
+															"key": "requestCode",
+															"value": "100"
+														},
+														{
+															"key": "otp",
+															"value": "123"
+														}
+													]
+												}
+											},
+											"response": []
+										}
+									]
+								},
+								{
+									"name": "[1] Get check device 2FA verify channel (เช็ค 2FA ที่มีทั้งหมด)",
+									"request": {
+										"method": "POST",
+										"header": [],
+										"url": {
+											"raw": "{{base_url}}/api/device/verifier/check",
+											"host": [
+												"{{base_url}}"
+											],
+											"path": [
+												"api",
+												"device",
+												"verifier",
+												"check"
+											]
+										}
+									},
+									"response": []
+								},
+								{
+									"name": "[2] Check all permission (ตรวจสอบสิทธิ์การเข้าถึงเมนูทั้งหมด)",
+									"request": {
+										"method": "GET",
+										"header": [],
+										"url": {
+											"raw": "{{base_url}}/api/school/permission?school_id={{school_id}}",
+											"host": [
+												"{{base_url}}"
+											],
+											"path": [
+												"api",
+												"school",
+												"permission"
+											],
+											"query": [
+												{
+													"key": "school_id",
+													"value": "{{school_id}}"
+												}
+											]
+										}
+									},
+									"response": []
+								},
+								{
+									"name": "[3] Get policy page (เอา Policy มาตรวจสอบ)",
+									"request": {
+										"method": "GET",
+										"header": [],
+										"url": {
+											"raw": "{{base_url}}/policy/check?userid={{user_id}}",
+											"host": [
+												"{{base_url}}"
+											],
+											"path": [
+												"policy",
+												"check"
+											],
+											"query": [
+												{
+													"key": "userid",
+													"value": "{{user_id}}"
+												}
+											]
+										}
+									},
+									"response": []
+								}
+							]
+						}
+					]
+				},
+				{
+					"name": "🛠️ Other",
+					"item": [
+						{
+							"name": "Get language update (เปลี่ยนภาษา)",
+							"request": {
+								"method": "GET",
+								"header": [],
+								"url": {
+									"raw": "{{base_url}}/Notification/languageUpdate?lang=en",
+									"host": [
+										"{{base_url}}"
+									],
+									"path": [
+										"Notification",
+										"languageUpdate"
+									],
+									"query": [
+										{
+											"key": "lang",
+											"value": "en"
+										}
+									]
+								}
+							},
+							"response": []
+						}
+					]
+				}
+			]
+		}
+	]
+}
