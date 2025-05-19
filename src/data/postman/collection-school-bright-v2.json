@@ -1,0 +1,1073 @@
+{
+	"info": {
+		"_postman_id": "ffe4433a-4899-4cf9-8512-d1118efd50c3",
+		"name": "💛 School Bright Hardware API v.1.1",
+		"description": "**School Bright** เป็นระบบบริหารโรงเรียนดิจิทัลที่ออกแบบมาเพื่อเพิ่มความปลอดภัยและประสิทธิภาพในการจัดการภายในโรงเรียน หนึ่งในฟีเจอร์สำคัญคือ **ระบบกล้องสแกนใบหน้า** ที่ช่วยบันทึกเวลาเข้า-ออกของนักเรียนและบุคลากรโดยอัตโนมัติ ข้อมูลเหล่านี้จะถูกส่งไปยังผู้ปกครองแบบเรียลไทม์ผ่านแอปพลิเคชัน ทำให้ผู้ปกครองสามารถติดตามการเข้าเรียนของบุตรหลานได้อย่างใกล้ชิด\n\nนอกจากนี้ School Bright ยังมีฟีเจอร์อื่น ๆ เช่น\n\n• **ระบบเช็กชื่อเข้าเรียน**: รายงานการขาด, ลา, มา, สาย ให้ผู้ปกครองทราบทุกการเคลื่อนไหว\n\n• **ระบบแจ้งเตือนข่าวสาร/การบ้าน**: ผู้ปกครองไม่พลาดทุกข่าวสารและการบ้านของบุตรหลาน\n\n• **ระบบแจ้งผลการเรียน**: ดูผลการเรียนทุกเทอมของบุตรหลานได้ทุกที่ทุกเวลา\n\n• **ระบบร้านค้า/สหกรณ์**: เติมเงินผ่านระบบพร้อมเพย์และตรวจสอบค่าใช้จ่ายในแต่ละวันแบบเรียลไทม์\n\n• **ระบบชำระค่าเทอม**: ชำระค่าเทอมผ่านระบบพร้อมเพย์และบัตรเครดิต",
+		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json",
+		"_exporter_id": "41748745",
+		"_collection_link": "https://school-bright-0624.postman.co/workspace/1f1f5751-b557-4898-852e-ea131db785ff/collection/41748745-ffe4433a-4899-4cf9-8512-d1118efd50c3?action=share&source=collection_link&creator=41748745"
+	},
+	"item": [
+		{
+			"name": "Authentication",
+			"item": [
+				{
+					"name": "[1] Login",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"if (pm.response.code === 200)   {",
+									"    let jsonRes = pm.response.json()",
+									"",
+									"    if (jsonRes)  {",
+									"        pm.environment.set(\"user_token\",jsonRes.Token)",
+									"        pm.environment.set(\"user_id\",jsonRes.sID)",
+									"        pm.environment.set(\"user_school_id\",jsonRes.nCompany)",
+									"        pm.environment.set(\"user_code\",jsonRes.nSystemID)",
+									"        pm.environment.set(\"user_firstname\",jsonRes.sName)",
+									"        pm.environment.set(\"user_surname\",jsonRes.sLastname)",
+									"        pm.environment.set(\"user_phonenumber\",jsonRes.sPhoneNumber)",
+									"        pm.environment.set(\"user_email\",jsonRes.sEmail)",
+									"        console.log(\"USER RESPONSE\",jsonRes)",
+									"    } else {",
+									"        console.log(\"Response does not contain 'token'\");",
+									"    }",
+									"} else {",
+									"        console.log(\"Request failed with status code: \" + pm.response.code);",
+									"}",
+									"",
+									"",
+									"",
+									"",
+									"",
+									""
+								],
+								"type": "text/javascript",
+								"packages": {}
+							}
+						}
+					],
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							},
+							{
+								"key": "Cookie",
+								"value": "HWWAFSESID=644e1fab01b4db18dd; HWWAFSESTIME=1743830550564"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"username\": \"01\",\n    \"userpassword\": \"01\",\n    \"schoolId\": \"849\"\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{hardware_url}}/api/SchoolBrightTempScan/login",
+							"host": [
+								"{{hardware_url}}"
+							],
+							"path": [
+								"api",
+								"SchoolBrightTempScan",
+								"login"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "[2] Force logout (Regenerate Token)",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									""
+								],
+								"type": "text/javascript",
+								"packages": {}
+							}
+						}
+					],
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json",
+								"type": "text"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"SchoolID\": 849,\n    \"sID\": {{user_id}}\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{paysb_url}}/api/device/token/regeneratetoken",
+							"host": [
+								"{{paysb_url}}"
+							],
+							"path": [
+								"api",
+								"device",
+								"token",
+								"regeneratetoken"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "[3] Update token",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"/**",
+									" * @typedef {Object} ApiResponse",
+									" * @property {number} sID",
+									" * @property {number} SchoolID",
+									" * @property {boolean} success",
+									" * @property {number} statusCode",
+									" * @property {string} message",
+									" * @property {string} token",
+									" */",
+									"",
+									"/** @type {ApiResponse} */",
+									"const data = pm.response.json();",
+									"",
+									"// เซ็ต environment variable user_token ให้เท่ากับ token ใน response",
+									"pm.environment.set(\"user_token\", data.token);",
+									"console.log(\"User token set to:\", data.token);"
+								],
+								"type": "text/javascript",
+								"packages": {}
+							}
+						}
+					],
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n  \"SchoolID\": {{user_school_id}},\n  \"sID\": {{user_id}},\n  \"OldToken\": \"{{user_token}}\"\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{paysb_url}}/api/account/updatedtoken",
+							"host": [
+								"{{paysb_url}}"
+							],
+							"path": [
+								"api",
+								"account",
+								"updatedtoken"
+							]
+						}
+					},
+					"response": []
+				}
+			],
+			"description": "**การเข้าสู่ระบบ**"
+		},
+		{
+			"name": "Inquiry",
+			"item": [
+				{
+					"name": "Get school  list",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									""
+								],
+								"type": "text/javascript",
+								"packages": {}
+							}
+						}
+					],
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{hardware_url}}/api/school",
+							"host": [
+								"{{hardware_url}}"
+							],
+							"path": [
+								"api",
+								"school"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Get all hardware version (เส้นดูเวอร์ชันของ .apk hardware)",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									""
+								],
+								"type": "text/javascript",
+								"packages": {}
+							}
+						},
+						{
+							"listen": "prerequest",
+							"script": {
+								"exec": [
+									""
+								],
+								"type": "text/javascript",
+								"packages": {}
+							}
+						}
+					],
+					"request": {
+						"auth": {
+							"type": "noauth"
+						},
+						"method": "GET",
+						"header": [
+							{
+								"key": "JabjaiKey-{{user_school_id}}-{{user_id}}",
+								"value": "{{user_token}}",
+								"disabled": true
+							}
+						],
+						"url": {
+							"raw": "{{hardware_url}}/api/application",
+							"host": [
+								"{{hardware_url}}"
+							],
+							"path": [
+								"api",
+								"application"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Get all users",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{hardware_url}}/api/USER/getuser/1?schoolid={{user_school_id}}",
+							"host": [
+								"{{hardware_url}}"
+							],
+							"path": [
+								"api",
+								"USER",
+								"getuser",
+								"1"
+							],
+							"query": [
+								{
+									"key": "schoolid",
+									"value": "{{user_school_id}}"
+								}
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "User list from school_id",
+					"request": {
+						"method": "GET",
+						"header": [
+							{
+								"key": "JabjaiKey-849-560962",
+								"value": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1bmlxdWVfbmFtZSI6IjAxIiwiZW1haWwiOiIwMV84NDlfMDFAc2Nob29sYnJpZ2h0LmNvbSIsImh0dHA6Ly9zY2hlbWFzLnhtbHNvYXAub3JnL3dzLzIwMDUvMDUvaWRlbnRpdHkvY2xhaW1zL3Bvc3RhbGNvZGUiOiI4NDkiLCJodHRwOi8vc2NoZW1hcy54bWxzb2FwLm9yZy93cy8yMDA1LzA1L2lkZW50aXR5L2NsYWltcy9zaWQiOiI1NjA5NjIiLCJodHRwOi8vc2NoZW1hcy54bWxzb2FwLm9yZy93cy8yMDA1LzA1L2lkZW50aXR5L2NsYWltcy9oYXNoIjoiMDEiLCJodHRwOi8vc2NoZW1hcy5taWNyb3NvZnQuY29tL3dzLzIwMDgvMDYvaWRlbnRpdHkvY2xhaW1zL2V4cGlyYXRpb24iOiI0LzkvMjAyNSA1OjEwOjE4IFBNIiwibmJmIjoxNzQzODczMDE4LCJleHAiOjE3NDQyMTg2MTgsImlhdCI6MTc0Mzg3MzAxOH0.4Qfntt876oqG3ixa77Ra4neJYL43ewnGooNF5vOzXns"
+							},
+							{
+								"key": "Cookie",
+								"value": "HWWAFSESID=a99ac13f1e10b7fe5ca; HWWAFSESTIME=1743996878544"
+							}
+						],
+						"url": {
+							"raw": "{{paysb_url}}/api/offline/school/getuserlist?SchoolID={{school_id}}",
+							"host": [
+								"{{paysb_url}}"
+							],
+							"path": [
+								"api",
+								"offline",
+								"school",
+								"getuserlist"
+							],
+							"query": [
+								{
+									"key": "SchoolID",
+									"value": "{{school_id}}"
+								}
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Get register device list (รายการอุปกรณ์ที่ลงทะเบียนแล้ว)",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{paysb_url}}/api/shop/device/getregisterdevicelist",
+							"host": [
+								"{{paysb_url}}"
+							],
+							"path": [
+								"api",
+								"shop",
+								"device",
+								"getregisterdevicelist"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Register device online (ใช้สำหรับลงทะเบียนอุปกรณ์ให้เป็นออนไลน์)",
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"SchoolID\": {{school_id}},\n    \"DeviceID\": \"{{device_id}}\",\n    \"Status\": \"Online\"\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "https://paysb.schoolbright.co/api/device/status/registeronline",
+							"protocol": "https",
+							"host": [
+								"paysb",
+								"schoolbright",
+								"co"
+							],
+							"path": [
+								"api",
+								"device",
+								"status",
+								"registeronline"
+							]
+						}
+					},
+					"response": []
+				}
+			]
+		},
+		{
+			"name": "Job Scanning",
+			"item": [
+				{
+					"name": "Face Scanning",
+					"item": [
+						{
+							"name": "Jobscan timestamp",
+							"event": [
+								{
+									"listen": "test",
+									"script": {
+										"exec": [
+											""
+										],
+										"type": "text/javascript",
+										"packages": {}
+									}
+								}
+							],
+							"request": {
+								"method": "POST",
+								"header": [],
+								"body": {
+									"mode": "raw",
+									"raw": "{\n    \"schoolId\": \"{{user_school_id}}\",\n    \"UserCode\": \"{{user_code}}\",\n    \"sID\": \"{{user_id}}\",\n    \"version\": \"{{version}}\"\n}",
+									"options": {
+										"raw": {
+											"language": "json"
+										}
+									}
+								},
+								"url": {
+									"raw": "{{hardware_url}}/api/jobscan/TimeStamp",
+									"host": [
+										"{{hardware_url}}"
+									],
+									"path": [
+										"api",
+										"jobscan",
+										"TimeStamp"
+									]
+								}
+							},
+							"response": []
+						},
+						{
+							"name": "Jobscan timestamp (Offline)",
+							"event": [
+								{
+									"listen": "test",
+									"script": {
+										"exec": [
+											""
+										],
+										"type": "text/javascript",
+										"packages": {}
+									}
+								}
+							],
+							"request": {
+								"method": "POST",
+								"header": [],
+								"body": {
+									"mode": "raw",
+									"raw": "[\n    {\n        \"base64Image\": \"\",\n        \"schoolId\": \"{{user_school_id}}\",\n        \"UserCode\": \"{{user_code}}\",\n        \"sID\": \"{{user_id}}\",\n        \"LogDate\": \"20240914\",\n        \"TimeSpan\": \"12:00:00\",\n        \"version\": \"{{version}}\"\n    }\n]",
+									"options": {
+										"raw": {
+											"language": "json"
+										}
+									}
+								},
+								"url": {
+									"raw": "{{hardware_url}}/api/FaceScan/TimeStamp/Table/Offline",
+									"host": [
+										"{{hardware_url}}"
+									],
+									"path": [
+										"api",
+										"FaceScan",
+										"TimeStamp",
+										"Table",
+										"Offline"
+									]
+								}
+							},
+							"response": []
+						}
+					]
+				},
+				{
+					"name": "NFC Card",
+					"item": [
+						{
+							"name": "Jobscan nfc-card",
+							"event": [
+								{
+									"listen": "test",
+									"script": {
+										"exec": [
+											""
+										],
+										"type": "text/javascript",
+										"packages": {}
+									}
+								}
+							],
+							"request": {
+								"method": "GET",
+								"header": [],
+								"url": {
+									"raw": "{{hardware_url}}/api/nfccard/jobscan/v2?NFC=07af12&schoolid={{user_school_id}}",
+									"host": [
+										"{{hardware_url}}"
+									],
+									"path": [
+										"api",
+										"nfccard",
+										"jobscan",
+										"v2"
+									],
+									"query": [
+										{
+											"key": "NFC",
+											"value": "07af12"
+										},
+										{
+											"key": "schoolid",
+											"value": "{{user_school_id}}"
+										}
+									]
+								}
+							},
+							"response": []
+						},
+						{
+							"name": "Jobscan nfc-card (Offline)",
+							"event": [
+								{
+									"listen": "test",
+									"script": {
+										"exec": [
+											""
+										],
+										"type": "text/javascript",
+										"packages": {}
+									}
+								}
+							],
+							"request": {
+								"auth": {
+									"type": "apikey",
+									"apikey": [
+										{
+											"key": "value",
+											"value": "{{user_token}}",
+											"type": "string"
+										},
+										{
+											"key": "key",
+											"value": "JabjaiKey-{{user_school_id}}-{{user_id}}",
+											"type": "string"
+										}
+									]
+								},
+								"method": "POST",
+								"header": [],
+								"body": {
+									"mode": "raw",
+									"raw": "[\r\n    {\r\n        \"NFC\": \"1593164c\",\r\n        \"LogStatus\": \"1\",\r\n        \"LogDate\": \"{{now}}\"\r\n    }\r\n]",
+									"options": {
+										"raw": {
+											"language": "json"
+										}
+									}
+								},
+								"url": {
+									"raw": "{{hardware_url}}/api/nfccard/jobscan/offline?schoolid={{user_school_id}}",
+									"host": [
+										"{{hardware_url}}"
+									],
+									"path": [
+										"api",
+										"nfccard",
+										"jobscan",
+										"offline"
+									],
+									"query": [
+										{
+											"key": "schoolid",
+											"value": "{{user_school_id}}"
+										}
+									]
+								}
+							},
+							"response": []
+						},
+						{
+							"name": "NFC Scanning",
+							"event": [
+								{
+									"listen": "test",
+									"script": {
+										"exec": [
+											""
+										],
+										"type": "text/javascript",
+										"packages": {}
+									}
+								}
+							],
+							"request": {
+								"auth": {
+									"type": "noauth"
+								},
+								"method": "GET",
+								"header": [
+									{
+										"key": "JabjaiKey-849-560962",
+										"value": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1bmlxdWVfbmFtZSI6IjAxIiwiZW1haWwiOiIwMV84NDlfMDFAc2Nob29sYnJpZ2h0LmNvbSIsImh0dHA6Ly9zY2hlbWFzLnhtbHNvYXAub3JnL3dzLzIwMDUvMDUvaWRlbnRpdHkvY2xhaW1zL3Bvc3RhbGNvZGUiOiI4NDkiLCJodHRwOi8vc2NoZW1hcy54bWxzb2FwLm9yZy93cy8yMDA1LzA1L2lkZW50aXR5L2NsYWltcy9zaWQiOiI1NjA5NjIiLCJodHRwOi8vc2NoZW1hcy54bWxzb2FwLm9yZy93cy8yMDA1LzA1L2lkZW50aXR5L2NsYWltcy9oYXNoIjoiMDEiLCJodHRwOi8vc2NoZW1hcy5taWNyb3NvZnQuY29tL3dzLzIwMDgvMDYvaWRlbnRpdHkvY2xhaW1zL2V4cGlyYXRpb24iOiIzLzI5LzIwMjUgNToxMDozMSBQTSIsIm5iZiI6MTc0MjkyMjYzMSwiZXhwIjoxNzQzMjY4MjMxLCJpYXQiOjE3NDI5MjI2MzF9.ZHPHQqg0XRFeDYY8UvMZhFN160Fsad4k_wrUh3v7dI0"
+									}
+								],
+								"url": {
+									"raw": "{{hardware_url}}/api/nfccard/jobscan/v2?NFC=49c5c375&schoolid={{user_school_id}}",
+									"host": [
+										"{{hardware_url}}"
+									],
+									"path": [
+										"api",
+										"nfccard",
+										"jobscan",
+										"v2"
+									],
+									"query": [
+										{
+											"key": "NFC",
+											"value": "49c5c375"
+										},
+										{
+											"key": "schoolid",
+											"value": "{{user_school_id}}"
+										}
+									]
+								}
+							},
+							"response": []
+						}
+					]
+				}
+			]
+		},
+		{
+			"name": "Check online status",
+			"item": [
+				{
+					"name": "Check device online ✅",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									""
+								],
+								"type": "text/javascript",
+								"packages": {}
+							}
+						}
+					],
+					"request": {
+						"auth": {
+							"type": "noauth"
+						},
+						"method": "POST",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							},
+							{
+								"key": "Cookie",
+								"value": "HWWAFSESID=0da24acfa8468508fd; HWWAFSESTIME=1740620127283",
+								"disabled": true
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"SchoolID\": \"{{school_id}}\",\n    \"DeviceID\": \"{{device_id}}\"\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{hardware_url}}/api/device/status/registeronline",
+							"host": [
+								"{{hardware_url}}"
+							],
+							"path": [
+								"api",
+								"device",
+								"status",
+								"registeronline"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Check device online login ✅",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									""
+								],
+								"type": "text/javascript",
+								"packages": {}
+							}
+						}
+					],
+					"request": {
+						"auth": {
+							"type": "noauth"
+						},
+						"method": "POST",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							},
+							{
+								"key": "Cookie",
+								"value": "HWWAFSESID=0da24acfa8468508fd; HWWAFSESTIME=1740620127283",
+								"disabled": true
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"SchoolID\": \"{{school_id}}\",\n    \"DeviceID\": \"{{device_id}}\"\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{hardware_url}}/api/device/status/registeronlinelogin",
+							"host": [
+								"{{hardware_url}}"
+							],
+							"path": [
+								"api",
+								"device",
+								"status",
+								"registeronlinelogin"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Check status online v.2",
+					"request": {
+						"method": "POST",
+						"header": [],
+						"url": {
+							"raw": "{{hardware_url}}/api/status/registeronline/v2",
+							"host": [
+								"{{hardware_url}}"
+							],
+							"path": [
+								"api",
+								"status",
+								"registeronline",
+								"v2"
+							]
+						}
+					},
+					"response": []
+				}
+			]
+		},
+		{
+			"name": "Check new user incoming ✅",
+			"item": [
+				{
+					"name": "[0] User list from school_id",
+					"request": {
+						"method": "GET",
+						"header": [
+							{
+								"key": "JabjaiKey-849-560962",
+								"value": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1bmlxdWVfbmFtZSI6IjAxIiwiZW1haWwiOiIwMV84NDlfMDFAc2Nob29sYnJpZ2h0LmNvbSIsImh0dHA6Ly9zY2hlbWFzLnhtbHNvYXAub3JnL3dzLzIwMDUvMDUvaWRlbnRpdHkvY2xhaW1zL3Bvc3RhbGNvZGUiOiI4NDkiLCJodHRwOi8vc2NoZW1hcy54bWxzb2FwLm9yZy93cy8yMDA1LzA1L2lkZW50aXR5L2NsYWltcy9zaWQiOiI1NjA5NjIiLCJodHRwOi8vc2NoZW1hcy54bWxzb2FwLm9yZy93cy8yMDA1LzA1L2lkZW50aXR5L2NsYWltcy9oYXNoIjoiMDEiLCJodHRwOi8vc2NoZW1hcy5taWNyb3NvZnQuY29tL3dzLzIwMDgvMDYvaWRlbnRpdHkvY2xhaW1zL2V4cGlyYXRpb24iOiI0LzkvMjAyNSA1OjEwOjE4IFBNIiwibmJmIjoxNzQzODczMDE4LCJleHAiOjE3NDQyMTg2MTgsImlhdCI6MTc0Mzg3MzAxOH0.4Qfntt876oqG3ixa77Ra4neJYL43ewnGooNF5vOzXns"
+							},
+							{
+								"key": "Cookie",
+								"value": "HWWAFSESID=a99ac13f1e10b7fe5ca; HWWAFSESTIME=1743996878544"
+							}
+						],
+						"url": {
+							"raw": "{{paysb_url}}/api/offline/school/getuserlist?SchoolID={{school_id}}",
+							"host": [
+								"{{paysb_url}}"
+							],
+							"path": [
+								"api",
+								"offline",
+								"school",
+								"getuserlist"
+							],
+							"query": [
+								{
+									"key": "SchoolID",
+									"value": "{{school_id}}"
+								}
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "[1] Check status offline (เช็คว่ามีอัพเดทไหม? User/Shop) ✅",
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "SchoolID",
+								"value": "{{school_id}}",
+								"type": "text"
+							},
+							{
+								"key": "DeviceID",
+								"value": "{{device_id}}",
+								"type": "text"
+							},
+							{
+								"key": "UserID",
+								"value": "{{user_id}}",
+								"type": "text"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"SchoolID\": {{school_id}},\n    \"DeviceID\": {{device_id}},\n    \"UserID\": {{user_id}}\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{paysb_url}}/api/offline/school/checkstatus",
+							"host": [
+								"{{paysb_url}}"
+							],
+							"path": [
+								"api",
+								"offline",
+								"school",
+								"checkstatus"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "[2.1] Get update user list",
+					"request": {
+						"method": "GET",
+						"header": [
+							{
+								"key": "Cookie",
+								"value": "HWWAFSESID=5c1948253ba645c6fd; HWWAFSESTIME=1743760176211"
+							}
+						],
+						"url": {
+							"raw": "{{paysb_url}}/api/offline/school/getupdatedusers?SchoolID={{school_id}}&UserID={{user_id}}&DeviceID={{device_id}}",
+							"host": [
+								"{{paysb_url}}"
+							],
+							"path": [
+								"api",
+								"offline",
+								"school",
+								"getupdatedusers"
+							],
+							"query": [
+								{
+									"key": "SchoolID",
+									"value": "{{school_id}}"
+								},
+								{
+									"key": "UserID",
+									"value": "{{user_id}}"
+								},
+								{
+									"key": "DeviceID",
+									"value": "{{device_id}}",
+									"description": "144078f7440c24240c91"
+								}
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "[2.2] Get update shop list",
+					"request": {
+						"method": "GET",
+						"header": [
+							{
+								"key": "JabjaiKey-849-560962",
+								"value": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1bmlxdWVfbmFtZSI6IjAxIiwiZW1haWwiOiIwMV84NDlfMDFAc2Nob29sYnJpZ2h0LmNvbSIsImh0dHA6Ly9zY2hlbWFzLnhtbHNvYXAub3JnL3dzLzIwMDUvMDUvaWRlbnRpdHkvY2xhaW1zL3Bvc3RhbGNvZGUiOiI4NDkiLCJodHRwOi8vc2NoZW1hcy54bWxzb2FwLm9yZy93cy8yMDA1LzA1L2lkZW50aXR5L2NsYWltcy9zaWQiOiI1NjA5NjIiLCJodHRwOi8vc2NoZW1hcy54bWxzb2FwLm9yZy93cy8yMDA1LzA1L2lkZW50aXR5L2NsYWltcy9oYXNoIjoiMDEiLCJodHRwOi8vc2NoZW1hcy5taWNyb3NvZnQuY29tL3dzLzIwMDgvMDYvaWRlbnRpdHkvY2xhaW1zL2V4cGlyYXRpb24iOiI0LzgvMjAyNSAxMDoxMDoyMCBBTSIsIm5iZiI6MTc0Mzc2MTQyMCwiZXhwIjoxNzQ0MTA3MDIwLCJpYXQiOjE3NDM3NjE0MjB9.TgNSN-c0gZ40fX7qFz9gj5VyPdLLzXP-XYQFLTxxCA8"
+							},
+							{
+								"key": "Cookie",
+								"value": "HWWAFSESID=5c1948253ba645c6fd; HWWAFSESTIME=1743760176211"
+							}
+						],
+						"url": {
+							"raw": "{{paysb_url}}/api/offline/school/getupdatedshoplist?SchoolID={{school_id}}&DeviceID={{device_id}}&UserID={{user_id}}",
+							"host": [
+								"{{paysb_url}}"
+							],
+							"path": [
+								"api",
+								"offline",
+								"school",
+								"getupdatedshoplist"
+							],
+							"query": [
+								{
+									"key": "SchoolID",
+									"value": "{{school_id}}"
+								},
+								{
+									"key": "DeviceID",
+									"value": "{{device_id}}",
+									"description": "144078f7440c24240c91 (ตัวอย่าง)"
+								},
+								{
+									"key": "UserID",
+									"value": "{{user_id}}",
+									"description": "560962 (ตัวอย่าง)"
+								}
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "[3] Update user response",
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							},
+							{
+								"key": "Cookie",
+								"value": "HWWAFSESID=5c1948253ba645c6fd; HWWAFSESTIME=1743760176211"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{paysb_url}}/api/offline/school/updateduserresponse?SchoolID={{school_id}}&DeviceID={{device_id}}&UserID={{user_id}}",
+							"host": [
+								"{{paysb_url}}"
+							],
+							"path": [
+								"api",
+								"offline",
+								"school",
+								"updateduserresponse"
+							],
+							"query": [
+								{
+									"key": "SchoolID",
+									"value": "{{school_id}}"
+								},
+								{
+									"key": "DeviceID",
+									"value": "{{device_id}}"
+								},
+								{
+									"key": "UserID",
+									"value": "{{user_id}}"
+								}
+							]
+						}
+					},
+					"response": []
+				}
+			],
+			"description": "- ไว้ดูว่า User มีปัญหาไหม เมื่อมีการเพิ่ม,แก้ไข ข้อมูล จะต้องมีการ update ข้อมูลมาที่เส้นนี้"
+		}
+	],
+	"auth": {
+		"type": "apikey",
+		"apikey": [
+			{
+				"key": "value",
+				"value": "{{user_token}}",
+				"type": "string"
+			},
+			{
+				"key": "key",
+				"value": "JabjaiKey-{{school_id}}-{{user_id}}",
+				"type": "string"
+			}
+		]
+	},
+	"event": [
+		{
+			"listen": "prerequest",
+			"script": {
+				"type": "text/javascript",
+				"packages": {},
+				"exec": [
+					"// ตั้งค่า current timestamp เป็น Environment Variable",
+					"pm.environment.set(\"currentTimestamp\", new Date().toISOString());",
+					"console.log(\"Current timestamp: \" + pm.environment.get(\"currentTimestamp\"));"
+				]
+			}
+		},
+		{
+			"listen": "test",
+			"script": {
+				"type": "text/javascript",
+				"packages": {},
+				"exec": [
+					"// ตรวจสอบว่า Status code เป็น 200",
+					"pm.test(\"Status code is 200\", function () {",
+					"    pm.expect(pm.response.code).to.eql(200);",
+					"});",
+					"",
+					"// ตรวจสอบว่าเวลาในการตอบสนองไม่เกิน 200 ms",
+					"pm.test(\"Response time is less than 1000ms\", function () {",
+					"    pm.expect(pm.response.responseTime).to.be.below(1000);",
+					"});",
+					"",
+					"// ตรวจสอบว่า Response อยู่ในรูปแบบ JSON",
+					"pm.test(\"Response is in JSON format\", function () {",
+					"    pm.response.to.be.json;",
+					"});",
+					"",
+					"// ตรวจสอบว่า Header 'Content-Type' มีอยู่ใน Response",
+					"pm.test(\"Content-Type header is present\", function () {",
+					"    pm.response.to.have.header(\"Content-Type\");",
+					"});",
+					"",
+					"// ตรวจสอบว่า Response body ไม่ว่างเปล่า",
+					"pm.test(\"Response body is not empty\", function () {",
+					"    pm.expect(pm.response.text()).to.not.be.empty;",
+					"});",
+					"",
+					"",
+					"// ตรวจสอบว่า Response header 'Cache-Control' มีค่าและไม่ว่างเปล่า",
+					"// pm.test(\"Cache-Control header is present and not empty\", function () {",
+					"//     let cacheControl = pm.response.headers.get(\"Cache-Control\");",
+					"//     pm.expect(cacheControl).to.not.be.empty;",
+					"// });"
+				]
+			}
+		}
+	],
+	"variable": [
+		{
+			"key": "version",
+			"value": "",
+			"type": "default"
+		}
+	]
+}

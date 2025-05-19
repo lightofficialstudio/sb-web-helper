@@ -1,0 +1,268 @@
+{
+	"info": {
+		"_postman_id": "f3713233-59ca-4a8d-bbad-0bfaa2a769b1",
+		"name": "New Collection",
+		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json",
+		"_exporter_id": "41748745",
+		"_collection_link": "https://school-bright-0624.postman.co/workspace/School-Bright-Mobile-Applicatio~1f1f5751-b557-4898-852e-ea131db785ff/collection/41748745-f3713233-59ca-4a8d-bbad-0bfaa2a769b1?action=share&source=collection_link&creator=41748745"
+	},
+	"item": [
+		{
+			"name": "NFC Card (แสกนบัตรเข้างาน) Copy",
+			"item": [
+				{
+					"name": "🧩 NFC Card Scanning (แสกนบัตร)",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									""
+								],
+								"type": "text/javascript",
+								"packages": {}
+							}
+						}
+					],
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{hardware_url}}/api/nfccard/jobscan/v2?NFC={{NFC}}&schoolid={{user_school_id}}",
+							"host": [
+								"{{hardware_url}}"
+							],
+							"path": [
+								"api",
+								"nfccard",
+								"jobscan",
+								"v2"
+							],
+							"query": [
+								{
+									"key": "NFC",
+									"value": "{{NFC}}"
+								},
+								{
+									"key": "schoolid",
+									"value": "{{user_school_id}}"
+								}
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "🧩 NFC Card scanning offline (แสกนบัตรออฟไลน์)",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									""
+								],
+								"type": "text/javascript",
+								"packages": {}
+							}
+						}
+					],
+					"request": {
+						"auth": {
+							"type": "apikey",
+							"apikey": [
+								{
+									"key": "value",
+									"value": "{{user_token}}",
+									"type": "string"
+								},
+								{
+									"key": "key",
+									"value": "JabjaiKey-{{user_school_id}}-{{user_id}}",
+									"type": "string"
+								}
+							]
+						},
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "[\r\n    {\r\n        \"NFC\": \"{{NFC}}\",\r\n        \"LogStatus\": \"1\",\r\n        \"LogDate\": \"{{now}}\"\r\n    }\r\n]",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{hardware_url}}/api/nfccard/jobscan/offline?schoolid={{user_school_id}}",
+							"host": [
+								"{{hardware_url}}"
+							],
+							"path": [
+								"api",
+								"nfccard",
+								"jobscan",
+								"offline"
+							],
+							"query": [
+								{
+									"key": "schoolid",
+									"value": "{{user_school_id}}"
+								}
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "🧩 NFC Card scanning v.2.0 (แสกนบัตร v.2.0)",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									""
+								],
+								"type": "text/javascript",
+								"packages": {}
+							}
+						}
+					],
+					"request": {
+						"auth": {
+							"type": "noauth"
+						},
+						"method": "GET",
+						"header": [
+							{
+								"key": "JabjaiKey-849-560962",
+								"value": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1bmlxdWVfbmFtZSI6IjAxIiwiZW1haWwiOiIwMV84NDlfMDFAc2Nob29sYnJpZ2h0LmNvbSIsImh0dHA6Ly9zY2hlbWFzLnhtbHNvYXAub3JnL3dzLzIwMDUvMDUvaWRlbnRpdHkvY2xhaW1zL3Bvc3RhbGNvZGUiOiI4NDkiLCJodHRwOi8vc2NoZW1hcy54bWxzb2FwLm9yZy93cy8yMDA1LzA1L2lkZW50aXR5L2NsYWltcy9zaWQiOiI1NjA5NjIiLCJodHRwOi8vc2NoZW1hcy54bWxzb2FwLm9yZy93cy8yMDA1LzA1L2lkZW50aXR5L2NsYWltcy9oYXNoIjoiMDEiLCJodHRwOi8vc2NoZW1hcy5taWNyb3NvZnQuY29tL3dzLzIwMDgvMDYvaWRlbnRpdHkvY2xhaW1zL2V4cGlyYXRpb24iOiIzLzI5LzIwMjUgNToxMDozMSBQTSIsIm5iZiI6MTc0MjkyMjYzMSwiZXhwIjoxNzQzMjY4MjMxLCJpYXQiOjE3NDI5MjI2MzF9.ZHPHQqg0XRFeDYY8UvMZhFN160Fsad4k_wrUh3v7dI0"
+							}
+						],
+						"url": {
+							"raw": "{{hardware_url}}/api/nfccard/jobscan/v2?NFC={{NFC}}&schoolid={{user_school_id}}",
+							"host": [
+								"{{hardware_url}}"
+							],
+							"path": [
+								"api",
+								"nfccard",
+								"jobscan",
+								"v2"
+							],
+							"query": [
+								{
+									"key": "NFC",
+									"value": "{{NFC}}"
+								},
+								{
+									"key": "schoolid",
+									"value": "{{user_school_id}}"
+								}
+							]
+						}
+					},
+					"response": []
+				}
+			]
+		}
+	],
+	"auth": {
+		"type": "apikey",
+		"apikey": [
+			{
+				"key": "value",
+				"value": "{{user_token}}",
+				"type": "string"
+			},
+			{
+				"key": "key",
+				"value": "JabjaiKey-{{school_id}}-{{user_id}}",
+				"type": "string"
+			}
+		]
+	},
+	"event": [
+		{
+			"listen": "prerequest",
+			"script": {
+				"type": "text/javascript",
+				"packages": {},
+				"exec": [
+					"// ตั้งค่า current timestamp เป็น Environment Variable",
+					"pm.environment.set(\"currentTimestamp\", new Date().toISOString());",
+					"console.log(\"Current timestamp: \" + pm.environment.get(\"currentTimestamp\"));",
+					"",
+					"// ตั้งค่า today (mm/dd/yyyy)",
+					"let today = new Date();",
+					"let month = (\"0\" + (today.getMonth() + 1)).slice(-2);",
+					"let day = (\"0\" + today.getDate()).slice(-2);",
+					"let year = today.getFullYear();",
+					"let formattedDate = `${month}/${day}/${year}`;",
+					"pm.environment.set(\"today\", formattedDate);",
+					"console.log(\"Today is set to:\", formattedDate);",
+					"",
+					"// ตั้งค่า next_week = today + 6 วัน",
+					"let nextWeek = new Date(today);",
+					"nextWeek.setDate(today.getDate() + 6);",
+					"let nextWeekMonth = (\"0\" + (nextWeek.getMonth() + 1)).slice(-2);",
+					"let nextWeekDay = (\"0\" + nextWeek.getDate()).slice(-2);",
+					"let nextWeekYear = nextWeek.getFullYear();",
+					"let formattedNextWeek = `${nextWeekMonth}/${nextWeekDay}/${nextWeekYear}`;",
+					"pm.environment.set(\"next_week\", formattedNextWeek);",
+					"console.log(\"Next week is set to:\", formattedNextWeek);",
+					"",
+					"// ตั้งค่า next_month = today + 29 วัน",
+					"let nextMonth = new Date(today);",
+					"nextMonth.setDate(today.getDate() + 29);",
+					"let nextMonthMonth = (\"0\" + (nextMonth.getMonth() + 1)).slice(-2);",
+					"let nextMonthDay = (\"0\" + nextMonth.getDate()).slice(-2);",
+					"let nextMonthYear = nextMonth.getFullYear();",
+					"let formattedNextMonth = `${nextMonthMonth}/${nextMonthDay}/${nextMonthYear}`;",
+					"pm.environment.set(\"next_month\", formattedNextMonth);",
+					"console.log(\"Next month is set to:\", formattedNextMonth);"
+				]
+			}
+		},
+		{
+			"listen": "test",
+			"script": {
+				"type": "text/javascript",
+				"packages": {},
+				"exec": [
+					"// ตรวจสอบว่า Status code เป็น 200",
+					"pm.test(\"Status code is 200\", function () {",
+					"    pm.expect(pm.response.code).to.eql(200);",
+					"});",
+					"",
+					"// ตรวจสอบว่าเวลาในการตอบสนองไม่เกิน 200 ms",
+					"pm.test(\"Response time is less than 1000ms\", function () {",
+					"    pm.expect(pm.response.responseTime).to.be.below(1000);",
+					"});",
+					"",
+					"// ตรวจสอบว่า Response อยู่ในรูปแบบ JSON",
+					"pm.test(\"Response is in JSON format\", function () {",
+					"    pm.response.to.be.json;",
+					"});",
+					"",
+					"// ตรวจสอบว่า Header 'Content-Type' มีอยู่ใน Response",
+					"pm.test(\"Content-Type header is present\", function () {",
+					"    pm.response.to.have.header(\"Content-Type\");",
+					"});",
+					"",
+					"// ตรวจสอบว่า Response body ไม่ว่างเปล่า",
+					"pm.test(\"Response body is not empty\", function () {",
+					"    pm.expect(pm.response.text()).to.not.be.empty;",
+					"});",
+					"",
+					"",
+					"// ตรวจสอบว่า Response header 'Cache-Control' มีค่าและไม่ว่างเปล่า",
+					"// pm.test(\"Cache-Control header is present and not empty\", function () {",
+					"//     let cacheControl = pm.response.headers.get(\"Cache-Control\");",
+					"//     pm.expect(cacheControl).to.not.be.empty;",
+					"// });"
+				]
+			}
+		}
+	]
+}

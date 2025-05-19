@@ -1,0 +1,225 @@
+{
+	"id": "ad6ffcec-bdf7-4d7e-872a-9afb149c12ad",
+	"name": "Production",
+	"values": [
+		{
+			"key": "base_url",
+			"value": "https://sbapi.schoolbright.co",
+			"type": "default",
+			"enabled": true
+		},
+		{
+			"key": "user",
+			"value": "1234567",
+			"type": "default",
+			"enabled": true
+		},
+		{
+			"key": "school_id",
+			"value": "849",
+			"type": "default",
+			"enabled": true
+		},
+		{
+			"key": "password",
+			"value": "1",
+			"type": "default",
+			"enabled": true
+		},
+		{
+			"key": "client_token",
+			"value": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1bmlxdWVfbmFtZSI6IjEyMzQ1NjciLCJlbWFpbCI6InBpY2hheWEucG9rcG9uZ0BzY2hvb2xicmlnaHQuY28iLCJodHRwOi8vc2NoZW1hcy54bWxzb2FwLm9yZy93cy8yMDA1LzA1L2lkZW50aXR5L2NsYWltcy9wb3N0YWxjb2RlIjoiODQ5IiwiaHR0cDovL3NjaGVtYXMueG1sc29hcC5vcmcvd3MvMjAwNS8wNS9pZGVudGl0eS9jbGFpbXMvc2lkIjoiNDIzMzgxIiwiaHR0cDovL3NjaGVtYXMueG1sc29hcC5vcmcvd3MvMjAwNS8wNS9pZGVudGl0eS9jbGFpbXMvaGFzaCI6IjEiLCJodHRwOi8vc2NoZW1hcy5taWNyb3NvZnQuY29tL3dzLzIwMDgvMDYvaWRlbnRpdHkvY2xhaW1zL2V4cGlyYXRpb24iOiIyLzcvMjAyNSA1OjA0OjM0IFBNIiwibmJmIjoxNzM4NjAyMjc0LCJleHAiOjE3Mzg5NDc4NzQsImlhdCI6MTczODYwMjI3NH0.FugikNEyH0n4OjX8MVGyIZ0AiWsD7LwK2_v0oBpPGuA",
+			"type": "default",
+			"enabled": true
+		},
+		{
+			"key": "user_id",
+			"value": "423381",
+			"type": "default",
+			"enabled": true
+		},
+		{
+			"key": "imei",
+			"value": "9b7a13683813f984",
+			"type": "default",
+			"enabled": true
+		},
+		{
+			"key": "app_version",
+			"value": "8.0.0",
+			"type": "default",
+			"enabled": true
+		},
+		{
+			"key": "student_code",
+			"value": "4102",
+			"type": "default",
+			"enabled": true
+		},
+		{
+			"key": "email",
+			"value": "siriratsian@gmail.com",
+			"type": "default",
+			"enabled": true
+		},
+		{
+			"key": "user_email",
+			"value": "siriratsian@gmail.com",
+			"type": "default",
+			"enabled": true
+		},
+		{
+			"key": "user_phonenumber",
+			"value": "0617453848",
+			"type": "default",
+			"enabled": true
+		},
+		{
+			"key": "paysb_url",
+			"value": "https://paysb.schoolbright.co",
+			"type": "default",
+			"enabled": true
+		},
+		{
+			"key": "system_url",
+			"value": "https://system.schoolbright.co",
+			"type": "default",
+			"enabled": true
+		},
+		{
+			"key": "request_code",
+			"value": "",
+			"type": "default",
+			"enabled": true
+		},
+		{
+			"key": "accounting_url",
+			"value": "https://dev-accounting.schoolbright.co",
+			"type": "default",
+			"enabled": true
+		},
+		{
+			"key": "user_school_id",
+			"value": "",
+			"type": "any",
+			"enabled": true
+		},
+		{
+			"key": "user_token",
+			"value": "",
+			"type": "any",
+			"enabled": true
+		},
+		{
+			"key": "currentTimestamp",
+			"value": "",
+			"type": "any",
+			"enabled": true
+		},
+		{
+			"key": "subject_id",
+			"value": "2385431",
+			"type": "default",
+			"enabled": true
+		},
+		{
+			"key": "today",
+			"value": "",
+			"type": "any",
+			"enabled": true
+		},
+		{
+			"key": "user_password",
+			"value": "",
+			"type": "default",
+			"enabled": true
+		},
+		{
+			"key": "page",
+			"value": "",
+			"type": "default",
+			"enabled": true
+		},
+		{
+			"key": "language",
+			"value": "th",
+			"type": "default",
+			"enabled": true
+		},
+		{
+			"key": "year_id",
+			"value": "",
+			"type": "default",
+			"enabled": true
+		},
+		{
+			"key": "term_id",
+			"value": "",
+			"type": "any",
+			"enabled": true
+		},
+		{
+			"key": "homework_group_id",
+			"value": "",
+			"type": "any",
+			"enabled": true
+		},
+		{
+			"key": "hardware_url",
+			"value": "https://hardware.schoolbright.co",
+			"type": "default",
+			"enabled": true
+		},
+		{
+			"key": "user_code",
+			"value": "",
+			"type": "any",
+			"enabled": true
+		},
+		{
+			"key": "user_firstname",
+			"value": "",
+			"type": "any",
+			"enabled": true
+		},
+		{
+			"key": "user_surname",
+			"value": "",
+			"type": "any",
+			"enabled": true
+		},
+		{
+			"key": "letter_id",
+			"value": "",
+			"type": "any",
+			"enabled": true
+		},
+		{
+			"key": "next_week",
+			"value": "",
+			"type": "any",
+			"enabled": true
+		},
+		{
+			"key": "next_month",
+			"value": "",
+			"type": "any",
+			"enabled": true
+		},
+		{
+			"key": "device_id",
+			"value": "144078f7440c24240c91",
+			"type": "default",
+			"enabled": true
+		},
+		{
+			"key": "NFC",
+			"value": "0985686914",
+			"type": "default",
+			"enabled": true
+		}
+	],
+	"_postman_variable_scope": "environment",
+	"_postman_exported_at": "2025-04-08T04:52:51.522Z",
+	"_postman_exported_using": "Postman/11.39.5"
+}
