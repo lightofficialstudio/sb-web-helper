@@ -88,7 +88,7 @@
 		},
 		{
 			"key": "request_code",
-			"value": "",
+			"value": "text",
 			"type": "default",
 			"enabled": true
 		},
@@ -100,19 +100,19 @@
 		},
 		{
 			"key": "user_school_id",
-			"value": "",
+			"value": "text",
 			"type": "any",
 			"enabled": true
 		},
 		{
 			"key": "user_token",
-			"value": "",
+			"value": "text",
 			"type": "any",
 			"enabled": true
 		},
 		{
 			"key": "currentTimestamp",
-			"value": "",
+			"value": "text",
 			"type": "any",
 			"enabled": true
 		},
@@ -124,19 +124,19 @@
 		},
 		{
 			"key": "today",
-			"value": "",
+			"value": "text",
 			"type": "any",
 			"enabled": true
 		},
 		{
 			"key": "user_password",
-			"value": "",
+			"value": "text",
 			"type": "default",
 			"enabled": true
 		},
 		{
 			"key": "page",
-			"value": "",
+			"value": "text",
 			"type": "default",
 			"enabled": true
 		},
@@ -148,19 +148,19 @@
 		},
 		{
 			"key": "year_id",
-			"value": "",
+			"value": "text",
 			"type": "default",
 			"enabled": true
 		},
 		{
 			"key": "term_id",
-			"value": "",
+			"value": "text",
 			"type": "any",
 			"enabled": true
 		},
 		{
 			"key": "homework_group_id",
-			"value": "",
+			"value": "text",
 			"type": "any",
 			"enabled": true
 		},
@@ -172,37 +172,37 @@
 		},
 		{
 			"key": "user_code",
-			"value": "",
+			"value": "text",
 			"type": "any",
 			"enabled": true
 		},
 		{
 			"key": "user_firstname",
-			"value": "",
+			"value": "text",
 			"type": "any",
 			"enabled": true
 		},
 		{
 			"key": "user_surname",
-			"value": "",
+			"value": "text",
 			"type": "any",
 			"enabled": true
 		},
 		{
 			"key": "letter_id",
-			"value": "",
+			"value": "text",
 			"type": "any",
 			"enabled": true
 		},
 		{
 			"key": "next_week",
-			"value": "",
+			"value": "text",
 			"type": "any",
 			"enabled": true
 		},
 		{
 			"key": "next_month",
-			"value": "",
+			"value": "text",
 			"type": "any",
 			"enabled": true
 		},

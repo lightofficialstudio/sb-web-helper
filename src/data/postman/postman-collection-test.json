@@ -220,7 +220,16 @@
 					"let nextMonthYear = nextMonth.getFullYear();",
 					"let formattedNextMonth = `${nextMonthMonth}/${nextMonthDay}/${nextMonthYear}`;",
 					"pm.environment.set(\"next_month\", formattedNextMonth);",
-					"console.log(\"Next month is set to:\", formattedNextMonth);"
+					"console.log(\"Next month is set to:\", formattedNextMonth);",
+					"",
+					"const schoolId = pm.environment.get(\"school_id\");",
+					"const userId = pm.environment.get(\"user_id\");",
+					"const token = pm.environment.get(\"user_token\");",
+					"",
+					"pm.request.headers.add({",
+					"  key: `JabjaiKey-${schoolId}-${userId}`,",
+					"  value: token",
+					"});"
 				]
 			}
 		},

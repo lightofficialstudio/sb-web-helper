@@ -37,11 +37,13 @@
   },
   "devDependencies": {
     "@types/js-cookie": "^3.0.6",
+    "@types/newman": "^5.3.6",
     "@types/node": "^20",
     "@types/react": "^18",
     "@types/react-dom": "^18",
     "eslint": "^8",
     "eslint-config-next": "^15.2.1",
+    "newman": "^6.2.1",
     "postcss": "^8.4.47",
     "tailwindcss": "^3.4.13",
     "terser-webpack-plugin": "^5.3.10",
