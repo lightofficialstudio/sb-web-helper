@@ -3,6 +3,7 @@ export interface defaultRedux {
   loading: boolean;
   error: string;
   success: string;
+  response: any;
 }
 
 export interface UserState extends defaultRedux {

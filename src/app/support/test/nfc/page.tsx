@@ -1,32 +1,57 @@
 "use client";
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import DashboardLayout from "@components/layouts/backend-layout";
 import ContentCard from "@components/layouts/backend/content";
 import { useTranslation } from "react-i18next";
 import LoadingOverlay from "@components/loading/loading-component-1";
 import { useDispatch, useSelector } from "react-redux";
-import { useAppSelector } from "@stores/store";
+import { AppDispatch, useAppSelector } from "@stores/store";
 import { InputFieldComponent } from "@/components/input-field/input-field-component";
 import { FormCardNfcState } from "@/stores/type";
 import { submitState } from "@/stores/reducers/form-card-nfc";
 import MinimalButton from "@/components/button/minimal-button-component";
 import { FiCreditCard, FiHome } from "react-icons/fi";
+import { CallAPI } from "@/stores/actions/form-card-nfc-action";
+import MinimalModal from "@/components/modal/minimal-modal-component";
+import Swal from "sweetalert2";
 
 export default function DashboardPage() {
   const { t } = useTranslation("mock");
-  const dispatch = useDispatch();
+  const dispatch = useDispatch<AppDispatch>();
   const NFCstate = useAppSelector((state) => state.formCardNfc);
   const [formState, setFormState] = useState<any>({
     nfc_card: NFCstate.draftValues.nfc_card,
     school_id: NFCstate.draftValues.school_id,
   });
   const isLoading = NFCstate.loading;
+  const [modal, setModal] = useState<string>("");
+
+  useEffect(() => {
+    if (modal === "error") {
+      Swal.fire({
+        icon: "error",
+        title: "กรุณากรอกข้อมูลให้ครบ",
+        text: "กรุณากรอกข้อมูลให้ครบถ้วน",
+        confirmButtonText: "ตกลง",
+      }).then(() => {
+        setModal("");
+      });
+    }
+  }, [modal]);
 
   // #region : State
-  const handleSubmitForm = (e: React.FormEvent<HTMLFormElement>) => {
+  const handleSubmitForm = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
-    dispatch(submitState(formState));
+    if (!formState.nfc_card || !formState.school_id) {
+      return setModal("error");
+    }
+    await dispatch(
+      CallAPI({
+        draftValues: formState,
+      })
+    );
   };
+
   // #endregion
 
   return (
@@ -40,7 +65,21 @@ export default function DashboardPage() {
           fullWidth
           className="md:col-span-2 xl:col-span-4 w-full"
         >
-          <p>{t("การใช้งาน")}</p>
+          <p>
+            {t(
+              "หากได้คำตอบแบบนี้ แปลว่าหาบัตรไม่เจอ ถ้าได้เคสจากโรงเรียนแล้วค้นหาไม่เจอ แต่เจอใน System ให้แจ้ง Dev.Vimal"
+            )}
+          </p>
+          <code>
+            {JSON.stringify(
+              {
+                status: "not have number id",
+                data: {},
+              },
+              null,
+              2
+            )}
+          </code>
         </ContentCard>
 
         <ContentCard
@@ -72,8 +111,10 @@ export default function DashboardPage() {
               onChange={(e) =>
                 setFormState({ ...formState, nfc_card: e.target.value })
               }
+              error={
+                formState.nfc_card.length < 1 ? "กรุณากรอกรหัส NFC Card" : ""
+              }
               placeholder="กรุณากรอกรหัส NFC Card"
-              hint={<span className="text-xs">ตัวอย่าง 314627373</span>}
             />
 
             {/* ปุ่ม ยืนยัน / ยกเลิก */}
@@ -107,15 +148,20 @@ export default function DashboardPage() {
         >
           <div className="space-y-4 overflow-x-auto">
             <pre className="whitespace-pre-wrap">
-              <code>{JSON.stringify(NFCstate.draftValues, null, 2)}</code>
+              <code>{JSON.stringify(NFCstate.response.data, null, 2)}</code>
             </pre>
             <button
               className="mt-2 px-4 py-2 bg-blue-500 text-white rounded hover:bg-blue-600"
               onClick={() => {
                 navigator.clipboard.writeText(
-                  JSON.stringify(NFCstate.draftValues, null, 2)
+                  JSON.stringify(NFCstate.response.data, null, 2)
                 );
-                alert("คัดลอกข้อมูลสำเร็จแล้ว!");
+                Swal.fire({
+                  icon: "success",
+                  title: "Copied!",
+                  text: "Response copied to clipboard.",
+                  confirmButtonText: "OK",
+                });
               }}
             >
               Copy Response

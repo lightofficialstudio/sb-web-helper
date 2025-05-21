@@ -1,17 +1,32 @@
 import { NextRequest, NextResponse } from "next/server";
 import axios from "axios";
+import { APIMethodProps, API_METHOD } from "@services/api-method";
 
-const backendUrl = process.env.BACKEND_API_URL || "http://localhost:3000";
+export interface CallBackendAPIProps {
+  method: APIMethodProps;
+  endpoint: string;
+  data?: any;
+  extendHeader?: Record<string, string>;
+  backendUrl?: string;
+}
 
-// ฟังก์ชันกลางที่ใช้เรียก API
-
-export const callBackendAPI = async (
-  method: string,
-  endpoint: string,
-  data?: any,
-  extendHeader?: any
-) => {
-  const url = `${backendUrl}/${endpoint}`;
+export const callBackendAPI = async ({
+  method,
+  endpoint,
+  data,
+  extendHeader,
+  backendUrl,
+}: CallBackendAPIProps) => {
+  console.log("callBackendAPI", {
+    method,
+    endpoint,
+    data,
+    extendHeader,
+    backendUrl,
+  });
+  const url = `${backendUrl}${
+    endpoint.startsWith("/") ? endpoint : `/${endpoint}`
+  }`;
 
   const headers = {
     ...extendHeader,
@@ -21,17 +36,18 @@ export const callBackendAPI = async (
 
   try {
     let response;
-    switch (method.toUpperCase()) {
-      case "GET":
+    switch (method) {
+      case API_METHOD.GET:
         response = await axios.get(url, { headers });
+        console.log("[GET] METHOD", response);
         break;
-      case "POST":
+      case API_METHOD.POST:
         response = await axios.post(url, data, { headers });
         break;
-      case "PUT":
+      case API_METHOD.PUT:
         response = await axios.put(url, data, { headers });
         break;
-      case "DELETE":
+      case API_METHOD.DELETE:
         response = await axios.delete(url, { headers });
         break;
       default:
@@ -42,5 +58,8 @@ export const callBackendAPI = async (
   } catch (error: any) {
     console.error(error.message);
     throw new Error("Failed to call backend API");
+  } finally {
+    // ทำการทำความสะอาดหรือจัดการกับ resource ที่ใช้
+    console.log("API call completed");
   }
 };
