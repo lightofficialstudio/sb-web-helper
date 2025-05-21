@@ -2,13 +2,15 @@ import { configureStore } from "@reduxjs/toolkit";
 // #region : reducer
 import mockReducer from "@stores/reducers/mock-reducer";
 import newmanReducer from "@stores/reducers/call-newman";
-import {TypedUseSelectorHook, useSelector} from "react-redux";
+import formCardNfcReducer from "@stores/reducers/form-card-nfc";
+import { TypedUseSelectorHook, useSelector } from "react-redux";
 // #endregion
 
 export const store = configureStore({
   reducer: {
     mockReducer: mockReducer,
-    newman : newmanReducer,
+    newman: newmanReducer,
+    formCardNfc: formCardNfcReducer,
   },
 });
 

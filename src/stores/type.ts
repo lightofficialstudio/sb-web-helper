@@ -12,3 +12,10 @@ export interface UserState extends defaultRedux {
     email: string;
   };
 }
+
+export interface FormCardNfcState extends defaultRedux {
+  draftValues: {
+    nfc_card: string;
+    school_id: string;
+  };
+}

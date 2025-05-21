@@ -9,7 +9,15 @@ import {
 } from "react-icons/fi";
 import { FaRegLightbulb } from "react-icons/fa6";
 
-export const menu = [
+interface MenuItem {
+  label: string;
+  icon?: JSX.Element;
+  href?: string;
+  tag?: string;
+  children?: MenuItem[];
+}
+
+export const menu: MenuItem[] = [
   {
     label: "Testing",
     icon: <FiGrid />,
@@ -17,6 +25,11 @@ export const menu = [
       { label: "Automated Testing", href: "/testing/auto" },
       { label: "Load Testing", href: "/testing/load" },
     ],
+  },
+  {
+    label: "Support",
+    icon: <FaRegLightbulb />,
+    children: [{ label: "NFC Test (Vimal)", href: "/support/test/nfc" }],
   },
   //   { label: "Timesheets", icon: <FiClock />, href: "/timesheets" },
   //   { label: "Activity", icon: <FiActivity />, href: "/activity" },
