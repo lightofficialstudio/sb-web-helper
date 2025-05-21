@@ -27,15 +27,27 @@ export default function DashboardPage() {
   const [modal, setModal] = useState<string>("");
 
   useEffect(() => {
-    if (modal === "error") {
-      Swal.fire({
-        icon: "error",
-        title: "กรุณากรอกข้อมูลให้ครบ",
-        text: "กรุณากรอกข้อมูลให้ครบถ้วน",
-        confirmButtonText: "ตกลง",
-      }).then(() => {
+    switch (modal) {
+      case "error":
+        Swal.fire({
+          icon: "error",
+          title: "Error",
+          text: "กรุณากรอกข้อมูลให้ครบถ้วน",
+          confirmButtonText: "OK",
+        });
         setModal("");
-      });
+        break;
+      case "success":
+        Swal.fire({
+          icon: "success",
+          title: "Success",
+          text: "ยิง API สำเร็จ",
+          confirmButtonText: "ยืนยัน",
+        });
+        setModal("");
+        break;
+      default:
+        break;
     }
   }, [modal]);
 
@@ -45,11 +57,24 @@ export default function DashboardPage() {
     if (!formState.nfc_card || !formState.school_id) {
       return setModal("error");
     }
-    await dispatch(
-      CallAPI({
-        draftValues: formState,
-      })
-    );
+    try {
+      await dispatch(
+        CallAPI({
+          draftValues: formState,
+        })
+      ).unwrap(); // <== ดึงผลลัพธ์ออก หรือ throw error
+      setModal("success");
+    } catch (error: any) {
+      console.error("API error:", error);
+
+      // คุณสามารถแสดง error จาก response จริงได้ เช่น message
+      Swal.fire({
+        icon: "error",
+        title: "เกิดข้อผิดพลาด",
+        text: error.message || "ไม่สามารถดำเนินการได้",
+        confirmButtonText: "ตกลง",
+      });
+    }
   };
 
   // #endregion
@@ -144,28 +169,52 @@ export default function DashboardPage() {
         <ContentCard
           title="Response"
           fullWidth
-          className="md:col-span-2 xl:col-span-4 w-full"
+          className={`md:col-span-2 xl:col-span-4 w-full overflow-hidden ${
+            NFCstate.response.data ? "block" : "hidden"
+          }`}
         >
           <div className="space-y-4 overflow-x-auto">
             <pre className="whitespace-pre-wrap">
-              <code>{JSON.stringify(NFCstate.response.data, null, 2)}</code>
+              <code>
+                {JSON.stringify(NFCstate.response.data?.data, null, 2)}
+              </code>
             </pre>
-            <button
-              className="mt-2 px-4 py-2 bg-blue-500 text-white rounded hover:bg-blue-600"
-              onClick={() => {
-                navigator.clipboard.writeText(
-                  JSON.stringify(NFCstate.response.data, null, 2)
-                );
-                Swal.fire({
-                  icon: "success",
-                  title: "Copied!",
-                  text: "Response copied to clipboard.",
-                  confirmButtonText: "OK",
-                });
-              }}
-            >
-              Copy Response
-            </button>
+            <div className="flex flex-col md:flex-row gap-4">
+              {/* COPY RESPONSE */}
+              <MinimalButton
+                className="mt-2 px-4 py-2 bg-blue-500 text-white rounded hover:bg-blue-600"
+                onClick={() => {
+                  navigator.clipboard.writeText(
+                    JSON.stringify(NFCstate.response.data?.data, null, 2)
+                  );
+                  Swal.fire({
+                    icon: "success",
+                    title: "Copied!",
+                    text: "Response copied to clipboard.",
+                    confirmButtonText: "OK",
+                  });
+                }}
+              >
+                Copy Response
+              </MinimalButton>
+
+              {/* CURL */}
+              <MinimalButton
+                className="mt-2 px-4 py-2 bg-yellow-500 text-white rounded hover:bg-yellow-600"
+                onClick={() => {
+                  const curlCommand = NFCstate.response.data?.curl;
+                  navigator.clipboard.writeText(curlCommand.toString());
+                  Swal.fire({
+                    icon: "success",
+                    title: "Copied!",
+                    text: "Copy CURL to clipboard.",
+                    confirmButtonText: "OK",
+                  });
+                }}
+              >
+                Copy CURL
+              </MinimalButton>
+            </div>
           </div>
         </ContentCard>
       </div>

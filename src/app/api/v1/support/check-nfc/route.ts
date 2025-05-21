@@ -1,6 +1,6 @@
-// /app/api/v1/support/check-nfc/route.ts
 import { NextRequest, NextResponse } from "next/server";
 import axios from "axios";
+import { API_URL } from "@/services/api-url";
 
 export async function GET(req: NextRequest) {
   const searchParams = req.nextUrl.searchParams;
@@ -12,15 +12,19 @@ export async function GET(req: NextRequest) {
   }
 
   try {
-    const response = await axios.get(
-      `https://paysb.schoolbright.co/api/shop/user/getuserinfo?SchoolID=${SchoolID}&NFC=${NFC}`,
-      {
-        headers: {
-          Authorization: `Bearer ${process.env.API_TOKEN}`,
-        },
-      }
-    );
-    return NextResponse.json(response.data);
+    const apiUrl = `${API_URL.PROD_PAYMENT_API_URL}/api/shop/user/getuserinfo?SchoolID=${SchoolID}&NFC=${NFC}`;
+    const curlCommand = `curl --location '${apiUrl}'`;
+
+    const response = await axios.get(apiUrl, {
+      headers: {
+        Authorization: `Bearer ${process.env.API_TOKEN}`,
+      },
+    });
+
+    return NextResponse.json({
+      data: response.data,
+      curl: curlCommand,
+    });
   } catch (err: any) {
     return NextResponse.json(
       { message: err.message || "Internal Server Error" },

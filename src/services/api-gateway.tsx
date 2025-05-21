@@ -39,7 +39,6 @@ export const callBackendAPI = async ({
     switch (method) {
       case API_METHOD.GET:
         response = await axios.get(url, { headers });
-        console.log("[GET] METHOD", response);
         break;
       case API_METHOD.POST:
         response = await axios.post(url, data, { headers });
@@ -55,11 +54,9 @@ export const callBackendAPI = async ({
     }
 
     return response.data; // ส่งข้อมูลกลับจาก API
-  } catch (error: any) {
-    console.error(error.message);
-    throw new Error("Failed to call backend API");
+  } catch (error) {
+    throw new Error((error as Error).message);
   } finally {
-    // ทำการทำความสะอาดหรือจัดการกับ resource ที่ใช้
     console.log("API call completed");
   }
 };

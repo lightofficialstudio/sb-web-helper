@@ -42,8 +42,7 @@ const formCardNFCReducer = createSlice({
       .addCase(CallAPI.fulfilled, (state, action) => {
         state.loading = false;
         state.response.data = action.payload;
-        state.success = "User submitted successfully";
-        console.log("[CallAPI.fulfilled] : ", action.payload);
+        state.success = "successfully";
       })
       .addCase(CallAPI.rejected, (state, action) => {
         state.loading = false;
