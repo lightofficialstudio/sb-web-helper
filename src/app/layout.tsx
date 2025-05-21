@@ -2,19 +2,15 @@
 import "@styles/font.css";
 import "@styles/globals.css";
 import ClientProvider from "@components/providers/client-providers";
-import I18nProvider from "@components/providers/i18n-provider";
 import LocaleProvider from "@components/providers/i18n-provider"; // Import the new ClientProvider
 
-
 export default function RootLayout({
-                                     children,
-                                     params: { locale },
-                                   }: {
+  children,
+}: {
   children: React.ReactNode;
-  params: { locale: string };
 }) {
   return (
-      <html lang={locale || "en"}>
+    <html lang="en">
       <head>
         {/* Meta tags for Progressive Web App (PWA) */}
         <meta name="application-name" content="My Web App" />
@@ -30,13 +26,13 @@ export default function RootLayout({
         <link rel="icon" href="/icons/icon-512x512.png" sizes="512x512" />
       </head>
       <body className="font-lineseed antialiased">
-      {/* Move client-related providers to a separate component */}
-      <ClientProvider>
-          <LocaleProvider locale={locale} />
+        {/* Move client-related providers to a separate component */}
+        <ClientProvider>
+          <LocaleProvider locale="en" />
 
           {children}
-      </ClientProvider>
+        </ClientProvider>
       </body>
-      </html>
+    </html>
   );
 }

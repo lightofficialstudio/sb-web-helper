@@ -17,12 +17,12 @@ import StatusBadge from "@components/badge/status-badge-component";
 import MethodBadge from "@components/badge/method-badge-component";
 import LoadingOverlay from "@components/loading/loading-component-1";
 import { useDispatch, useSelector } from "react-redux";
-import { useAppSelector } from "@stores/store";
+import { AppDispatch, useAppSelector } from "@stores/store";
 import { runPostmanCollection } from "@stores/actions/call-newman";
 
 export default function DashboardPage() {
   const { t } = useTranslation("mock");
-  const dispatch = useDispatch();
+  const dispatch = useDispatch<AppDispatch>();
   const newmanState = useAppSelector((state) => state.newman); // จาก newmanReducer
 
   const [selectedDetail, setSelectedDetail] = useState<any | null>(null);
@@ -67,7 +67,7 @@ export default function DashboardPage() {
   }
 
   const POST_NEWMAN = async () => {
-    const response = await dispatch(runPostmanCollection());
+    const response = dispatch(runPostmanCollection());
   };
 
   const renderMinimalRows = (count: number) =>
