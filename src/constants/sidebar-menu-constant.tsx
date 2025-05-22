@@ -29,7 +29,13 @@ export const menu: MenuItem[] = [
   {
     label: "Support",
     icon: <FaRegLightbulb />,
-    children: [{ label: "NFC Test (Vimal)", href: "/support/test/nfc" }],
+    children: [
+      { label: "ทดสอบค้นหาบัตร NFC (Vimal)", href: "/support/test/nfc" },
+      {
+        label: "ยกเลิกรายการสินค้าเกิน 7 วัน",
+        href: "/support/test/cancel-sales",
+      },
+    ],
   },
   //   { label: "Timesheets", icon: <FiClock />, href: "/timesheets" },
   //   { label: "Activity", icon: <FiActivity />, href: "/activity" },

@@ -17,13 +17,14 @@ export const callBackendAPI = async ({
   extendHeader,
   backendUrl,
 }: CallBackendAPIProps) => {
-  console.log("callBackendAPI", {
+  const defaultRequest = {
     method,
     endpoint,
     data,
     extendHeader,
     backendUrl,
-  });
+  };
+  console.log("[API-GATEWAY]", JSON.stringify(defaultRequest, null, 2));
   const url = `${backendUrl}${
     endpoint.startsWith("/") ? endpoint : `/${endpoint}`
   }`;

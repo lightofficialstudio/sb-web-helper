@@ -20,3 +20,12 @@ export interface FormCardNfcState extends defaultRedux {
     school_id: string;
   };
 }
+
+export interface CancelSalesState extends defaultRedux {
+  draftValues: {
+    SchoolID: string; // school id
+    sID: string; // sid userid
+    sID2: string; // sid2 is employee id, คนขาย
+    sSellID: string; // รหัสการซื้อขาย , transaction_id
+  };
+}

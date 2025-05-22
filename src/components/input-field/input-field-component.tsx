@@ -14,6 +14,12 @@ interface InputFieldComponentProps
   icon?: ReactNode;
   /** จะโชว์ปุ่ม toggle เฉพาะเมื่อเป็น password input */
   showToggle?: boolean;
+  /** className */
+  className?: string;
+  /** ประเภทของ input */
+  type?: string;
+  /** กำหนดให้ฟิลด์นี้เป็นฟิลด์ที่ต้องกรอก */
+  required?: boolean;
 }
 
 export function InputFieldComponent({
@@ -24,6 +30,7 @@ export function InputFieldComponent({
   showToggle = false,
   className = "",
   type = "text",
+  required = false,
   ...rest
 }: InputFieldComponentProps) {
   const isPassword = type === "password";
@@ -42,8 +49,18 @@ export function InputFieldComponent({
   return (
     <div className={`space-y-1 ${className}`}>
       {label && (
-        <label className={`block text-sm font-medium ${text}`}>{label}</label>
+        <label className={`block text-sm font-medium ${text}`}>
+          {label}
+          {/* แสดง required  */}
+          {required && (
+            <span className="text-red-500 text-xs ml-1" aria-hidden="true">
+              *
+            </span>
+          )}
+        </label>
       )}
+
+      {/* input field */}
 
       <div
         className={[
