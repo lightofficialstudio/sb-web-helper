@@ -91,32 +91,9 @@ export default function Page() {
     <DashboardLayout>
       {isLoading && <LoadingOverlay />}
 
-      <div className="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-4 gap-6 mt-6 w-full">
-        {/* บังคับให้ card แรกอยู่เต็มความกว้างใน md และ xl */}
+      <div className="w-full space-y-4">
         <ContentCard
-          title="Welcome"
-          fullWidth
-          className="md:col-span-2 xl:col-span-4 w-full"
-        >
-          <p>
-            {t(
-              "หากได้คำตอบแบบนี้ แปลว่าหาบัตรไม่เจอ ถ้าได้เคสจากโรงเรียนแล้วค้นหาไม่เจอ แต่เจอใน System ให้แจ้ง Dev.Vimal"
-            )}
-          </p>
-          <code>
-            {JSON.stringify(
-              {
-                status: "not have number id",
-                data: {},
-              },
-              null,
-              2
-            )}
-          </code>
-        </ContentCard>
-
-        <ContentCard
-          title="Input"
+          title="Cancel Sales เกิน 7 วัน"
           fullWidth
           className="md:col-span-2 xl:col-span-4 w-full"
         >
@@ -265,6 +242,32 @@ export default function Page() {
             </div>
           </div>
         </ContentCard>
+
+        {/* หมายเหตุ */}
+        <div className="grid grid-cols-2 grid-rows-2 gap-6 w-full">
+          <ContentCard
+            title="หมายเหตุ (1)"
+            fullWidth
+            className="w-full col-span-1 row-span-2"
+          >
+            <p className="text-sm text-red-500">
+              {t(
+                "กรณีที่บัตร NFC ไม่ถูกต้อง หรือไม่พบข้อมูลในระบบ จะมีการแสดงผลลัพธ์เป็น JSON ที่มี status เป็น 'not have number id'"
+              )}
+            </p>
+          </ContentCard>
+          <ContentCard
+            title="หมายเหตุ (2)"
+            fullWidth
+            className="w-full col-span-1 row-span-2"
+          >
+            <p className="text-sm text-red-500">
+              {t(
+                "กรณีที่ไม่พบข้อมูลใน https://www.canteen.schoolbright.co แต่พบข้อมูลที่นี่ แปลว่าเป็นปัญหาที่ Memory Sharing ของระบบ Canteen Web ให้แจ้ง Vimal"
+              )}
+            </p>
+          </ContentCard>
+        </div>
       </div>
     </DashboardLayout>
   );

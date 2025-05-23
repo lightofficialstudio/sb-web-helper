@@ -69,14 +69,6 @@ export default function DashboardPage() {
         >
           {t("welcome")} <p>Hello Support 👋 Welcome back to your dashboard.</p>
         </ContentCard>
-
-        <ContentCard title="Tasks" className="xl:col-span-4 w-full">
-          <div></div>
-        </ContentCard>
-
-        <ContentCard title="Reports" className="xl:col-span-2 w-full">
-          <p>Reports ready to download</p>
-        </ContentCard>
       </div>
     </DashboardLayout>
   );
