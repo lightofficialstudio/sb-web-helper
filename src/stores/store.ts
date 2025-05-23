@@ -1,8 +1,9 @@
 import { configureStore } from "@reduxjs/toolkit";
+import { TypedUseSelectorHook, useSelector } from "react-redux";
 // #region : reducer
 import newmanReducer from "@stores/reducers/call-newman";
 import formCardNfcReducer from "@stores/reducers/form-card-nfc";
-import { TypedUseSelectorHook, useSelector } from "react-redux";
+import callSchoolListReducer from "@stores/reducers/call-school-list";
 import callCancelSalesReducer from "@stores/reducers/call-cancel-sales";
 // #endregion
 
@@ -11,6 +12,7 @@ export const store = configureStore({
     newman: newmanReducer,
     formCardNfc: formCardNfcReducer,
     callCancelSales: callCancelSalesReducer,
+    callSchoolList: callSchoolListReducer,
   },
 });
 

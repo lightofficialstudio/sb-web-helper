@@ -29,3 +29,13 @@ export interface CancelSalesState extends defaultRedux {
     sSellID: string; // รหัสการซื้อขาย , transaction_id
   };
 }
+
+export interface CallSchoolListState extends defaultRedux {
+  draftValues: {
+    Array: {
+      SchoolID: number; // school id
+      SchoolName: string; // ชื่อโรงเรียน
+      SchoolNameEN: string; // ชื่อโรงเรียน ภาษาอังกฤษ
+    }[];
+  };
+}

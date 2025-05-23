@@ -69,6 +69,10 @@ export default function Page() {
       await dispatch(
         CallAPI({
           draftValues: formState,
+          loading: false,
+          error: "",
+          success: "",
+          response: undefined,
         })
       ).unwrap(); // <== ดึงผลลัพธ์ออก หรือ throw error
       setModal("success");

@@ -1,5 +1,5 @@
 "use client";
-import React, { useEffect, useState } from "react";
+import React, { use, useEffect, useState } from "react";
 import DashboardLayout from "@components/layouts/backend-layout";
 import ContentCard from "@components/layouts/backend/content";
 import { useTranslation } from "react-i18next";
@@ -14,17 +14,21 @@ import { FiCreditCard, FiHome } from "react-icons/fi";
 import { CallAPI } from "@/stores/actions/form-card-nfc-action";
 import MinimalModal from "@/components/modal/minimal-modal-component";
 import Swal from "sweetalert2";
+import { SearchableSelectComponent } from "@/components/input-field/searchable-select-component";
 
 export default function DashboardPage() {
   const { t } = useTranslation("mock");
   const dispatch = useDispatch<AppDispatch>();
   const NFCstate = useAppSelector((state) => state.formCardNfc);
+  const SCHOOLstate = useAppSelector((state) => state.callSchoolList);
+  const [show, setShow] = useState("");
   const [formState, setFormState] = useState<any>({
     nfc_card: NFCstate.draftValues.nfc_card,
     school_id: NFCstate.draftValues.school_id,
   });
   const isLoading = NFCstate.loading;
   const [modal, setModal] = useState<string>("");
+  const [schoolList, setSchoolList] = useState<any[]>([]);
 
   useEffect(() => {
     switch (modal) {
@@ -50,6 +54,19 @@ export default function DashboardPage() {
         break;
     }
   }, [modal]);
+
+  useEffect(() => {
+    setSchoolList(
+      SCHOOLstate?.response?.data?.data?.map((item: any) => ({
+        label: item.SchoolName,
+        value: item.SchoolID,
+      })) || []
+    );
+  }, [SCHOOLstate?.response]);
+
+  useEffect(() => {
+    console.log("schoolList", schoolList);
+  }, [schoolList]);
 
   // #region : State
   const handleSubmitForm = async (e: React.FormEvent<HTMLFormElement>) => {
@@ -92,21 +109,25 @@ export default function DashboardPage() {
           className="md:col-span-2 xl:col-span-4 w-full"
         >
           <form onSubmit={handleSubmitForm} className="space-y-4">
-            {/* กรอก School Id */}
-            <InputFieldComponent
-              label="กรอกรหัสโรงเรียน"
-              type="text"
-              required
-              icon={<FiHome />}
-              value={formState.school_id}
-              onChange={(e) =>
-                setFormState({ ...formState, school_id: e.target.value })
-              }
-              error={
-                formState.school_id.length < 1 ? "กรุณากรอกรหัสโรงเรียน" : ""
-              }
-              placeholder="กรุณากรอกรหัสโรงเรียน"
-            />
+            <div className="">
+              <SearchableSelectComponent
+                label="เลือกโรงเรียน"
+                options={[
+                  { label: "Select Option", value: "" },
+                  ...schoolList.map((school) => ({
+                    label: school.label + " (" + school.value + ")",
+                    value: school.value,
+                  })),
+                ]}
+                value={show}
+                onChange={(val) => {
+                  setFormState({ ...formState, school_id: val });
+                  setShow(val);
+                }}
+                placeholder="เลือกโรงเรียน"
+              />
+            </div>
+
             {/* Input NFC Card */}
             <InputFieldComponent
               label="กรอกรหัส NFC Card"
