@@ -60,7 +60,7 @@ export default function SidebarContent() {
                       <Link
                         href={child.href!}
                         key={child.label}
-                        className={`flex items-start gap-3 w-full px-3 py-2 rounded-lg text-gray-600 dark:text-gray-400 hover:bg-gray-100 dark:hover:bg-gray-800 transition duration-300 ${
+                        className={`flex items-start gap-1 w-full px-3 py-1 rounded-lg text-gray-700 dark:text-gray-400 hover:bg-gray-100 dark:hover:bg-gray-800 transition duration-300 ${
                           child.href === pathname
                             ? "bg-gray-200 dark:bg-gray-700"
                             : ""

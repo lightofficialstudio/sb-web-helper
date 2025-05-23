@@ -35,6 +35,10 @@ export const menu: MenuItem[] = [
         label: "ยกเลิกรายการสินค้าเกิน 7 วัน",
         href: "/support/test/cancel-sales",
       },
+      {
+        label: "อัปโหลดการย้ายข้อมูลนักเรียน (User Balance)",
+        href: "/support/upload/migrate-student",
+      },
     ],
   },
   //   { label: "Timesheets", icon: <FiClock />, href: "/timesheets" },
