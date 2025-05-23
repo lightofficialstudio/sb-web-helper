@@ -15,8 +15,9 @@ import { CallAPI } from "@/stores/actions/form-card-nfc-action";
 import MinimalModal from "@/components/modal/minimal-modal-component";
 import Swal from "sweetalert2";
 import { SearchableSelectComponent } from "@/components/input-field/searchable-select-component";
+import UploadFileComponent from "@/components/upload/upload-file-component";
 
-export default function DashboardPage() {
+export default function Page() {
   const { t } = useTranslation("mock");
   const dispatch = useDispatch<AppDispatch>();
   const NFCstate = useAppSelector((state) => state.formCardNfc);
@@ -104,11 +105,16 @@ export default function DashboardPage() {
         {/* บังคับให้ card แรกอยู่เต็มความกว้างใน md และ xl */}
 
         <ContentCard
-          title="ค้นหาบัตร NFC "
+          title="อัปโหลดการย้ายข้อมูลนักเรียน (User Balance)"
           fullWidth
-          className="md:col-span-2 xl:col-span-4 w-full"
+          className="w-full"
         >
           <form onSubmit={handleSubmitForm} className="space-y-4">
+            <div className="grid grid-cols-1 gap-4 mt-[2rem]">
+              <div className=" flex flex-col gap-4">
+                <UploadFileComponent />
+              </div>
+            </div>
             <div className="">
               <SearchableSelectComponent
                 label="เลือกโรงเรียน"
@@ -127,22 +133,6 @@ export default function DashboardPage() {
                 placeholder="เลือกโรงเรียน"
               />
             </div>
-
-            {/* Input NFC Card */}
-            <InputFieldComponent
-              label="กรอกรหัส NFC Card"
-              type="text"
-              required
-              icon={<FiCreditCard />}
-              value={formState.nfc_card}
-              onChange={(e) =>
-                setFormState({ ...formState, nfc_card: e.target.value })
-              }
-              error={
-                formState.nfc_card.length < 1 ? "กรุณากรอกรหัส NFC Card" : ""
-              }
-              placeholder="กรุณากรอกรหัส NFC Card"
-            />
 
             {/* ปุ่ม ยืนยัน / ยกเลิก */}
             <div className="flex items-center gap-4">
@@ -219,32 +209,6 @@ export default function DashboardPage() {
             </div>
           </div>
         </ContentCard>
-
-        {/* หมายเหตุ */}
-        <div className="grid grid-cols-2 grid-rows-2 gap-6 w-full">
-          <ContentCard
-            title="หมายเหตุ (1)"
-            fullWidth
-            className="w-full col-span-1 row-span-2"
-          >
-            <p className="text-sm text-red-500">
-              {t(
-                "กรณีที่บัตร NFC ไม่ถูกต้อง หรือไม่พบข้อมูลในระบบ จะมีการแสดงผลลัพธ์เป็น JSON ที่มี status เป็น 'not have number id'"
-              )}
-            </p>
-          </ContentCard>
-          <ContentCard
-            title="หมายเหตุ (2)"
-            fullWidth
-            className="w-full col-span-1 row-span-2"
-          >
-            <p className="text-sm text-red-500">
-              {t(
-                "กรณีที่ไม่พบข้อมูลใน https://www.canteen.schoolbright.co แต่พบข้อมูลที่นี่ แปลว่าเป็นปัญหาที่ Memory Sharing ของระบบ Canteen Web ให้แจ้ง Vimal"
-              )}
-            </p>
-          </ContentCard>
-        </div>
       </div>
     </DashboardLayout>
   );
