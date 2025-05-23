@@ -2,7 +2,7 @@ import { NextRequest, NextResponse } from "next/server";
 import axios from "axios";
 import { API_URL } from "@/services/api-url";
 
-export async function POST(request: NextRequest, response: NextResponse) {
+export async function POST(request: NextRequest) {
   const { SchoolID, sID, sID2, sSellID } = await request.json();
 
   const data = {

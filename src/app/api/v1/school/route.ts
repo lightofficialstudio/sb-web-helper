@@ -2,7 +2,7 @@ import { NextRequest, NextResponse } from "next/server";
 import axios from "axios";
 import { API_URL } from "@/services/api-url";
 
-export async function GET(request: NextRequest, response: NextResponse) {
+export async function GET() {
   try {
     const apiUrl = `${API_URL.PROD_SB_API_URL}/api/school`;
 
@@ -16,9 +16,9 @@ export async function GET(request: NextRequest, response: NextResponse) {
       data: responseFromAPI.data,
     });
   } catch (err: any) {
-    return NextResponse.json(
-      { message: err.message || "Internal Server Error" },
-      { status: err.response?.status || 500 }
-    );
+    return NextResponse.json({
+      message: err.message || "Internal Server Error",
+      status: err.response?.status || 500,
+    });
   }
 }
