@@ -31,14 +31,12 @@ const Slice = createSlice({
       state,
       action: PayloadAction<CallGetRegisterDeviceState>
     ) => {
-      console.log("[setDraftValues] : ", action.payload);
       state.draftValues = {
         ...state.draftValues,
         ...action.payload,
       };
     },
     submitState: (state, action: PayloadAction<CallGetRegisterDeviceState>) => {
-      console.log("[submitState] : ", action.payload);
       state.draftValues = {
         ...state.draftValues,
         ...action.payload,

@@ -56,8 +56,8 @@ export interface CallGetRegisterDeviceState extends DefaultRedux {
 
 export interface CallPostOnlineDevice extends DefaultRedux {
   draftValues: {
-    success: boolean;
-    statusCode: number;
-    message: string;
+    SchoolID: number;
+    DeviceID: string;
+    Status: string;
   };
 }

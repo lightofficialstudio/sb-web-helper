@@ -1,13 +1,13 @@
 // reducers/userReducer.ts
 import { createSlice, PayloadAction } from "@reduxjs/toolkit";
 import { CallPostOnlineDevice } from "@stores/type";
-import { CallAPI } from "@stores/actions/hardware/call-get-register-device";
+import { CallAPI } from "@stores/actions/hardware/call-post-online-device";
 
 const initialState: CallPostOnlineDevice = {
   draftValues: {
-    success: false,
-    statusCode: 0,
-    message: "",
+    SchoolID: 0,
+    DeviceID: "",
+    Status: "Online",
   },
   loading: false,
   error: "",

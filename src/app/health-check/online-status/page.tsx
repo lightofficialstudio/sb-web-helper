@@ -22,6 +22,8 @@ import { InputFieldComponent } from "@components/input-field/input-field-compone
 import DatePickerComponent from "@components/input-field/date-picker-component";
 import { FiSearch } from "react-icons/fi";
 import { isOnline } from "@helpers/check-online-device-status";
+import { CallAPI as POST_CHECK_ONLINE_DEVICE } from "@/stores/actions/hardware/call-post-online-device";
+import { unwrapResult } from "@reduxjs/toolkit";
 
 const columns = [
   { key: "ID", label: "ID" },
@@ -44,9 +46,16 @@ export default function DashboardPage() {
   const REGISTER_DEVICE_STATE = useAppSelector(
     (state) => state.callGetRegisterDevice
   );
+  const CHECK_ONLINE_DEVICE_STATE = useAppSelector(
+    (state) => state.callPostOnlineDevice
+  );
   const [selectedSchool, setSelectedSchool] = useState<string>("");
   // filter by selected school
-  const isLoading = SCHOOL_LIST_STATE.loading || REGISTER_DEVICE_STATE.loading;
+  const isLoading = [
+    SCHOOL_LIST_STATE.loading,
+    REGISTER_DEVICE_STATE.loading,
+    CHECK_ONLINE_DEVICE_STATE.loading,
+  ].some(Boolean);
   const [table, setTable] = useState<CallGetRegisterDeviceType>([]);
   const [rowsPerPage, setRowsPerPage] = useState(10);
   const [schoolList, setSchoolList] = useState<any[]>([]);
@@ -96,6 +105,46 @@ export default function DashboardPage() {
     console.log("REGISTER DEVICE", data);
   }, [REGISTER_DEVICE_STATE]);
 
+  //* ฟังก์ชันสำหรับตรวจสอบสถานะออนไลน์ของอุปกรณ์
+  const CHECK_ONLINE_DEVICE = async (schoolId: number, deviceId: string) => {
+    try {
+      const response = await dispatch(
+        POST_CHECK_ONLINE_DEVICE({
+          SchoolID: schoolId,
+          DeviceID: deviceId,
+          Status: "Online",
+        })
+      );
+      const result: {
+        data: {
+          success: boolean;
+          statusCode: number;
+          message: string;
+        };
+      } = unwrapResult(response);
+
+      if (result?.data?.statusCode === 200) {
+        Swal.fire({
+          title: "ระบบสามารถออนไลน์ได้ตามปกติ",
+          text: `อุปกรณ์ ${deviceId} \n ${findSchoolName(
+            schoolId,
+            schoolList
+          )} สามารถออนไลน์ได้`,
+          icon: "success",
+        });
+        dispatch(CallAPI()); // รีเฟรชข้อมูลหลังจากโพสต์สำเร็จ
+      }
+    } catch (error: any) {
+      Swal.fire({
+        title: "เกิดข้อผิดพลาด",
+        text: error.message || "ไม่สามารถเชื่อมต่อกับเซิร์ฟเวอร์ได้",
+        icon: "error",
+      });
+      console.error("Error posting online device:", error);
+      return false;
+    }
+  };
+
   const renderTableData = (data: CallGetRegisterDeviceType) =>
     data.map((row, idx) => (
       <MinimalRow key={row.ID ?? idx}>
@@ -132,7 +181,13 @@ export default function DashboardPage() {
               {row.UserID}
             </td>
             <td className="p-4 font-medium text-sm text-gray-900">
-              <MinimalButton onClick={() => {}}>ทดสอบ</MinimalButton>
+              <MinimalButton
+                onClick={() => {
+                  CHECK_ONLINE_DEVICE(row.SchoolID, row.DeviceID);
+                }}
+              >
+                ทดสอบ
+              </MinimalButton>
             </td>
           </>
         )}

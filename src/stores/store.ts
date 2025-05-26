@@ -6,6 +6,7 @@ import formCardNfcReducer from "@stores/reducers/form-card-nfc";
 import callSchoolListReducer from "@stores/reducers/call-school-list";
 import callCancelSalesReducer from "@stores/reducers/call-cancel-sales";
 import callGetRegisterDeviceReducer from "@stores/reducers/hardware/call-get-register-device";
+import callPostOnlineDeviceReducer from "@stores/reducers/hardware/call-post-online-device";
 // #endregion
 
 export const store = configureStore({
@@ -15,6 +16,7 @@ export const store = configureStore({
     callCancelSales: callCancelSalesReducer,
     callSchoolList: callSchoolListReducer,
     callGetRegisterDevice: callGetRegisterDeviceReducer,
+    callPostOnlineDevice: callPostOnlineDeviceReducer,
   },
 });
 
