@@ -41,6 +41,16 @@ export const menu: MenuItem[] = [
       },
     ],
   },
+  {
+    label: "Health Check",
+    icon: <FiActivity />,
+    children: [
+      {
+        label: "ทดสอบการเชื่อมต่อ เครื่อง Hardware",
+        href: "/health-check/online-status",
+      },
+    ],
+  },
   //   { label: "Timesheets", icon: <FiClock />, href: "/timesheets" },
   //   { label: "Activity", icon: <FiActivity />, href: "/activity" },
   //   {

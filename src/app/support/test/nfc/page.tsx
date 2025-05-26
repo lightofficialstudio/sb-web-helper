@@ -221,11 +221,10 @@ export default function DashboardPage() {
         </ContentCard>
 
         {/* หมายเหตุ */}
-        <div className="grid grid-cols-2 grid-rows-2 gap-6 w-full">
+        <div className="grid grid-cols-2 gap-3">
           <ContentCard
             title="หมายเหตุ (1)"
-            fullWidth
-            className="w-full col-span-1 row-span-2"
+            className="col-span-1 row-span-1 w-full"
           >
             <p className="text-sm text-red-500">
               {t(
@@ -235,8 +234,7 @@ export default function DashboardPage() {
           </ContentCard>
           <ContentCard
             title="หมายเหตุ (2)"
-            fullWidth
-            className="w-full col-span-1 row-span-2"
+            className="col-span-1 row-span-1 w-full"
           >
             <p className="text-sm text-red-500">
               {t(

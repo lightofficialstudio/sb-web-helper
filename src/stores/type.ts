@@ -39,3 +39,17 @@ export interface CallSchoolListState extends defaultRedux {
     }[];
   };
 }
+
+export interface CallGetRegisterDeviceState extends defaultRedux {
+  draftValues: {
+    Array: {
+      ID: number;
+      SchoolID: number;
+      DeviceID: string;
+      UserID: number;
+      NeedToUpdate: boolean;
+      Tstamp: string;
+      ResponseStatus: boolean;
+    }[];
+  };
+}
