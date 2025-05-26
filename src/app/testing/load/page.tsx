@@ -142,6 +142,7 @@ export default function DashboardPage() {
             {ModalAPIDetail(selectedDetail)}
           </MinimalModal>
         )}
+        {/* ตาราง */}
         <ContentCard title="Tasks" className="xl:col-span-4 w-full">
           <MinimalTable
             isLoading={isLoading}

@@ -38,35 +38,36 @@ export default function ContentCard({
   const fullSpanClass = fullWidth ? "col-span-full" : "";
 
   return (
-    <div
-      className={`
+    <div className="">
+      <div
+        className={`
         bg-white dark:bg-gray-900
         rounded-2xl shadow-md border
         border-gray-200 dark:border-gray-700
         transition-all duration-500 ease-in-out
-        animate-fade-in-down
         text-sm
         ${dimensionClass} ${fullSpanClass} ${className}
         
       `}
-    >
-      {/* Title */}
-      {title && (
-        <h2 className="text-lg font-semibold mb-4 text-gray-800 dark:text-white">
-          {title}
-        </h2>
-      )}
+      >
+        {/* Title */}
+        {title && (
+          <h2 className=" text-lg font-semibold mb-4 text-gray-800 dark:text-white">
+            {title}
+          </h2>
+        )}
 
-      {/* Skeleton */}
-      {isLoading ? (
-        <div className="space-y-3 animate-pulse">
-          <div className="h-4 bg-gray-200 dark:bg-gray-700 rounded w-3/4" />
-          <div className="h-4 bg-gray-200 dark:bg-gray-700 rounded w-full" />
-          <div className="h-4 bg-gray-200 dark:bg-gray-700 rounded w-5/6" />
-        </div>
-      ) : (
-        <div className="text-gray-700 dark:text-gray-300">{children}</div>
-      )}
+        {/* Skeleton */}
+        {isLoading ? (
+          <div className="space-y-3 animate-pulse">
+            <div className="h-4 bg-gray-200 dark:bg-gray-700 rounded w-3/4" />
+            <div className="h-4 bg-gray-200 dark:bg-gray-700 rounded w-full" />
+            <div className="h-4 bg-gray-200 dark:bg-gray-700 rounded w-5/6" />
+          </div>
+        ) : (
+          <div className="text-gray-700 dark:text-gray-300">{children}</div>
+        )}
+      </div>
     </div>
   );
 }

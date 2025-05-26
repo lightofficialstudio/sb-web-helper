@@ -9,9 +9,14 @@ import React, {
 } from "react";
 import { FiChevronUp, FiChevronDown } from "react-icons/fi";
 
+interface Column {
+  key: string;
+  label: string;
+}
+
 interface MinimalTableProps {
   data?: Record<string, any>[];
-  header: string[];
+  header: Column[];
   rowsPerPage?: number;
   onRowsPerPageChange?: (value: number) => void;
   children: React.ReactNode;
@@ -25,40 +30,36 @@ export default function MinimalTable({
   rowsPerPage: rowsPerPageProp,
   onRowsPerPageChange,
   isLoading,
-}: MinimalTableProps) {
-  const [sortedData, setSortedData] = useState<Record<string, any>[]>([]);
+}: Readonly<MinimalTableProps>) {
+  const [sortedData, setSortedData] = useState(data);
+  const [sortField, setSortField] = useState(header[0]?.key ?? "");
   const [sortOrder, setSortOrder] = useState<"asc" | "desc">("asc");
-  const [sortField, setSortField] = useState<string>(header[0]);
-
-  // Pagination state
   const [currentPage, setCurrentPage] = useState(1);
   const [rowsPerPage, setRowsPerPage] = useState(rowsPerPageProp ?? 10);
 
   useEffect(() => {
     setSortedData(data);
+    setSortField(header[0]?.key ?? "");
     setSortOrder("asc");
-    setSortField(header[0]);
     setCurrentPage(1);
-  }, [data]);
+  }, [JSON.stringify(data), header[0]?.key]);
 
   const handleSort = (field: string) => {
-    const order = sortOrder === "asc" ? "desc" : "asc";
-    const sorted = [...data].sort((a, b) => {
-      const aValue = a[field]?.toString() ?? "";
-      const bValue = b[field]?.toString() ?? "";
-      return order === "asc"
-        ? aValue.localeCompare(bValue)
-        : bValue.localeCompare(aValue);
+    if (!field) return; // กรณีกดคอลัมน์ No
+    const nextOrder = sortOrder === "asc" ? "desc" : "asc";
+    const copy = [...sortedData].sort((a, b) => {
+      const aV = a[field]?.toString() ?? "";
+      const bV = b[field]?.toString() ?? "";
+      return nextOrder === "asc" ? aV.localeCompare(bV) : bV.localeCompare(aV);
     });
-    setSortOrder(order);
+    setSortedData(copy);
     setSortField(field);
-    setSortedData(sorted);
+    setSortOrder(nextOrder);
     setCurrentPage(1);
   };
 
-  // Pagination calculations
   const totalPages = Math.ceil(sortedData.length / rowsPerPage);
-  const paginatedData = sortedData.slice(
+  const paginated = sortedData.slice(
     (currentPage - 1) * rowsPerPage,
     currentPage * rowsPerPage
   );
@@ -68,23 +69,18 @@ export default function MinimalTable({
       <table className="w-full table-auto text-left">
         <thead>
           <tr>
-            {header.map((key) => (
+            {/* คอลัมน์ No */}
+            <th className="border-b p-4">No</th>
+            {header.map(({ key, label }) => (
               <th
                 key={key}
                 onClick={() => handleSort(key)}
                 className="cursor-pointer border-b p-4 hover:bg-gray-50 dark:hover:bg-gray-800 transition"
               >
                 <div className="flex items-center justify-between">
-                  <span className="capitalize">{key}</span>
-                  {sortField === key ? (
-                    sortOrder === "asc" ? (
-                      <FiChevronUp />
-                    ) : (
-                      <FiChevronDown />
-                    )
-                  ) : (
-                    <FiChevronDown className="opacity-30" />
-                  )}
+                  <span>{label}</span>
+                  {sortField === key &&
+                    (sortOrder === "asc" ? <FiChevronUp /> : <FiChevronDown />)}
                 </div>
               </th>
             ))}
@@ -93,38 +89,38 @@ export default function MinimalTable({
         <tbody>
           {isLoading
             ? Array.from({ length: rowsPerPage }).map((_, i) => (
-                <tr key={`skeleton-${i}`} className="animate-pulse">
-                  {header.map((_, j) => (
+                <tr key={i} className="animate-pulse">
+                  <td className="p-4">
+                    <div className="h-4 bg-gray-200 rounded w-6" />
+                  </td>
+                  {header.map(({ key }, j) => (
                     <td key={j} className="p-4">
-                      <div className="h-4 bg-gray-200 rounded w-full"></div>
+                      <div className="h-4 bg-gray-200 rounded w-full" />
                     </td>
                   ))}
                 </tr>
               ))
             : (() => {
-                // Convert children to array and only render as many rows as we have data for
-                const childArray = Children.toArray(children).filter((c) =>
-                  isValidElement(c)
+                const arr = Children.toArray(children).filter(
+                  isValidElement
                 ) as React.ReactElement[];
-                return childArray
-                  .slice(0, paginatedData.length)
-                  .map((child, idx) =>
-                    cloneElement(child, {
-                      row: paginatedData[idx],
-                      index: (currentPage - 1) * rowsPerPage + idx + 1,
-                    })
-                  );
+                return arr.slice(0, paginated.length).map((child, idx) =>
+                  cloneElement(child, {
+                    row: paginated[idx],
+                    index: (currentPage - 1) * rowsPerPage + idx + 1,
+                  })
+                );
               })()}
         </tbody>
       </table>
 
-      {/* Pagination Controls */}
+      {/* Pagination */}
       <div className="flex justify-between items-center mt-4 text-sm text-gray-600">
-        <div className="flex gap-2 items-center">
+        <div className="flex gap-2">
           <button
-            className="px-3 py-1 border rounded disabled:opacity-40"
             onClick={() => setCurrentPage((p) => Math.max(p - 1, 1))}
             disabled={currentPage === 1}
+            className="px-3 py-1 border rounded disabled:opacity-40"
           >
             Prev
           </button>
@@ -132,25 +128,24 @@ export default function MinimalTable({
             Page {currentPage} of {totalPages}
           </span>
           <button
-            className="px-3 py-1 border rounded disabled:opacity-40"
             onClick={() => setCurrentPage((p) => Math.min(p + 1, totalPages))}
             disabled={currentPage === totalPages}
+            className="px-3 py-1 border rounded disabled:opacity-40"
           >
             Next
           </button>
         </div>
-
         <div className="flex items-center gap-2">
           <label>Rows per page:</label>
           <select
-            className="border rounded px-2 py-1"
             value={rowsPerPage}
             onChange={(e) => {
-              const value = Number(e.target.value);
-              setRowsPerPage(value);
+              const v = Number(e.target.value);
+              setRowsPerPage(v);
               setCurrentPage(1);
-              onRowsPerPageChange?.(value);
+              onRowsPerPageChange?.(v);
             }}
+            className="border rounded px-2 py-1"
           >
             {[5, 10, 20, 50].map((n) => (
               <option key={n} value={n}>

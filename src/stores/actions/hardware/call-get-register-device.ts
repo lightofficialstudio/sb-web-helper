@@ -4,10 +4,11 @@ import { API_METHOD } from "@/services/api-method";
 import { setDraftValues } from "@/stores/reducers/call-school-list";
 
 // สร้าง async action สำหรับส่งข้อมูลผู้ใช้ไปยัง API
-export const CallAPI = createAsyncThunk("/api/v1/school", async () => {
+const API_ENDPOINT = `/api/v1/hardware/register-device`;
+export const CallAPI = createAsyncThunk(API_ENDPOINT, async () => {
   const payload: CallBackendAPIProps = {
     method: API_METHOD.GET,
-    endpoint: `/api/v1/hardware/register-device`,
+    endpoint: API_ENDPOINT,
     data: {},
     extendHeader: {},
     backendUrl: "",
