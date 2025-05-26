@@ -51,7 +51,7 @@ export default function DashboardPage() {
   const [table, setTable] = useState<CallGetRegisterDeviceType>([]);
   const [rowsPerPage, setRowsPerPage] = useState(10);
   const [schoolList, setSchoolList] = useState<any[]>([]);
-  const [fromDate, setFromDate] = useState<string>(""); // YYYY-MM-DD
+  const [fromDate, setFromDate] = useState<string>("");
   const [toDate, setToDate] = useState<string>("");
   const [deviceIdSearch, setDeviceIdSearch] = useState<string>("");
 
@@ -158,7 +158,7 @@ export default function DashboardPage() {
               {row.UserID}
             </td>
             <td className="p-4 font-medium text-sm text-gray-900">
-              <MinimalButton className="">ทดสอบ</MinimalButton>
+              <MinimalButton onClick={() => {}}>ทดสอบ</MinimalButton>
             </td>
           </>
         )}
