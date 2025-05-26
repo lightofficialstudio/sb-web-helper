@@ -1,12 +1,13 @@
 // reducers/userReducer.ts
 import { createSlice, PayloadAction } from "@reduxjs/toolkit";
-import { FormCardNfcState } from "@stores/type";
-import { CallAPI } from "../actions/form-card-nfc-action";
+import { CallPostOnlineDevice } from "@stores/type";
+import { CallAPI } from "@stores/actions/hardware/call-get-register-device";
 
-const initialState: FormCardNfcState = {
+const initialState: CallPostOnlineDevice = {
   draftValues: {
-    nfc_card: "",
-    school_id: "",
+    success: false,
+    statusCode: 0,
+    message: "",
   },
   loading: false,
   error: "",
@@ -14,24 +15,27 @@ const initialState: FormCardNfcState = {
   response: {},
 };
 
-const formCardNFCReducer = createSlice({
-  name: "form-card-nfc",
+const Slice = createSlice({
+  name: "CallPostOnlineDeviceSlice",
   initialState,
   reducers: {
-    setDraftValues: (state, action: PayloadAction<FormCardNfcState>) => {
-      console.log("[setDraftValues] : ", action.payload);
+    setDraftValues: (
+      state,
+      action: PayloadAction<CallPostOnlineDevice["draftValues"]>
+    ) => {
       state.draftValues = {
         ...state.draftValues,
         ...action.payload,
       };
     },
-    submitState: (state, action: PayloadAction<FormCardNfcState>) => {
-      console.log("[submitState] : ", action.payload);
+    submitState: (
+      state,
+      action: PayloadAction<CallPostOnlineDevice["draftValues"]>
+    ) => {
       state.draftValues = {
         ...state.draftValues,
         ...action.payload,
       };
-      CallAPI(action.payload);
     },
   },
   extraReducers: (builder) => {
@@ -51,5 +55,5 @@ const formCardNFCReducer = createSlice({
   },
 });
 
-export const { setDraftValues, submitState } = formCardNFCReducer.actions;
-export default formCardNFCReducer.reducer;
+export const { setDraftValues, submitState } = Slice.actions;
+export default Slice.reducer;

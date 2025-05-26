@@ -1,12 +1,12 @@
 // types.ts
-export interface defaultRedux {
+export interface DefaultRedux {
   loading: boolean;
   error: string;
   success: string;
   response: any;
 }
 
-export interface UserState extends defaultRedux {
+export interface UserState extends DefaultRedux {
   draftValues: {
     firstName: string;
     lastName: string;
@@ -14,14 +14,14 @@ export interface UserState extends defaultRedux {
   };
 }
 
-export interface FormCardNfcState extends defaultRedux {
+export interface FormCardNfcState extends DefaultRedux {
   draftValues: {
     nfc_card: string;
     school_id: string;
   };
 }
 
-export interface CancelSalesState extends defaultRedux {
+export interface CancelSalesState extends DefaultRedux {
   draftValues: {
     SchoolID: string; // school id
     sID: string; // sid userid
@@ -30,7 +30,7 @@ export interface CancelSalesState extends defaultRedux {
   };
 }
 
-export interface CallSchoolListState extends defaultRedux {
+export interface CallSchoolListState extends DefaultRedux {
   draftValues: {
     Array: {
       SchoolID: number; // school id
@@ -40,7 +40,7 @@ export interface CallSchoolListState extends defaultRedux {
   };
 }
 
-export interface CallGetRegisterDeviceState extends defaultRedux {
+export interface CallGetRegisterDeviceState extends DefaultRedux {
   draftValues: {
     Array: {
       ID: number;
@@ -51,5 +51,13 @@ export interface CallGetRegisterDeviceState extends defaultRedux {
       Tstamp: string;
       ResponseStatus: boolean;
     }[];
+  };
+}
+
+export interface CallPostOnlineDevice extends DefaultRedux {
+  draftValues: {
+    success: boolean;
+    statusCode: number;
+    message: string;
   };
 }

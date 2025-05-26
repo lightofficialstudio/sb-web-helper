@@ -57,7 +57,7 @@ const Slice = createSlice({
       })
       .addCase(CallAPI.rejected, (state, action) => {
         state.loading = false;
-        state.error = action.error.message || "An unknown error occurred";
+        state.error = action.error.message ?? "An unknown error occurred";
       });
   },
 });

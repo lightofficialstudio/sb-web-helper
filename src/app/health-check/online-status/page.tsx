@@ -47,7 +47,6 @@ export default function DashboardPage() {
   const [selectedSchool, setSelectedSchool] = useState<string>("");
   // filter by selected school
   const isLoading = SCHOOL_LIST_STATE.loading || REGISTER_DEVICE_STATE.loading;
-  const [modal, setModal] = useState<string>("");
   const [table, setTable] = useState<CallGetRegisterDeviceType>([]);
   const [rowsPerPage, setRowsPerPage] = useState(10);
   const [schoolList, setSchoolList] = useState<any[]>([]);
@@ -77,31 +76,6 @@ export default function DashboardPage() {
         : Infinity;
       return ts >= fromTs && ts < toTs;
     });
-
-  useEffect(() => {
-    switch (modal) {
-      case "error":
-        Swal.fire({
-          icon: "error",
-          title: "Error",
-          text: "กรุณากรอกข้อมูลให้ครบถ้วน",
-          confirmButtonText: "OK",
-        });
-        setModal("");
-        break;
-      case "success":
-        Swal.fire({
-          icon: "success",
-          title: "Success",
-          text: "ยิง API สำเร็จ",
-          confirmButtonText: "ยืนยัน",
-        });
-        setModal("");
-        break;
-      default:
-        break;
-    }
-  }, [modal]);
 
   useEffect(() => {
     setSchoolList(
