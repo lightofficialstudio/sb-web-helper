@@ -15,7 +15,7 @@ import MinimalModal from "@components/modal/minimal-modal-component";
 import ModalAPIDetail from "@components/modal/info-api-modal-detail-component";
 import StatusBadge from "@components/badge/status-badge-component";
 import MethodBadge from "@components/badge/method-badge-component";
-import LoadingOverlay from "@components/loading/loading-component-1";
+import BaseLoadingComponent from "@components/loading/loading-component-1";
 import { useDispatch, useSelector } from "react-redux";
 import { AppDispatch, useAppSelector } from "@stores/store";
 import { runPostmanCollection } from "@stores/actions/call-newman";
@@ -113,7 +113,7 @@ export default function DashboardPage() {
 
   return (
     <DashboardLayout>
-      {isLoading && <LoadingOverlay />}
+      {isLoading && <BaseLoadingComponent />}
       <div className="flex justify-end">
         <MinimalButton
           onClick={() => POST_NEWMAN()}

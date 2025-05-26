@@ -3,7 +3,7 @@ import React, { use, useEffect, useState } from "react";
 import DashboardLayout from "@components/layouts/backend-layout";
 import ContentCard from "@components/layouts/backend/content";
 import { useTranslation } from "react-i18next";
-import LoadingOverlay from "@components/loading/loading-component-1";
+import BaseLoadingComponent from "@components/loading/loading-component-1";
 import { useDispatch, useSelector } from "react-redux";
 import { AppDispatch, useAppSelector } from "@stores/store";
 import { InputFieldComponent } from "@/components/input-field/input-field-component";
@@ -99,7 +99,7 @@ export default function Page() {
 
   return (
     <DashboardLayout>
-      {isLoading && <LoadingOverlay />}
+      {isLoading && <BaseLoadingComponent />}
 
       <div className="w-full space-y-4">
         {/* บังคับให้ card แรกอยู่เต็มความกว้างใน md และ xl */}

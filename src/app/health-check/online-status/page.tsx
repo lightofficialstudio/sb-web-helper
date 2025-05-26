@@ -3,7 +3,7 @@ import React, { useEffect, useState } from "react";
 import DashboardLayout from "@components/layouts/backend-layout";
 import ContentCard from "@components/layouts/backend/content";
 import { useTranslation } from "react-i18next";
-import LoadingOverlay from "@components/loading/loading-component-1";
+import BaseLoadingComponent from "@components/loading/loading-component-1";
 import { useDispatch } from "react-redux";
 import { AppDispatch, useAppSelector } from "@stores/store";
 import MinimalButton from "@/components/button/minimal-button-component";
@@ -20,6 +20,8 @@ import { findSchoolName } from "@helpers/find-school-id";
 import { convertTimeZoneToThai } from "@helpers/convert-time-zone-to-thai";
 import { InputFieldComponent } from "@components/input-field/input-field-component";
 import DatePickerComponent from "@components/input-field/date-picker-component";
+import { FiSearch } from "react-icons/fi";
+import { isOnline } from "@helpers/check-online-device-status";
 
 const columns = [
   { key: "ID", label: "ID" },
@@ -27,7 +29,9 @@ const columns = [
   { key: "NeedToUpdate", label: "สถานะอัพเดทอุปกรณ์" },
   { key: "SchoolID", label: "โรงเรียน" },
   { key: "Tstamp", label: "ออนไลน์ล่าสุดเมื่อ" },
+  { key: "OnlineStatus", label: "สถานะออนไลน์" },
   { key: "UserID", label: "User ID" },
+  { key: "CallAPI", label: "ทดสอบออนไลน์" },
 ];
 
 type CallGetRegisterDeviceType =
@@ -143,8 +147,18 @@ export default function DashboardPage() {
             <td className="p-4 font-medium text-sm text-gray-900">
               {convertTimeZoneToThai(new Date(row.Tstamp))}
             </td>
+            <td className="p-4">
+              {isOnline(row.Tstamp) ? (
+                <span className="inline-block w-3 h-3 bg-green-500 rounded-full" />
+              ) : (
+                <span className="inline-block w-3 h-3 bg-red-500 rounded-full" />
+              )}
+            </td>
             <td className="p-4 font-medium text-sm text-gray-900">
               {row.UserID}
+            </td>
+            <td className="p-4 font-medium text-sm text-gray-900">
+              <MinimalButton className="">ทดสอบ</MinimalButton>
             </td>
           </>
         )}
@@ -153,7 +167,7 @@ export default function DashboardPage() {
 
   return (
     <DashboardLayout>
-      {isLoading && <LoadingOverlay />}
+      {isLoading && <BaseLoadingComponent />}
 
       <div className="w-full space-y-4">
         {/* บังคับให้ card แรกอยู่เต็มความกว้างใน md และ xl */}
@@ -173,7 +187,7 @@ export default function DashboardPage() {
                   options={[
                     { label: "ทั้งหมด", value: "" },
                     ...schoolList.map((s) => ({
-                      label: s.label,
+                      label: s.label + " (" + s.value + ")",
                       value: String(s.value),
                     })),
                   ]}
@@ -188,6 +202,9 @@ export default function DashboardPage() {
                 <InputFieldComponent
                   label="ค้นหา Device ID"
                   placeholder="พิมพ์ Device ID"
+                  icon={
+                    <FiSearch className="text-gray-400 dark:text-gray-500" />
+                  }
                   value={deviceIdSearch}
                   onChange={(e) => setDeviceIdSearch(e.target.value)}
                   className="w-full"
@@ -224,7 +241,10 @@ export default function DashboardPage() {
         /> */}
 
         {/* ตาราง */}
-        <ContentCard title="Tasks" className="xl:col-span-4 w-full">
+        <ContentCard
+          title="ตารางดูสถานะอุปกรณ์"
+          className="xl:col-span-4 w-full"
+        >
           <MinimalTable
             isLoading={isLoading}
             header={columns}
@@ -235,30 +255,6 @@ export default function DashboardPage() {
             {filteredTable ? renderTableData(filteredTable) : null}
           </MinimalTable>
         </ContentCard>
-
-        {/* หมายเหตุ */}
-        <div className="grid grid-cols-2 gap-3 overflow-visible ">
-          <ContentCard
-            title="หมายเหตุ (1)"
-            className="col-span-1 row-span-1 w-full "
-          >
-            <p className="text-sm text-red-500">
-              {t(
-                "กรณีที่บัตร NFC ไม่ถูกต้อง หรือไม่พบข้อมูลในระบบ จะมีการแสดงผลลัพธ์เป็น JSON ที่มี status เป็น 'not have number id'"
-              )}
-            </p>
-          </ContentCard>
-          <ContentCard
-            title="หมายเหตุ (2)"
-            className="col-span-1 row-span-1 w-full"
-          >
-            <p className="text-sm text-red-500">
-              {t(
-                "กรณีที่ไม่พบข้อมูลใน https://www.canteen.schoolbright.co แต่พบข้อมูลที่นี่ แปลว่าเป็นปัญหาที่ Memory Sharing ของระบบ Canteen Web ให้แจ้ง Vimal"
-              )}
-            </p>
-          </ContentCard>
-        </div>
       </div>
     </DashboardLayout>
   );

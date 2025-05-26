@@ -15,7 +15,7 @@ import MinimalModal from "@components/modal/minimal-modal-component";
 import ModalAPIDetail from "@components/modal/info-api-modal-detail-component";
 import StatusBadge from "@components/badge/status-badge-component";
 import MethodBadge from "@components/badge/method-badge-component";
-import LoadingOverlay from "@components/loading/loading-component-1";
+import BaseLoadingComponent from "@components/loading/loading-component-1";
 import { useDispatch, useSelector } from "react-redux";
 import { useAppSelector } from "@stores/store";
 import { runPostmanCollection } from "@stores/actions/call-newman";
@@ -58,7 +58,7 @@ export default function DashboardPage() {
 
   return (
     <DashboardLayout>
-      {isLoading && <LoadingOverlay />}
+      {isLoading && <BaseLoadingComponent />}
 
       <div className="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-4 gap-6 mt-6 w-full">
         {/* บังคับให้ card แรกอยู่เต็มความกว้างใน md และ xl */}
