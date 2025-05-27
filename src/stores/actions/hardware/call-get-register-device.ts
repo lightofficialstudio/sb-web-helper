@@ -1,7 +1,6 @@
 import { createAsyncThunk } from "@reduxjs/toolkit";
 import { callBackendAPI, CallBackendAPIProps } from "@services/api-gateway";
 import { API_METHOD } from "@/services/api-method";
-import { setDraftValues } from "@/stores/reducers/call-school-list";
 
 // สร้าง async action สำหรับส่งข้อมูลผู้ใช้ไปยัง API
 const API_ENDPOINT = `/api/v1/hardware/register-device`;

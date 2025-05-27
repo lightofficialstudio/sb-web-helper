@@ -6,6 +6,8 @@ export async function GET() {
   try {
     const endpoint = `/api/shop/device/getregisterdevicelist`;
     const apiUrl = `${API_URL.PROD_PAYMENT_API_URL}` + `${endpoint}`;
+    const curlCommand = `curl --location '${apiUrl}'`;
+
     const responseFromAPI = await axios.get(apiUrl, {
       headers: {
         "Content-Type": "application/json",
@@ -14,6 +16,7 @@ export async function GET() {
 
     return NextResponse.json({
       data: responseFromAPI.data,
+      curl: curlCommand,
     });
   } catch (err: any) {
     return NextResponse.json({
