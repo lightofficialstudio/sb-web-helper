@@ -2,6 +2,8 @@ import { NextRequest, NextResponse } from "next/server";
 import axios from "axios";
 import { API_URL } from "@/services/api-url";
 import { CallPostOnlineDevice } from "@stores/type";
+import { DeviceDailyStatusService } from "@services/backend/device-daily-status.service";
+import { DeviceDailyStatus } from "generated/prisma";
 
 export async function POST(NextRequest: NextRequest) {
   const { SchoolID, DeviceID } = await NextRequest.json();
@@ -29,6 +31,49 @@ export async function POST(NextRequest: NextRequest) {
     return NextResponse.json({
       data: responseFromAPI.data,
       curl: curlCommand,
+    });
+  } catch (err: any) {
+    return NextResponse.json({
+      message: err.message || "Internal Server Error",
+      status: err.response?.status || 500,
+    });
+  }
+}
+
+export async function GET(request: NextRequest) {
+  const { searchParams } = new URL(request.url);
+  const schoolId = searchParams.get("schoolId");
+  const deviceId = searchParams.get("deviceId");
+  const limit = searchParams.get("limit") || "10";
+
+  if (!schoolId && !deviceId) {
+    return NextResponse.json({
+      message: "Missing schoolId or deviceId parameter",
+      status: 400,
+    });
+  }
+
+  try {
+    let data: DeviceDailyStatus[] = [];
+
+    if (!schoolId || !deviceId) {
+      return NextResponse.json({
+        message: "Both schoolId and deviceId are required",
+        status: 400,
+      });
+    }
+
+    data = await DeviceDailyStatusService.findByDeviceIdOrSchoolId(
+      schoolId,
+      deviceId,
+      {
+        limit,
+      }
+    );
+
+    return NextResponse.json({
+      status: 200,
+      data,
     });
   } catch (err: any) {
     return NextResponse.json({
