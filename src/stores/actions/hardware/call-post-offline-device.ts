@@ -4,9 +4,9 @@ import { API_METHOD } from "@/services/api-method";
 import { CallPostOnlineDevice } from "@stores/type";
 
 // สร้าง async action สำหรับส่งข้อมูลผู้ใช้ไปยัง API
-const API_ENDPOINT = `/api/v1/hardware/check-online`;
+const API_ENDPOINT = `/api/v1/hardware/check-offline`;
 export const CallAPI = createAsyncThunk(
-  API_METHOD.POST + API_ENDPOINT,
+  API_ENDPOINT,
   async (request: CallPostOnlineDevice["draftValues"]) => {
     const payload: CallBackendAPIProps = {
       method: API_METHOD.POST,

@@ -7,7 +7,6 @@ import BaseLoadingComponent from "@components/loading/loading-component-1";
 import { useDispatch } from "react-redux";
 import { AppDispatch, useAppSelector } from "@stores/store";
 import MinimalButton from "@/components/button/minimal-button-component";
-import { CallAPI } from "@/stores/actions/hardware/call-get-register-device";
 import Swal from "sweetalert2";
 import { SearchableSelectComponent } from "@/components/input-field/searchable-select-component";
 import { ResponseCardComponent } from "@/components/card/curl-card-component";
@@ -22,29 +21,29 @@ import { InputFieldComponent } from "@components/input-field/input-field-compone
 import DatePickerComponent from "@components/input-field/date-picker-component";
 import { FiSearch } from "react-icons/fi";
 import { isOnline } from "@helpers/check-online-device-status";
-import { CallAPI as POST_CHECK_ONLINE_DEVICE } from "@/stores/actions/hardware/call-post-online-device";
 import { unwrapResult } from "@reduxjs/toolkit";
+import { CallAPI as GET_ONLINE_DEVICE } from "@stores/actions/hardware/call-get-online-device";
+import { CallAPI as POST_CHECK_ONLINE_DEVICE } from "@stores/actions/hardware/call-post-online-device";
+import { RequestDeviceDailyStatusTypes } from "@/types/device-daily-status.types";
+import { DeviceDailyStatus as ResponseOnlineDeviceType } from "generated/prisma";
 
-const columns = [
-  { key: "ID", label: "ID" },
-  { key: "DeviceID", label: "รหัสอุปกรณ์ (Device ID)" },
-  { key: "NeedToUpdate", label: "สถานะอัพเดทอุปกรณ์" },
+const columns: { key: string; label: string }[] = [
   { key: "SchoolID", label: "โรงเรียน" },
+  { key: "DeviceID", label: "รหัสอุปกรณ์ (Device ID)" },
+  { key: "Login", label: "สถานะการเข้าสู่ระบบ" },
   { key: "Tstamp", label: "ออนไลน์ล่าสุดเมื่อ" },
+  { key: "BusinessDate", label: "ทำรายการขายล่าสุดเมื่อ" },
   { key: "OnlineStatus", label: "สถานะออนไลน์" },
-  { key: "UserID", label: "User ID" },
+
   { key: "CallAPI", label: "ทดสอบออนไลน์" },
 ];
-
-type CallGetRegisterDeviceType =
-  CallGetRegisterDeviceState["draftValues"]["Array"];
 
 export default function Page() {
   const { t } = useTranslation("mock");
   const dispatch = useDispatch<AppDispatch>();
   const SCHOOL_LIST_STATE = useAppSelector((state) => state.callSchoolList);
   const REGISTER_DEVICE_STATE = useAppSelector(
-    (state) => state.callGetRegisterDevice
+    (state) => state.callGetOnlineDevice
   );
   const CHECK_ONLINE_DEVICE_STATE = useAppSelector(
     (state) => state.callPostOnlineDevice
@@ -56,7 +55,7 @@ export default function Page() {
     REGISTER_DEVICE_STATE.loading,
     CHECK_ONLINE_DEVICE_STATE.loading,
   ].some(Boolean);
-  const [table, setTable] = useState<CallGetRegisterDeviceType>([]);
+  const [table, setTable] = useState<ResponseOnlineDeviceType[]>([]);
   const [rowsPerPage, setRowsPerPage] = useState(10);
   const [schoolList, setSchoolList] = useState<any[]>([]);
   const [fromDate, setFromDate] = useState<string>("");
@@ -96,13 +95,17 @@ export default function Page() {
   }, [SCHOOL_LIST_STATE?.response]);
 
   useEffect(() => {
-    dispatch(CallAPI());
-  }, []);
+    const defaultRequest: RequestDeviceDailyStatusTypes = {
+      schoolId: selectedSchool ?? "0",
+      deviceId: deviceIdSearch,
+      limit: rowsPerPage.toString(),
+    };
+    dispatch(GET_ONLINE_DEVICE(defaultRequest));
+  }, [selectedSchool, deviceIdSearch, rowsPerPage]);
 
   useEffect(() => {
     const data = REGISTER_DEVICE_STATE?.response?.data?.data;
     setTable(data);
-    console.log("REGISTER DEVICE", data);
   }, [REGISTER_DEVICE_STATE]);
 
   //* ฟังก์ชันสำหรับตรวจสอบสถานะออนไลน์ของอุปกรณ์
@@ -150,6 +153,28 @@ ${findSchoolName(schoolId, schoolList)} สามารถออนไลน์�
             });
           }
         });
+      } else {
+        Swal.fire({
+          title: "ไม่สามารถออนไลน์ได้",
+          text: result?.data?.message || "ไม่สามารถเชื่อมต่อกับอุปกรณ์ได้",
+          icon: "error",
+          showDenyButton: true,
+          confirmButtonText: "OK",
+          denyButtonText: "Copy CURL",
+        }).then((res) => {
+          if (res.isDenied) {
+            // คัดลอกคำสั่ง CURL
+            navigator.clipboard.writeText(result.curl).then(() => {
+              Swal.fire({
+                icon: "success",
+                title: "Copied!",
+                text: "CURL copied to clipboard.",
+                timer: 1500,
+                showConfirmButton: false,
+              });
+            });
+          }
+        });
       }
     } catch (error: any) {
       Swal.fire({
@@ -162,40 +187,34 @@ ${findSchoolName(schoolId, schoolList)} สามารถออนไลน์�
     }
   };
 
-  const renderTableData = (data: CallGetRegisterDeviceType) =>
+  const renderTableData = (data: ResponseOnlineDeviceType[]) =>
     data.map((row, idx) => (
-      <MinimalRow key={row.ID ?? idx}>
-        {({
-          index,
-          row,
-        }: {
-          index: number;
-          row: CallGetRegisterDeviceType[number];
-        }) => (
+      <MinimalRow key={idx}>
+        {({ index, row }: { index: number; row: ResponseOnlineDeviceType }) => (
           <>
             <td className="p-4 font-medium text-sm text-gray-900">{index}</td>
-            <td className="p-4 font-medium text-sm text-gray-900">{row.ID}</td>
-            <td className="p-4 font-medium text-sm text-gray-900">
-              {row.DeviceID}
-            </td>
-            <td className="p-4 font-medium text-sm text-gray-900">
-              {row.NeedToUpdate ? "อัพเดทแล้ว" : "ยังไม่ได้อัพเดท"}
-            </td>
             <td className="p-4 font-medium text-sm text-gray-900">
               {findSchoolName(row.SchoolID, schoolList)} ({row.SchoolID})
             </td>
             <td className="p-4 font-medium text-sm text-gray-900">
+              {row.DeviceID}
+            </td>
+
+            <td className="p-4 font-medium text-sm text-gray-900">
+              {row.Login ? "เข้าสู่ระบบแล้ว" : "ยังไม่ได้เข้าสู่ระบบ"}
+            </td>
+            <td className="p-4 font-medium text-sm text-gray-900">
               {convertTimeZoneToThai(new Date(row.Tstamp))}
             </td>
+            <td className="p-4 font-medium text-sm text-gray-900">
+              {convertTimeZoneToThai(new Date(row.BusinessDate))}
+            </td>
             <td className="p-4">
-              {isOnline(row.Tstamp) ? (
+              {isOnline(row.OnlineTime) ? (
                 <span className="inline-block w-3 h-3 bg-green-500 rounded-full" />
               ) : (
                 <span className="inline-block w-3 h-3 bg-red-500 rounded-full" />
               )}
-            </td>
-            <td className="p-4 font-medium text-sm text-gray-900">
-              {row.UserID}
             </td>
             <td className="p-4 font-medium text-sm text-gray-900">
               <MinimalButton
@@ -258,24 +277,24 @@ ${findSchoolName(schoolId, schoolList)} สามารถออนไลน์�
               </div>
 
               {/* จากวันที่ */}
-              <div>
+              {/* <div>
                 <DatePickerComponent
                   label="จากวันที่"
                   value={fromDate}
                   onChange={setFromDate}
                   className="w-full"
                 />
-              </div>
+              </div> */}
 
               {/* ถึงวันที่ */}
-              <div>
+              {/* <div>
                 <DatePickerComponent
                   label="ถึงวันที่"
                   value={toDate}
                   onChange={setToDate}
                   className="w-full"
                 />
-              </div>
+              </div> */}
             </div>
           </form>
         </ContentCard>

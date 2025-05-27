@@ -54,6 +54,12 @@ export interface CallGetRegisterDeviceState extends DefaultRedux {
   };
 }
 
+export interface ResponseGetRegisterOnlineDevice extends DefaultRedux {
+  draftValues: {
+    Array: {}[];
+  };
+}
+
 export interface CallPostOnlineDevice extends DefaultRedux {
   draftValues: {
     SchoolID: number;

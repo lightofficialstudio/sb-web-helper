@@ -1,13 +1,13 @@
 // reducers/userReducer.ts
 import { createSlice, PayloadAction } from "@reduxjs/toolkit";
-import { CallPostOnlineDevice } from "@stores/type";
-import { CallAPI } from "@/stores/actions/hardware/call-post-online-device";
+import { CallPostOfflineDevice } from "@stores/type";
+import { CallAPI } from "@stores/actions/hardware/call-post-offline-device";
 
-const initialState: CallPostOnlineDevice = {
+const initialState: CallPostOfflineDevice = {
   draftValues: {
     SchoolID: 0,
     DeviceID: "",
-    Status: "",
+    Status: "Online",
   },
   loading: false,
   error: "",
@@ -16,12 +16,12 @@ const initialState: CallPostOnlineDevice = {
 };
 
 const Slice = createSlice({
-  name: "CallPostOnlineDeviceSlice",
+  name: "CallPostOfflineDeviceSlice",
   initialState,
   reducers: {
     setDraftValues: (
       state,
-      action: PayloadAction<CallPostOnlineDevice["draftValues"]>
+      action: PayloadAction<CallPostOfflineDevice["draftValues"]>
     ) => {
       state.draftValues = {
         ...state.draftValues,
@@ -30,7 +30,7 @@ const Slice = createSlice({
     },
     submitState: (
       state,
-      action: PayloadAction<CallPostOnlineDevice["draftValues"]>
+      action: PayloadAction<CallPostOfflineDevice["draftValues"]>
     ) => {
       state.draftValues = {
         ...state.draftValues,

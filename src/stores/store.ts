@@ -7,6 +7,8 @@ import callSchoolListReducer from "@stores/reducers/call-school-list";
 import callCancelSalesReducer from "@stores/reducers/call-cancel-sales";
 import callGetRegisterDeviceReducer from "@stores/reducers/hardware/call-get-register-device";
 import callPostOnlineDeviceReducer from "@stores/reducers/hardware/call-post-online-device";
+import callPostOfflineDeviceReducer from "@stores/reducers/hardware/call-post-offline-device";
+import callGetOnlineDeviceReducer from "@stores/reducers/hardware/call-get-online-device";
 // #endregion
 
 export const store = configureStore({
@@ -17,6 +19,8 @@ export const store = configureStore({
     callSchoolList: callSchoolListReducer,
     callGetRegisterDevice: callGetRegisterDeviceReducer,
     callPostOnlineDevice: callPostOnlineDeviceReducer,
+    callPostOfflineDevice: callPostOfflineDeviceReducer,
+    callGetOnlineDevice: callGetOnlineDeviceReducer,
   },
 });
 

@@ -22,7 +22,7 @@ import { InputFieldComponent } from "@components/input-field/input-field-compone
 import DatePickerComponent from "@components/input-field/date-picker-component";
 import { FiSearch } from "react-icons/fi";
 import { isOnline } from "@helpers/check-online-device-status";
-import { CallAPI as POST_CHECK_ONLINE_DEVICE } from "@/stores/actions/hardware/call-post-online-device";
+import { CallAPI as POST_CHECK_ONLINE_DEVICE } from "@/stores/actions/hardware/call-get-register-device.ts";
 import { unwrapResult } from "@reduxjs/toolkit";
 
 const columns = [

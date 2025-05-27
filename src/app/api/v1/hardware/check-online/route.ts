@@ -4,6 +4,7 @@ import { API_URL } from "@/services/api-url";
 import { CallPostOnlineDevice } from "@stores/type";
 import { DeviceDailyStatusService } from "@services/backend/device-daily-status.service";
 import { DeviceDailyStatus } from "generated/prisma";
+import { RequestDeviceDailyStatusTypes } from "@/types/device-daily-status.types";
 
 export async function POST(NextRequest: NextRequest) {
   const { SchoolID, DeviceID } = await NextRequest.json();
@@ -53,22 +54,17 @@ export async function GET(request: NextRequest) {
     });
   }
 
+  const defaultRequest: RequestDeviceDailyStatusTypes = {
+    schoolId: schoolId || "",
+    deviceId: deviceId || "",
+    limit: limit,
+  };
+
   try {
     let data: DeviceDailyStatus[] = [];
 
-    if (!schoolId || !deviceId) {
-      return NextResponse.json({
-        message: "Both schoolId and deviceId are required",
-        status: 400,
-      });
-    }
-
     data = await DeviceDailyStatusService.findByDeviceIdOrSchoolId(
-      schoolId,
-      deviceId,
-      {
-        limit,
-      }
+      defaultRequest
     );
 
     return NextResponse.json({
