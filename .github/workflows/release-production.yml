@@ -54,6 +54,7 @@ jobs:
 
   build:
     name: "🔨 Build on Runner"
+    needs: remove-old-artifact
     runs-on: ubuntu-latest
 
     steps:
