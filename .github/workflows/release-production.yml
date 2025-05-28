@@ -78,8 +78,12 @@ jobs:
 
       - name: "📤 Archive Build Artifacts"
         run: |
-          # เก็บโฟลเดอร์ .next และไฟล์ที่จำเป็นไว้ใน ZIP
-          zip -r build.zip .next package.json package-lock.json next.config.js
+          zip -r build.zip \
+            .next \
+            generated/prisma \
+            package.json \
+            package-lock.json \
+            next.config.js
 
       - name: "⬆️ Upload Artifacts"
         uses: actions/upload-artifact@v4
