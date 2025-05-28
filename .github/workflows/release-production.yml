@@ -68,7 +68,10 @@ jobs:
           cache: "npm"
 
       - name: "📦 Install Dependencies"
-        run: npm i
+        run: npm ci
+
+      - name: "📦 Install Dependencies Terser Webpack"
+        run: npm install terser-webpack-plugin
 
       - name: "🏗️ Build Project"
         run: npm run build
