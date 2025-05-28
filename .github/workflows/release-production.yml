@@ -6,17 +6,55 @@ on:
       - main
 
 jobs:
-  build:
-    name: "🔨 Build Next.js"
+  remove-old-artifact:
+    name: 🗑️ Remove Old Artifacts
     runs-on: ubuntu-latest
+    environment: production
 
-    env:
-      DATABASE_URL: ${{ secrets.DATABASE_URL }}
-      POSTMAN_API_KEY: ${{ secrets.POSTMAN_API_KEY }}
-      NEXT_PUBLIC_PRODUCTION_PAYMENT_API_URL: ${{secrets.NEXT_PUBLIC_PRODUCTION_PAYMENT_API_URL}}
-      NEXT_PUBLIC_DEVELOPMENT_PAYMENT_API_URL: ${{secrets.NEXT_PUBLIC_DEVELOPMENT_PAYMENT_API_URL}}
-      NEXT_PUBLIC_PRODUCTION_SB_API_URL: ${{secrets.NEXT_PUBLIC_PRODUCTION_SB_API_URL}}
-      NEXT_PUBLIC_DEVELOPMENT_SB_API_URL: ${{secrets.NEXT_PUBLIC_DEVELOPMENT_SB_API_URL}}
+    steps:
+      - name: 🧪 Test SSH Connection
+        run: |
+          sshpass -p "${{ secrets.HUAWEI_CLOUD_PASSWORD }}" ssh -o StrictHostKeyChecking=no ${{ secrets.HUAWEI_CLOUD_USERNAME }}@${{ secrets.HUAWEI_CLOUD_HOST }} "echo '✅ SSH Success'" || echo "❌ SSH Failed"
+
+      - name: 🗑️ Delete Old Artifacts
+        uses: actions/github-script@v6
+        with:
+          script: |
+            const perPage = 100;
+            let page = 1;
+            let artifacts = [];
+
+            while (true) {
+              const res = await github.rest.actions.listArtifactsForRepo({
+                owner: context.repo.owner,
+                repo: context.repo.repo,
+                per_page: perPage,
+                page: page
+              });
+
+              artifacts = res.data.artifacts;
+              if (artifacts.length === 0) break;
+
+              for (const artifact of artifacts) {
+                const createdAt = new Date(artifact.created_at);
+                const ageInDays = (Date.now() - createdAt.getTime()) / (1000 * 60 * 60 * 24);
+
+                if (ageInDays > 1) {
+                  console.log(`Deleting artifact ${artifact.name} (ID: ${artifact.id})`);
+                  await github.rest.actions.deleteArtifact({
+                    owner: context.repo.owner,
+                    repo: context.repo.repo,
+                    artifact_id: artifact.id,
+                  });
+                }
+              }
+
+              page++;
+            }
+
+  build:
+    name: "🔨 Build on Runner"
+    runs-on: ubuntu-latest
 
     steps:
       - name: "📥 Checkout Code"
@@ -25,7 +63,7 @@ jobs:
       - name: "⚙️ Setup Node.js"
         uses: actions/setup-node@v4
         with:
-          node-version: "20"
+          node-version: "22"
           cache: "npm"
 
       - name: "📦 Install Dependencies"
@@ -34,34 +72,40 @@ jobs:
       - name: "🏗️ Build Project"
         run: npm run build
 
+      - name: "📤 Archive Build Artifacts"
+        run: |
+          # เก็บโฟลเดอร์ .next และไฟล์ที่จำเป็นไว้ใน ZIP
+          zip -r build.zip .next package.json package-lock.json next.config.js
+
+      - name: "⬆️ Upload Artifacts"
+        uses: actions/upload-artifact@v3
+        with:
+          name: build-output
+          path: build.zip
+
   deploy:
-    name: "🚚 Deploy to Production"
+    name: "🚚 Deploy to Server"
     runs-on: ubuntu-latest
     needs: build
     environment: production
 
     steps:
-      - name: 🔎 Checkout Code
-        uses: actions/checkout@v3
+      - name: "📥 Download Artifacts"
+        uses: actions/download-artifact@v3
+        with:
+          name: build-output
 
-      - name: 🚚 Copy to Server via SCP
+      - name: "🔐 Copy to Server via SCP"
         uses: appleboy/scp-action@v0.1.5
         with:
           host: ${{ secrets.HUAWEI_CLOUD_HOST }}
           username: ${{ secrets.HUAWEI_CLOUD_USERNAME }}
           password: ${{ secrets.HUAWEI_CLOUD_PASSWORD }}
           port: ${{ secrets.HUAWEI_CLOUD_SSH_PORT }}
-          source: "."
+          source: "build.zip"
           target: "/var/www/sb-web-helper"
 
-  restart:
-    name: "🔄 Restart Server"
-    runs-on: ubuntu-latest
-    needs: deploy
-    environment: production
-
-    steps:
-      - name: 🛠️ Restart Application
+      - name: "🗜️ Unzip & Install on Server"
         uses: appleboy/ssh-action@v0.1.8
         with:
           host: ${{ secrets.HUAWEI_CLOUD_HOST }}
@@ -70,4 +114,24 @@ jobs:
           port: ${{ secrets.HUAWEI_CLOUD_SSH_PORT }}
           script: |
             cd /var/www/sb-web-helper
-            pm2 restart sb-helper
+            unzip -o build.zip
+            # ติดตั้งเฉพาะ production dependencies
+            npm ci --production
+            # รีสตาร์ท service
+            sudo systemctl restart sb-web-helper.service
+
+  notify:
+    name: "📬 Discord Notification"
+    runs-on: ubuntu-latest
+    environment: production
+    needs: deploy
+    steps:
+      - name: "📣 Send Success to Discord"
+        if: success()
+        run: |
+          COMMIT=$(echo "${{ github.event.head_commit.message }}" | sed ':a;N;$!ba;s/\n/\\n/g')
+          curl -X POST ${{ vars.DISCORD_WEBHOOK }} \
+            -H "Content-Type: application/json" \
+            -d '{
+              "content": "✅ **Deployment Successful!**\n🖥️ Server: '${{ vars.SERVER }}'\n👤 By: '${{ github.actor }}'\n📌 Commit:\n```'"${COMMIT}"'```"
+            }'
