@@ -91,6 +91,16 @@ jobs:
     environment: production
 
     steps:
+      - name: "🗑️ Delete old deployment folder"
+        uses: appleboy/ssh-action@v0.1.8
+        with:
+          host: ${{ secrets.HUAWEI_CLOUD_HOST }}
+          username: ${{ secrets.HUAWEI_CLOUD_USERNAME }}
+          password: ${{ secrets.HUAWEI_CLOUD_PASSWORD }}
+          port: ${{ secrets.HUAWEI_CLOUD_SSH_PORT }}
+          script: |
+            rm -rf /var/www/sb-web-helper/*
+
       - name: "📥 Download Artifacts"
         uses: actions/download-artifact@v4
         with:
