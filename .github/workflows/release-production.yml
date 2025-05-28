@@ -41,17 +41,15 @@ jobs:
     environment: production
 
     steps:
-      - name: "🔐 Deploy via SSH"
-        uses: appleboy/ssh-action@v0.1.8
+      - name: 🔎 Checkout Code
+        uses: actions/checkout@v3
+
+      - name: 🚚 Copy to Server via SCP
+        uses: appleboy/scp-action@v0.1.5
         with:
           host: ${{ secrets.HUAWEI_CLOUD_HOST }}
           username: ${{ secrets.HUAWEI_CLOUD_USERNAME }}
           password: ${{ secrets.HUAWEI_CLOUD_PASSWORD }}
-          port: ${{ secrets.HUAWEI_CLOUD_SSH_PORT }} # ปกติ 22
-          script: |
-            set -e
-            cd /var/www/sb-web-helper
-            git pull origin main
-            npm ci
-            npm run build
-            pm2 restart sb-helper
+          port: ${{ secrets.HUAWEI_CLOUD_SSH_PORT }}
+          source: "."
+          target: "/var/www/sb-web-helper"
