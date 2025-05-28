@@ -51,6 +51,7 @@ export async function GET(request: NextRequest) {
     return NextResponse.json({
       message: "Missing schoolId or deviceId parameter",
       status: 400,
+      data: [],
     });
   }
 

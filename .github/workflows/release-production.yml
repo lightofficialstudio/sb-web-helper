@@ -1,0 +1,56 @@
+name: 🚀 Release Production
+
+on:
+  push:
+    branches:
+      - main
+
+jobs:
+  build:
+    name: "🔨 Build Next.js"
+    runs-on: ubuntu-latest
+
+    env:
+      DATABASE_URL: ${{ secrets.DATABASE_URL }}
+      POSTMAN_API_KEY: ${{ secrets.POSTMAN_API_KEY }}
+      NEXT_PUBLIC_PRODUCTION_PAYMENT_API_URL: ${{secrets.NEXT_PUBLIC_PRODUCTION_PAYMENT_API_URL}}
+      NEXT_PUBLIC_DEVELOPMENT_PAYMENT_API_URL: ${{secrets.NEXT_PUBLIC_DEVELOPMENT_PAYMENT_API_URL}}
+      NEXT_PUBLIC_PRODUCTION_SB_API_URL: ${{secrets.NEXT_PUBLIC_PRODUCTION_SB_API_URL}}
+      NEXT_PUBLIC_DEVELOPMENT_SB_API_URL: ${{secrets.NEXT_PUBLIC_DEVELOPMENT_SB_API_URL}}
+
+    steps:
+      - name: "📥 Checkout Code"
+        uses: actions/checkout@v3
+
+      - name: "⚙️ Setup Node.js"
+        uses: actions/setup-node@v4
+        with:
+          node-version: "20"
+          cache: "npm"
+
+      - name: "📦 Install Dependencies"
+        run: npm ci
+
+      - name: "🏗️ Build Project"
+        run: npm run build
+
+  deploy:
+    name: "🚚 Deploy to Production"
+    runs-on: ubuntu-latest
+    needs: build
+
+    steps:
+      - name: "🔐 Deploy via SSH"
+        uses: appleboy/ssh-action@v0.1.8
+        with:
+          host: ${{ secrets.HUAWEI_CLOUD_HOST }}
+          username: ${{ secrets.HUAWEI_CLOUD_USERNAME }}
+          password: ${{ secrets.HUAWEI_CLOUD_PASSWORD }}
+          port: ${{ secrets.HUAWEI_CLOUD_SSH_PORT }} # ปกติ 22
+          script: |
+            set -e
+            cd /var/www/sb-web-helper
+            git pull origin main
+            npm ci
+            npm run build
+            pm2 restart sb-helper

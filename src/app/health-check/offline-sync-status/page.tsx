@@ -7,7 +7,6 @@ import BaseLoadingComponent from "@components/loading/loading-component-1";
 import { useDispatch } from "react-redux";
 import { AppDispatch, useAppSelector } from "@stores/store";
 import MinimalButton from "@/components/button/minimal-button-component";
-import { CallAPI } from "@/stores/actions/hardware/call-get-register-device";
 import Swal from "sweetalert2";
 import { SearchableSelectComponent } from "@/components/input-field/searchable-select-component";
 import { ResponseCardComponent } from "@/components/card/curl-card-component";
@@ -22,7 +21,9 @@ import { InputFieldComponent } from "@components/input-field/input-field-compone
 import DatePickerComponent from "@components/input-field/date-picker-component";
 import { FiSearch } from "react-icons/fi";
 import { isOnline } from "@helpers/check-online-device-status";
-import { CallAPI as POST_CHECK_ONLINE_DEVICE } from "@/stores/actions/hardware/call-get-register-device.ts";
+import { CallAPI as GET_REGISTER_DEVICE } from "@/stores/actions/hardware/call-get-register-device";
+import { CallAPI as POST_CHECK_ONLINE_DEVICE } from "@stores/actions/hardware/call-post-online-device";
+
 import { unwrapResult } from "@reduxjs/toolkit";
 
 const columns = [
@@ -96,7 +97,7 @@ export default function Page() {
   }, [SCHOOL_LIST_STATE?.response]);
 
   useEffect(() => {
-    dispatch(CallAPI());
+    dispatch(GET_REGISTER_DEVICE());
   }, []);
 
   useEffect(() => {
