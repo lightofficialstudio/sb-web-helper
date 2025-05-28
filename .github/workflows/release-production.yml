@@ -134,5 +134,5 @@ jobs:
           curl --location '${{vars.DISCORD_WEBHOOK}}' \
           --header 'Content-Type: application/json' \
           --data-raw "{
-            \"content\": \"✅ **Deployment Successful!**\\n🖥️ Server: **${{vars.SERVER}}**\\n👤 Pushed By: **${{github.actor}}**\\n📌 Commit:\\n\`\`\`${COMMIT_MESSAGE}\`\`\`\\n👥 <${{vars.DISCORD_ROLE_QA}}>\"
+            \"content\": \"✅ **Deployment Successful!**\\n🖥️ Server: **${{vars.SERVER}}**\\n👤 Pushed By: **${{github.actor}}**\\n📌 Commit:\\n\`\`\`${COMMIT_MESSAGE}\`\`\`\\n👥 <${{vars.DISCORD_ROLE_QA}}> <${{vars.DISCORD_ROLE_SUPPORT}}>\"
           }"
