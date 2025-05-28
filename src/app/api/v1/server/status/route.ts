@@ -1,0 +1,81 @@
+import { NextRequest, NextResponse } from "next/server";
+import axios from "axios";
+import { API_URL } from "@/services/api-url";
+
+export async function GET() {
+  try {
+    const headers = {
+      "Content-Type": "application/json",
+    };
+
+    const timestamp = Date.now();
+
+    const SERVER_PROD_SBAPI = `${API_URL.PROD_SB_API_URL}/api/SeverStatus`;
+    const SERVER_DEV_SBAPI = `${API_URL.DEV_SB_API_URL}/api/SeverStatus`;
+    const SERVER_PROD_PAYSB = `${API_URL.PROD_PAYMENT_API_URL}/api/device/status/registeronlinelogin`;
+
+    // perform both requests and handle failures individually
+    const results = await Promise.allSettled([
+      axios.get(SERVER_PROD_SBAPI, { headers }),
+      axios.get(SERVER_DEV_SBAPI, { headers }),
+      axios.post(SERVER_PROD_PAYSB, { headers }),
+    ]);
+
+    const servers = [
+      {
+        server: "prod_sb_api",
+        url: API_URL.PROD_SB_API_URL,
+        endpoint: "/api/SeverStatus",
+        description:
+          "เซิฟเวอร์ Production ระบบหลังบ้าน SB APP ที่พี่โจ้เป็นคนทำ เช่นระบบแจ้งเตือน,เช็คชื่อหน้าเสาธง,รายงาน เป็นต้น",
+        timestamp,
+      },
+      {
+        server: "dev_sb_api",
+        url: API_URL.DEV_SB_API_URL,
+        endpoint: "/api/SeverStatus",
+        description:
+          "เซิฟเวอร์ Dev ระบบหลังบ้าน SB APP ที่พี่โจ้เป็นคนทำ เช่นระบบแจ้งเตือน,เช็คชื่อหน้าเสาธง,รายงาน เป็นต้น",
+        timestamp,
+      },
+      {
+        server: "prod_pay_sb",
+        url: API_URL.PROD_PAYMENT_API_URL,
+        endpoint: "/api/device/status/registeronlinelogin",
+        description:
+          "เซิฟเวอร์ Production ระบบหลังบ้าน SB PAYMENT API ที่ Vimal เป็นคนทำ เช่น ระบบจ่ายเงินผ่านเครื่อง Canteen,ตัดยอดเงินออนไลน์,ตัดยอดเงินออฟไลน์ เป็นต้น",
+        timestamp,
+      },
+    ];
+
+    const data = servers.map((cfg, index) => {
+      const result = results[index];
+      if (result.status === "fulfilled") {
+        // result.value.status คือ HTTP status code ของการตอบกลับ
+        const httpCode = result.value.status; // เช่น 200
+        return {
+          ...cfg,
+          ...result.value.data,
+          StatusCode: httpCode,
+          Status: httpCode === 200 ? "Online" : "Offline",
+        };
+      } else {
+        // ในกรณี error
+        const err = result.reason;
+        return {
+          ...cfg,
+          Status: "Offline",
+          StatusCode: err.response?.status || 500,
+          Message: err.message || "",
+        };
+      }
+    });
+
+    return NextResponse.json({ data });
+  } catch (err: any) {
+    return NextResponse.json({
+      message: err.message || "Internal Server Error",
+      status: err.response?.status || 500,
+    });
+  }
+}

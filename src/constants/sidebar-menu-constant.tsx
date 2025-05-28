@@ -46,6 +46,10 @@ export const menu: MenuItem[] = [
     icon: <FiActivity />,
     children: [
       {
+        label: "รายงานการทำงานทุกระบบ",
+        href: "/health-check/all-server-status",
+      },
+      {
         label: "รายงานการเชื่อมต่อระบบออนไลน์",
         href: "/health-check/online-status",
       },

@@ -9,6 +9,7 @@ import callGetRegisterDeviceReducer from "@stores/reducers/hardware/call-get-reg
 import callPostOnlineDeviceReducer from "@stores/reducers/hardware/call-post-online-device";
 import callPostOfflineDeviceReducer from "@stores/reducers/hardware/call-post-offline-device";
 import callGetOnlineDeviceReducer from "@stores/reducers/hardware/call-get-online-device";
+import callGetServerStatusReducer from "@stores/reducers/server/call-get-server-status";
 // #endregion
 
 export const store = configureStore({
@@ -21,6 +22,7 @@ export const store = configureStore({
     callPostOnlineDevice: callPostOnlineDeviceReducer,
     callPostOfflineDevice: callPostOfflineDeviceReducer,
     callGetOnlineDevice: callGetOnlineDeviceReducer,
+    callGetServerStatus: callGetServerStatusReducer,
   },
 });
 

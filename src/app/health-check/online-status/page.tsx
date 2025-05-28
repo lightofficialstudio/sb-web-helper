@@ -235,10 +235,32 @@ ${findSchoolName(schoolId, schoolList)} สามารถออนไลน์�
       {isLoading && <BaseLoadingComponent />}
 
       <div className="w-full space-y-4">
-        {/* บังคับให้ card แรกอยู่เต็มความกว้างใน md และ xl */}
+        {/* หมายเหตุ */}
+        <div className="grid grid-cols-2 grid-rows-1 gap-6 w-full">
+          <ContentCard
+            title="หมายเหตุ (1)"
+            fullWidth
+            className="w-full col-span-1 row-span-2"
+          >
+            <p className="text-sm text-red-500">
+              {t("ค้นหาด้วยชื่อโรงเรียน หรือ Device ID ก่อนแล้วข้อมูลจะขึ้น")}
+            </p>
+          </ContentCard>
+          {/* <ContentCard
+            title="หมายเหตุ (2)"
+            fullWidth
+            className="w-full col-span-1 row-span-2"
+          >
+            <p className="text-sm text-red-500">
+              {t(
+                "กรณีที่ไม่พบข้อมูลใน https://www.canteen.schoolbright.co แต่พบข้อมูลที่นี่ แปลว่าเป็นปัญหาที่ Memory Sharing ของระบบ Canteen Web ให้แจ้ง Vimal"
+              )}
+            </p>
+          </ContentCard> */}
+        </div>
 
         <ContentCard
-          title="ทดสอบการเชื่อมต่อเครื่อง Hardware"
+          title="รายงานการเชื่อมต่อเครื่อง Canteen Online"
           fullWidth
           className="md:col-span-2 xl:col-span-4 w-full "
         >
@@ -307,7 +329,7 @@ ${findSchoolName(schoolId, schoolList)} สามารถออนไลน์�
 
         {/* ตาราง */}
         <ContentCard
-          title="ตารางดูสถานะอุปกรณ์"
+          title="ตารางการเชื่อมต่อเครื่อง Canteen Online"
           className="xl:col-span-4 w-full"
         >
           <MinimalTable

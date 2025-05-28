@@ -67,3 +67,18 @@ export interface CallPostOnlineDevice extends DefaultRedux {
     Status: string;
   };
 }
+
+export interface ResponseGetServerStatus extends DefaultRedux {
+  draftValues: {
+    Array: {
+      server: string;
+      url: string;
+      endpoint: string;
+      Status: string;
+      StatusCode: number;
+      Message: string;
+      description: string;
+      timestamp: Date | string;
+    }[];
+  };
+}
