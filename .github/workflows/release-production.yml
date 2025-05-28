@@ -127,12 +127,12 @@ jobs:
     environment: production
     needs: deploy
     steps:
-      - name: "📣 Send Success to Discord"
+      - name: 📣  Notify Discord on Success
         if: success()
         run: |
-          COMMIT=$(echo "${{ github.event.head_commit.message }}" | sed ':a;N;$!ba;s/\n/\\n/g')
-          curl -X POST ${{ vars.DISCORD_WEBHOOK }} \
-            -H "Content-Type: application/json" \
-            -d '{
-              "content": "✅ **Deployment Successful!**\n🖥️ Server: '${{ vars.SERVER }}'\n👤 By: '${{ github.actor }}'\n📌 Commit:\n```'"${COMMIT}"'```"
-            }'
+          COMMIT_MESSAGE=$(echo "${{ github.event.head_commit.message }}" | sed ':a;N;$!ba;s/\n/\\n/g')
+          curl --location '${{vars.DISCORD_WEBHOOK}}' \
+          --header 'Content-Type: application/json' \
+          --data-raw "{
+            \"content\": \"✅ **Deployment Successful!**\\n🖥️ Server: **${{vars.SERVER}}**\\n👤 Pushed By: **${{github.actor}}**\\n📌 Commit:\\n\`\`\`${COMMIT_MESSAGE}\`\`\`\\n👥 <${{vars.DISCORD_ROLE_QA}}>\"
+          }"
