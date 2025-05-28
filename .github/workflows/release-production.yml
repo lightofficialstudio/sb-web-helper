@@ -70,8 +70,8 @@ jobs:
       - name: "📦 Install Dependencies"
         run: npm ci
 
-      - name: "🛠️ Ensure terser-webpack-plugin is available"
-        run: npm install terser-webpack-plugin --no-save
+      - name: "⚙️ Prisma Generate"
+        run: npx prisma generate --schema=prisma/schema.prisma
 
       - name: "🏗️ Build Project"
         run: npm run build
