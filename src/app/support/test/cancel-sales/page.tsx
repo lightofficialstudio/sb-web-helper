@@ -11,7 +11,18 @@ import MinimalButton from "@/components/button/minimal-button-component";
 import { FiCreditCard, FiHome, FiUser } from "react-icons/fi";
 import { CallAPI } from "@/stores/actions/call-cancel-sales";
 import Swal from "sweetalert2";
-import { CancelSalesState } from "@stores/type";
+import {
+  CancelSalesState,
+  ResponseSchoolList,
+  ResponseUserList,
+} from "@stores/type";
+import { SearchableSelectComponent } from "@/components/input-field/searchable-select-component";
+import { CallAPI as GET_USER_BY_SCHOOLID } from "@/stores/actions/school/call-get-user";
+
+interface DropdownType {
+  label: string;
+  value: string;
+}
 
 export default function Page() {
   const { t } = useTranslation("mock");
@@ -19,39 +30,58 @@ export default function Page() {
   const ReduxStateCancelSales = useAppSelector(
     (state) => state.callCancelSales
   );
+  const SCHOOL_LIST_STATE = useAppSelector((state) => state.callSchoolList);
+  const USER_LIST_STATE = useAppSelector(
+    (state) => state.callGetuserBySchoolId
+  );
+
+  const [schoolList, setSchoolList] = useState<DropdownType[]>([]);
+  const [userList, setUserList] = useState<DropdownType[]>([]);
+
   const [formState, setFormState] = useState<CancelSalesState["draftValues"]>({
     SchoolID: "",
     sID: "",
     sID2: "",
     sSellID: "",
   });
-  const isLoading = ReduxStateCancelSales.loading;
+  const isLoading = [
+    SCHOOL_LIST_STATE.loading,
+    USER_LIST_STATE.loading,
+    ReduxStateCancelSales.loading,
+  ].some(Boolean);
   const [modal, setModal] = useState<string>("");
 
   useEffect(() => {
-    switch (modal) {
-      case "error":
-        Swal.fire({
-          icon: "error",
-          title: "Error",
-          text: "กรุณากรอกข้อมูลให้ครบถ้วน",
-          confirmButtonText: "OK",
-        });
-        setModal("");
-        break;
-      case "success":
-        Swal.fire({
-          icon: "success",
-          title: "Success",
-          text: "ยิง API สำเร็จ",
-          confirmButtonText: "ยืนยัน",
-        });
-        setModal("");
-        break;
-      default:
-        break;
+    setSchoolList(
+      SCHOOL_LIST_STATE?.response?.data?.data?.map(
+        (item: ResponseSchoolList["draftValues"][number]) => ({
+          label: item.SchoolName,
+          value: item.SchoolID,
+        })
+      ) || []
+    );
+  }, [SCHOOL_LIST_STATE?.response]);
+
+  useEffect(() => {
+    getUserBySchoolId(formState.SchoolID);
+  }, [formState.SchoolID]);
+
+  const getUserBySchoolId = async (schoolId: string) => {
+    try {
+      const response = await dispatch(GET_USER_BY_SCHOOLID({ schoolId }));
+      await setUserList(
+        response?.payload?.data?.map(
+          (item: ResponseUserList["draftValues"]) => ({
+            label: `${item?.Name} \t ${item?.LastName}\t(ID : ${item?.UserID} Username : ${item?.username})`,
+            value: item?.UserID,
+          })
+        )
+      );
+      console.log(response);
+    } catch (error) {
+      throw new Error((error as Error).message);
     }
-  }, [modal]);
+  };
 
   // #region : State
   const handleSubmitForm = async (e: React.FormEvent<HTMLFormElement>) => {
@@ -103,48 +133,60 @@ export default function Page() {
         >
           <form onSubmit={handleSubmitForm} className="space-y-4">
             {/* กรอก School Id */}
-            <InputFieldComponent
-              label="กรอกรหัสโรงเรียน"
-              type="text"
-              required
-              icon={<FiHome />}
-              value={formState.SchoolID}
-              onChange={(e) =>
-                setFormState({ ...formState, SchoolID: e.target.value })
-              }
-              error={
-                formState?.SchoolID.length < 1 ? "กรุณากรอกรหัสโรงเรียน" : ""
-              }
-              hint="รหัสโรงเรียน หาได้จาก https://adminsystem.schoolbright.co/"
-              placeholder="กรุณากรอกรหัสโรงเรียน"
-            />
-            {/* Input NFC Card */}
-            <InputFieldComponent
-              label="กรอกรหัส User ID (ของผู้ซื้อสินค้า)"
-              type="text"
-              required
-              icon={<FiUser />}
-              value={formState?.sID}
-              onChange={(e) =>
-                setFormState({ ...formState, sID: e.target.value })
-              }
-              error={formState.sID.length < 1 ? "กรุณากรอกรหัส User ID" : ""}
-              hint="รหัส User ID (ของผู้ซื้อสินค้า) หาได้จาก Bypass Admin โรงเรียนนั้น ๆ"
-              placeholder="กรุณากรอกรหัส User ID"
-            />
-            {/* Input NFC Card */}
-            <InputFieldComponent
-              label="กรอกรหัส User ID (ของผู้ขายสินค้า)"
-              type="text"
-              required
-              icon={<FiCreditCard />}
-              value={formState.sID2}
-              onChange={(e) =>
-                setFormState({ ...formState, sID2: e.target.value })
-              }
-              error={formState.sID2.length < 1 ? "กรุณากรอกรหัส User ID" : ""}
-              placeholder="กรุณากรอกรหัส User ID"
-            />
+            <div className="flex-1">
+              <SearchableSelectComponent
+                label="เลือกโรงเรียน"
+                options={[
+                  { label: "ทั้งหมด", value: "" },
+                  ...schoolList.map((s) => ({
+                    label: s.label + " (" + s.value + ")",
+                    value: String(s.value),
+                  })),
+                ]}
+                value={formState.SchoolID}
+                onChange={(event: any) => {
+                  setFormState({ ...formState, SchoolID: event });
+                }}
+                placeholder="เลือกโรงเรียน"
+              />
+            </div>
+            {/* กรอกรหัส User ID (ของผู้ซื้อสินค้า) */}
+            <div className="flex-1">
+              <SearchableSelectComponent
+                label="กรอกรหัส User ID (ของผู้ซื้อสินค้า)"
+                options={[
+                  { label: "ทั้งหมด", value: "" },
+                  ...(userList ?? []).map((s) => ({
+                    label: s.label,
+                    value: String(s.value),
+                  })),
+                ]}
+                value={formState.sID}
+                onChange={(event: any) => {
+                  setFormState({ ...formState, sID: event });
+                }}
+                placeholder="กรอกรหัส User ID (ของผู้ซื้อสินค้า)"
+              />
+            </div>
+
+            {/* กรอกรหัส User ID (ของผู้ขายสินค้า */}
+            <div className="flex-1">
+              <SearchableSelectComponent
+                label="กรอกรหัส User ID (ของผู้ขายสินค้า)"
+                options={[
+                  { label: "ทั้งหมด", value: "" },
+                  ...(userList ?? []).map((s) => ({
+                    label: s.label,
+                    value: String(s.value),
+                  })),
+                ]}
+                value={formState.sID2}
+                onChange={(event: any) => {
+                  setFormState({ ...formState, sID2: event });
+                }}
+                placeholder="กรอกรหัส User ID (ของผู้ขายสินค้า)"
+              />
+            </div>
             {/* Input NFC Card */}
             <InputFieldComponent
               label="รหัส Transaction Id (sSellID)"
@@ -152,8 +194,8 @@ export default function Page() {
               required
               icon={<FiCreditCard />}
               value={formState.sSellID}
-              onChange={(e) =>
-                setFormState({ ...formState, sSellID: e.target.value })
+              onChange={(event: any) =>
+                setFormState({ ...formState, sSellID: event.target.value })
               }
               error={
                 formState.sSellID.length < 1
@@ -256,11 +298,11 @@ export default function Page() {
           >
             <p className="text-sm text-red-500">
               {t(
-                "กรณีที่บัตร NFC ไม่ถูกต้อง หรือไม่พบข้อมูลในระบบ จะมีการแสดงผลลัพธ์เป็น JSON ที่มี status เป็น 'not have number id'"
+                "สามารถหา sSellID (รหัสขายสินค้า) ได้่ที่ https://canteen.schoolbright.co/Report/Sales.aspx (เมนู ร้านค้า/สหกรณ์ -> รายงานการขายสินค้า) กดคลิกขวาที่หน้า กดคำว่า 'Inspect' และเลือก Tab ที่ชื่อว่า 'Network' "
               )}
             </p>
           </ContentCard>
-          <ContentCard
+          {/* <ContentCard
             title="หมายเหตุ (2)"
             fullWidth
             className="w-full col-span-1 row-span-2"
@@ -270,7 +312,7 @@ export default function Page() {
                 "กรณีที่ไม่พบข้อมูลใน https://www.canteen.schoolbright.co แต่พบข้อมูลที่นี่ แปลว่าเป็นปัญหาที่ Memory Sharing ของระบบ Canteen Web ให้แจ้ง Vimal"
               )}
             </p>
-          </ContentCard>
+          </ContentCard> */}
         </div>
       </div>
     </DashboardLayout>

@@ -82,3 +82,46 @@ export interface ResponseGetServerStatus extends DefaultRedux {
     }[];
   };
 }
+
+export interface ResponseSchoolList extends DefaultRedux {
+  draftValues: { SchoolName: string; SchoolID: string }[];
+}
+
+export interface ResponseUserList extends DefaultRedux {
+  draftValues: {
+    UserID: number;
+    UserType: string;
+    Name: string;
+    LastName: string;
+    BarCode: string;
+    SchoolID: number;
+    sPicture: string;
+    sMasterPicture: string;
+    CardNFC_1: string;
+    CardNFC_2: string | null;
+    CardNFC_3: string | null;
+    CardNFCID_1: string;
+    CardNFCID_2: string | null;
+    CardNFCID_3: string | null;
+    CardStatus_1: string;
+    CardStatus_2: string | null;
+    CardStatus_3: string | null;
+    bytePicture: string | null;
+    TempCardHistoryID: string;
+    TempCardID: string;
+    TempNFC: string;
+    TempnMoney: number;
+    NFCReverse: string;
+    NR_1: string;
+    NR_2: string | null;
+    NR_3: string | null;
+    NFCReverse_1: string;
+    NFCReverse_2: string | null;
+    NFCReverse_3: string | null;
+    username: string;
+  };
+}
+
+export interface Default extends DefaultRedux {
+  draftValues?: {};
+}

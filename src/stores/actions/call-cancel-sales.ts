@@ -4,9 +4,10 @@ import { CancelSalesState } from "@stores/type";
 
 import { API_METHOD } from "@/services/api-method";
 
-// สร้าง async action สำหรับส่งข้อมูลผู้ใช้ไปยัง API
+const API_ENDPOINT = `/api/v1/support/cancle-sales`;
+
 export const CallAPI = createAsyncThunk(
-  "/api/v1/support/cancle-sales",
+  API_METHOD.GET + API_ENDPOINT,
   async (request: CancelSalesState) => {
     console.log(
       "[Request Data] : ",
@@ -14,7 +15,7 @@ export const CallAPI = createAsyncThunk(
     );
     const payload: CallBackendAPIProps = {
       method: API_METHOD.POST,
-      endpoint: `api/v1/support/cancle-sales`,
+      endpoint: API_ENDPOINT,
       data: request.draftValues,
       extendHeader: {},
       backendUrl: "",

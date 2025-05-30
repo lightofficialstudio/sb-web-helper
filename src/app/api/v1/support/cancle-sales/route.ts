@@ -17,7 +17,7 @@ export async function POST(request: NextRequest) {
   }
 
   try {
-    const apiUrl = `${API_URL.PROD_PAYMENT_API_URL}/api/shop/sales/cancelsales`;
+    const apiUrl = `${API_URL.PROD_PAYMENT_API_URL}/api/support/sales/cancelsales`;
     const curlHeader = `--header 'Content-Type: application/json'`;
     const curlData = `--data '{
       "SchoolID" : ${SchoolID},
@@ -33,6 +33,9 @@ export async function POST(request: NextRequest) {
       },
       data: data,
     });
+
+    console.log("request ", data);
+    console.log("response", responseFromAPI.data);
 
     return NextResponse.json({
       data: responseFromAPI.data,

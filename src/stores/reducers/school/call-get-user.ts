@@ -1,15 +1,10 @@
 // reducers/userReducer.ts
 import { createSlice, PayloadAction } from "@reduxjs/toolkit";
-import { CancelSalesState } from "@stores/type";
-import { CallAPI } from "@stores/actions/call-cancel-sales";
+import { Default } from "@stores/type";
+import { CallAPI } from "@stores/actions/school/call-get-user";
 
-const initialState: CancelSalesState = {
-  draftValues: {
-    SchoolID: "",
-    sID: "",
-    sID2: "",
-    sSellID: "",
-  },
+const initialState: Default = {
+  draftValues: {},
   loading: false,
   error: "",
   success: "",
@@ -17,7 +12,7 @@ const initialState: CancelSalesState = {
 };
 
 const Slice = createSlice({
-  name: "callCancelSales",
+  name: "CallGetuserBySchoolId",
   initialState,
   reducers: {},
   extraReducers: (builder) => {
