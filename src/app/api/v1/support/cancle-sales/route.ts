@@ -27,11 +27,9 @@ export async function POST(request: NextRequest) {
     }'`;
     const curlCommand = `curl --location ${curlHeader} \ '${apiUrl}' \ ${curlData}`;
 
-    const responseFromAPI = await axios.post(apiUrl, {
-      headers: {
-        "Content-Type": "application/json",
-      },
-      data: data,
+    // ถูกต้อง: ตัวแรกคือ URL, ตัวที่สองคือ body, ตัวที่สามคือ config
+    const responseFromAPI = await axios.post(apiUrl, data, {
+      headers: { "Content-Type": "application/json" },
     });
 
     console.log("request ", data);
