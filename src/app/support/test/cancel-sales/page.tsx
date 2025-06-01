@@ -18,6 +18,7 @@ import {
 } from "@stores/type";
 import { SearchableSelectComponent } from "@/components/input-field/searchable-select-component";
 import { CallAPI as GET_USER_BY_SCHOOLID } from "@/stores/actions/school/call-get-user";
+import Link from "next/link";
 
 interface DropdownType {
   label: string;
@@ -297,10 +298,14 @@ export default function Page() {
             className="w-full col-span-1 row-span-2"
           >
             <p className="text-sm text-red-500">
-              {t(
-                "สามารถหา sSellID (รหัสขายสินค้า) ได้่ที่ https://canteen.schoolbright.co/Report/Sales.aspx (เมนู ร้านค้า/สหกรณ์ -> รายงานการขายสินค้า) กดคลิกขวาที่หน้า กดคำว่า 'Inspect' และเลือก Tab ที่ชื่อว่า 'Network' "
-              )}
+              {t("วิธีการใช้งาน Cancel Sales")}
             </p>
+            <Link
+              href="https://drive.google.com/file/d/11JeMTt22jWK12BjsW07fFYteuZgDGjAe/view?usp=sharing"
+              className="underline text-blue-600 hover:text-blue-800"
+            >
+              คลิกที่นี่เพื่อดูคลิปสอนการใช้งานภายใน 2 นาที!
+            </Link>
           </ContentCard>
           {/* <ContentCard
             title="หมายเหตุ (2)"
