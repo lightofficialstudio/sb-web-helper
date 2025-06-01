@@ -16,41 +16,41 @@ jobs:
         run: |
           sshpass -p "${{ secrets.HUAWEI_CLOUD_PASSWORD }}" ssh -o StrictHostKeyChecking=no ${{ secrets.HUAWEI_CLOUD_USERNAME }}@${{ secrets.HUAWEI_CLOUD_HOST }} "echo '✅ SSH Success'" || echo "❌ SSH Failed"
 
-      - name: 🗑️ Delete Old Artifacts
-        uses: actions/github-script@v6
-        with:
-          script: |
-            const perPage = 100;
-            let page = 1;
-            let artifacts = [];
+      # - name: 🗑️ Delete Old Artifacts
+      #   uses: actions/github-script@v6
+      #   with:
+      #     script: |
+      #       const perPage = 100;
+      #       let page = 1;
+      #       let artifacts = [];
 
-            while (true) {
-              const res = await github.rest.actions.listArtifactsForRepo({
-                owner: context.repo.owner,
-                repo: context.repo.repo,
-                per_page: perPage,
-                page: page
-              });
+      #       while (true) {
+      #         const res = await github.rest.actions.listArtifactsForRepo({
+      #           owner: context.repo.owner,
+      #           repo: context.repo.repo,
+      #           per_page: perPage,
+      #           page: page
+      #         });
 
-              artifacts = res.data.artifacts;
-              if (artifacts.length === 0) break;
+      #         artifacts = res.data.artifacts;
+      #         if (artifacts.length === 0) break;
 
-              for (const artifact of artifacts) {
-                const createdAt = new Date(artifact.created_at);
-                const ageInDays = (Date.now() - createdAt.getTime()) / (1000 * 60 * 60 * 24);
+      #         for (const artifact of artifacts) {
+      #           const createdAt = new Date(artifact.created_at);
+      #           const ageInDays = (Date.now() - createdAt.getTime()) / (1000 * 60 * 60 * 24);
 
-                if (ageInDays > 1) {
-                  console.log(`Deleting artifact ${artifact.name} (ID: ${artifact.id})`);
-                  await github.rest.actions.deleteArtifact({
-                    owner: context.repo.owner,
-                    repo: context.repo.repo,
-                    artifact_id: artifact.id,
-                  });
-                }
-              }
+      #           if (ageInDays > 1) {
+      #             console.log(`Deleting artifact ${artifact.name} (ID: ${artifact.id})`);
+      #             await github.rest.actions.deleteArtifact({
+      #               owner: context.repo.owner,
+      #               repo: context.repo.repo,
+      #               artifact_id: artifact.id,
+      #             });
+      #           }
+      #         }
 
-              page++;
-            }
+      #         page++;
+      #       }
 
   build:
     name: "🔨 Build on Runner"
