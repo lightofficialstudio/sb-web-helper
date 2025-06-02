@@ -125,3 +125,11 @@ export interface ResponseUserList extends DefaultRedux {
 export interface Default extends DefaultRedux {
   draftValues?: {};
 }
+
+export interface RequestLogin extends DefaultRedux {
+  draftValues?: {
+    username: string;
+    password: string;
+    school_id: string;
+  };
+}
