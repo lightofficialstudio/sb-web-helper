@@ -52,24 +52,41 @@ export default function SidebarContent() {
                   </button>
 
                   <div
-                    className={`ml-10 mt-2 flex flex-col gap-y-2 overflow-hidden transition-all duration-300 ${
-                      isOpen ? "max-h-40 opacity-100" : "max-h-0 opacity-0"
-                    }`}
+                    className={`
+                      ml-8 mt-2 flex flex-col space-y-1 overflow-hidden transition-[max-height,opacity] duration-300
+                      ${isOpen ? "max-h-60 opacity-100" : "max-h-0 opacity-0"}
+                    `}
                   >
-                    {item.children.map((child) => (
-                      <Link
-                        href={child.href!}
-                        key={child.label}
-                        className={`flex items-start gap-1 w-full px-3 py-1 rounded-lg text-gray-700 dark:text-gray-400 hover:bg-gray-100 dark:hover:bg-gray-800 transition duration-300 ${
-                          child.href === pathname
-                            ? "bg-gray-200 dark:bg-gray-700"
-                            : ""
-                        }`}
-                      >
-                        <span className="mt-1 w-2 h-2 rounded-full bg-orange-500 flex-shrink-0"></span>
-                        <span className="leading-tight">{child.label}</span>
-                      </Link>
-                    ))}
+                    {item.children.map((child) => {
+                      const isActive = child.href === pathname;
+                      return (
+                        <Link
+                          href={child.href!}
+                          key={child.label}
+                          className={`
+                            flex items-center gap-2 w-full px-4 py-2 rounded-lg transition-colors duration-200
+                            ${
+                              isActive
+                                ? "bg-gray-200 dark:bg-gray-700 text-gray-900 dark:text-white font-semibold"
+                                : "text-gray-700 dark:text-gray-300 hover:bg-gray-100 dark:hover:bg-gray-800"
+                            }
+                            ${
+                              isActive
+                                ? "border-l-4 border-orange-500 pl-3"
+                                : ""
+                            }
+                          `}
+                        >
+                          <span
+                            className={`
+                              w-2 h-2 rounded-full flex-shrink-0
+                              ${isActive ? "bg-orange-500" : "bg-orange-300"}
+                            `}
+                          />
+                          <span className="flex-1">{child.label}</span>
+                        </Link>
+                      );
+                    })}
                   </div>
                 </div>
               );

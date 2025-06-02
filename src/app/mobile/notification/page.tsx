@@ -17,9 +17,15 @@ import { InputFieldComponent } from "@components/input-field/input-field-compone
 import { FiRefreshCw, FiSearch } from "react-icons/fi";
 import { isOnline } from "@helpers/check-online-device-status";
 import { unwrapResult } from "@reduxjs/toolkit";
-import { ResponseGetServerStatus } from "@/stores/type";
+import {
+  ResponseGetServerStatus,
+  CancelSalesState,
+  ResponseSchoolList,
+  ResponseUserList,
+} from "@/stores/type";
 import MinimalModal from "@components/modal/minimal-modal-component";
 import { CallAPI as GET_SERVER_STATUS } from "@/stores/actions/server/call-get-server-status";
+import { CallAPI as GET_USER_BY_SCHOOLID } from "@/stores/actions/school/call-get-user";
 
 const columns: { key: string; label: string }[] = [
   { key: "server", label: "เซิฟเวอร์" },
@@ -38,6 +44,9 @@ export default function Page() {
   const GET_SERVER_STATUS_STATE = useAppSelector(
     (state) => state.callGetServerStatus
   );
+  const USER_LIST_STATE = useAppSelector(
+    (state) => state.callGetuserBySchoolId
+  );
 
   const [selectedSchool, setSelectedSchool] = useState<string>("");
   // filter by selected school
@@ -50,12 +59,17 @@ export default function Page() {
   >([]);
   const [rowsPerPage, setRowsPerPage] = useState(10);
   const [schoolList, setSchoolList] = useState<any[]>([]);
+  const [userList, setUserList] = useState<any[]>([]);
   const [fromDate, setFromDate] = useState<string>("");
   const [toDate, setToDate] = useState<string>("");
   const [deviceIdSearch, setDeviceIdSearch] = useState<string>("");
   const [modal, setModal] = useState<string>("");
   const [selectedRow, setSelectedRow] =
     useState<ResponseGetServerStatus["draftValues"]["Array"][number]>();
+  const [form, setForm] = useState<{
+    schoolID: string;
+    userID: string;
+  }>({ schoolID: "", userID: "" });
 
   const filteredTable = (table ?? []).filter((row) => {
     if (!fromDate && !toDate) return true;
@@ -87,6 +101,27 @@ export default function Page() {
     const response = GET_SERVER_STATUS_STATE?.response?.data?.data;
     setTable(response);
   }, [GET_SERVER_STATUS_STATE]);
+
+  const getUserBySchoolId = async (schoolId: string) => {
+    try {
+      const response = await dispatch(GET_USER_BY_SCHOOLID({ schoolId }));
+      await setUserList(
+        response?.payload?.data?.map(
+          (item: ResponseUserList["draftValues"]) => ({
+            label: `${item?.Name} \t ${item?.LastName}\t(ID : ${item?.UserID} Username : ${item?.username})`,
+            value: item?.UserID,
+          })
+        )
+      );
+      console.log(response);
+    } catch (error) {
+      throw new Error((error as Error).message);
+    }
+  };
+
+  useEffect(() => {
+    getUserBySchoolId(form.schoolID);
+  }, [form.schoolID]);
 
   const renderTableData = (
     data: ResponseGetServerStatus["draftValues"]["Array"]
@@ -164,32 +199,52 @@ export default function Page() {
 
       <div className="w-full space-y-4">
         {/* หมายเหตุ */}
-        <div className="grid grid-cols-2 grid-rows-1 gap-6 w-full">
-          <ContentCard
-            title="หมายเหตุ (1)"
-            fullWidth
-            className="w-full col-span-1 row-span-2"
-          >
-            <p className="text-sm text-red-500">
-              {t("ค้นหาด้วยชื่อโรงเรียน หรือ Device ID ก่อนแล้วข้อมูลจะขึ้น")}
-            </p>
-          </ContentCard>
-          <ContentCard
-            title="ทดสอบสถานะเซิฟเวอร์อีกครั้ง"
-            fullWidth
-            className="w-full col-span-1 row-span-2"
-          >
-            <p className="text-sm text-red-500">
-              <MinimalButton
-                iconLeft={<FiRefreshCw className="" />}
-                onClick={() => {
-                  dispatch(GET_SERVER_STATUS());
-                }}
-              >
-                รีเฟรช
-              </MinimalButton>
-            </p>
-          </ContentCard>
+        <div className="grid grid-cols-1 grid-rows-1 gap-0 w-full">
+          <div className="space-y-3 w-full grid-cols-2">
+            <ContentCard title="กรอกรายละเอียด" fullWidth className="w-full">
+              {/* ห่อสองช่องด้วย grid จริง ๆ */}
+              <div className="grid grid-cols-2 gap-4 w-full">
+                {/* กรอก School Id */}
+                <div>
+                  <SearchableSelectComponent
+                    label="เลือกโรงเรียน"
+                    options={[
+                      { label: "เลือกรายการ", value: "" },
+                      ...schoolList.map((s) => ({
+                        label: s.label + " (" + s.value + ")",
+                        value: String(s.value),
+                      })),
+                    ]}
+                    value={form.schoolID}
+                    onChange={(event: any) => {
+                      setForm({ ...form, schoolID: event });
+                    }}
+                    placeholder="เลือกโรงเรียน"
+                  />
+                </div>
+
+                {/* กรอกรหัส User ID (ของผู้ซื้อสินค้า) */}
+                <div>
+                  <SearchableSelectComponent
+                    label="กรอกรหัส User ID (ของผู้ซื้อสินค้า)"
+                    options={[
+                      { label: "เลือกรายการ", value: "" },
+                      ...(userList ?? []).map((s) => ({
+                        label: s.label,
+                        value: String(s.value),
+                      })),
+                    ]}
+                    value={form.userID}
+                    onChange={(event: any) => {
+                      setForm({ ...form, userID: event });
+                    }}
+                    placeholder="กรอกรหัส User ID (ของผู้ซื้อสินค้า)"
+                  />
+                </div>
+              </div>
+              <div className="grid grid-cols-1 w-full justify-content-end"></div>
+            </ContentCard>
+          </div>
         </div>
 
         <ContentCard
@@ -262,8 +317,10 @@ export default function Page() {
 
         {/* ตาราง */}
         <ContentCard
-          title="ตารางรายงานการทำงานทุกระบบ"
+          title="ตารางแสดงข้อความแจ้งเตือน"
           className="xl:col-span-4 w-full"
+          hidden={true}
+          isLoading={isLoading}
         >
           <MinimalTable
             isLoading={isLoading}

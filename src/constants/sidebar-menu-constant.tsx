@@ -8,6 +8,7 @@ import {
   FiSettings,
 } from "react-icons/fi";
 import { FaRegLightbulb } from "react-icons/fa6";
+import { AiFillMobile } from "react-icons/ai";
 
 interface MenuItem {
   label: string;
@@ -56,6 +57,16 @@ export const menu: MenuItem[] = [
       {
         label: "รายงานซิงก์ข้อมูลออฟไลน์ล่าสุด",
         href: "/health-check/offline-sync-status",
+      },
+    ],
+  },
+  {
+    label: "Mobile App",
+    icon: <AiFillMobile />,
+    children: [
+      {
+        label: "แจ้งเตือนในแอพ",
+        href: "/mobile/notification",
       },
     ],
   },

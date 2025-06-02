@@ -138,7 +138,7 @@ export default function Page() {
               <SearchableSelectComponent
                 label="เลือกโรงเรียน"
                 options={[
-                  { label: "ทั้งหมด", value: "" },
+                  { label: "เลือกรายการ", value: "" },
                   ...schoolList.map((s) => ({
                     label: s.label + " (" + s.value + ")",
                     value: String(s.value),
@@ -156,7 +156,7 @@ export default function Page() {
               <SearchableSelectComponent
                 label="กรอกรหัส User ID (ของผู้ซื้อสินค้า)"
                 options={[
-                  { label: "ทั้งหมด", value: "" },
+                  { label: "เลือกรายการ", value: "" },
                   ...(userList ?? []).map((s) => ({
                     label: s.label,
                     value: String(s.value),
@@ -175,7 +175,7 @@ export default function Page() {
               <SearchableSelectComponent
                 label="กรอกรหัส User ID (ของผู้ขายสินค้า)"
                 options={[
-                  { label: "ทั้งหมด", value: "" },
+                  { label: "เลือกรายการ", value: "" },
                   ...(userList ?? []).map((s) => ({
                     label: s.label,
                     value: String(s.value),
@@ -221,7 +221,7 @@ export default function Page() {
                 type="button"
                 textSize="base"
                 className="bg-red-500 hover:bg-red-600"
-                isLoading={false}
+                isLoading={isLoading}
               >
                 ยกเลิก
               </MinimalButton>
@@ -232,6 +232,7 @@ export default function Page() {
         {/* Reponse From Server */}
         <ContentCard
           title="Response"
+          isLoading={isLoading}
           fullWidth
           className={`md:col-span-2 xl:col-span-4 w-full overflow-hidden ${
             ReduxStateCancelSales.response.data ? "block" : "hidden"

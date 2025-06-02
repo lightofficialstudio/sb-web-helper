@@ -12,7 +12,8 @@ interface ContentCardProps {
   width?: string;
   height?: string;
   fullWidth?: boolean;
-  isLoading?: boolean; // ✅ New
+  isLoading?: boolean;
+  hidden?: boolean;
 }
 
 const sizeMap: Record<SizeOption, string> = {
@@ -31,6 +32,7 @@ export default function ContentCard({
   height,
   fullWidth = false,
   isLoading = false,
+  hidden = false,
 }: Readonly<ContentCardProps>) {
   const dimensionClass =
     width || height ? `${width || ""} ${height || ""}` : sizeMap[size];
@@ -46,6 +48,7 @@ export default function ContentCard({
         border-gray-200 dark:border-gray-700
         transition-all duration-500 ease-in-out
         text-sm
+        ${hidden ? "hidden" : "show"}
         ${dimensionClass} ${fullSpanClass} ${className}
         
       `}

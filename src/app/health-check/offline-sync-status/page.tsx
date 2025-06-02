@@ -232,7 +232,7 @@ ${findSchoolName(schoolId, schoolList)} สามารถออนไลน์�
                 <SearchableSelectComponent
                   label="เลือกโรงเรียน"
                   options={[
-                    { label: "ทั้งหมด", value: "" },
+                    { label: "เลือกรายการ", value: "" },
                     ...schoolList.map((s) => ({
                       label: s.label + " (" + s.value + ")",
                       value: String(s.value),
