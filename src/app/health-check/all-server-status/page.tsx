@@ -182,6 +182,7 @@ export default function Page() {
             <p className="text-sm text-red-500">
               <MinimalButton
                 iconLeft={<FiRefreshCw className="" />}
+                className="bg-green-500 hover:bg-green-600"
                 onClick={() => {
                   dispatch(GET_SERVER_STATUS());
                 }}

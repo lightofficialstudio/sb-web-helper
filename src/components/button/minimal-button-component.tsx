@@ -35,9 +35,8 @@ export default function MinimalButton({
       type={type}
       onClick={onClick}
       className={`flex items-center gap-2 px-4 py-2 rounded-lg text-white font-semibold
-        hover:shadow-md hover:shadow-orange-300  transition-all duration-500 ease-in-out
-        focus:outline-none focus:ring-2 focus:ring-orange-500 focus:ring-offset-2
-        bg-orange-500 dark:bg-orange-600
+        hover:shadow-md   transition-all duration-500 ease-in-out
+        focus:outline-none focus:ring-2  focus:ring-offset-2
         dark:hover:bg-orange-700 dark:focus:ring-offset-gray-800
         ${textSizeClass[textSize]} ${className}`}
     >

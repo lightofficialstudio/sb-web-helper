@@ -241,8 +241,20 @@ export default function Page() {
                     placeholder="กรอกรหัส User ID (ของผู้ซื้อสินค้า)"
                   />
                 </div>
+
+                <div></div>
+
+                <div className="flex justify-end w-full">
+                  <MinimalButton
+                    type="button"
+                    textSize="base"
+                    className="bg-green-500 hover:bg-green-600"
+                    isLoading={isLoading}
+                  >
+                    ค้นหา
+                  </MinimalButton>
+                </div>
               </div>
-              <div className="grid grid-cols-1 w-full justify-content-end"></div>
             </ContentCard>
           </div>
         </div>
