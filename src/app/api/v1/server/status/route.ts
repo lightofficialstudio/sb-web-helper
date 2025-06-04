@@ -21,8 +21,8 @@ export async function GET() {
       axios.get(SERVER_PROD_SBAPI, { headers }),
       axios.get(SERVER_DEV_SBAPI, { headers }),
       axios.post(SERVER_PROD_PAYSB, { headers }),
-      axios.post(SERVER_DEV_HARDWARE, { headers }),
-      axios.post(SERVER_PROD_HARDWARE, { headers }),
+      axios.get(SERVER_DEV_HARDWARE, { headers }),
+      axios.get(SERVER_PROD_HARDWARE, { headers }),
     ]);
 
     const servers = [
@@ -52,7 +52,7 @@ export async function GET() {
       },
       {
         server: "SERVER_DEV_HARDWARE",
-        url: API_URL.SERVER_DEV_HARDWARE,
+        url: API_URL.DEV_HARDWARE_API_URL,
         endpoint: "/api/application",
         description:
           "เซิฟเวอร์ Dev ระบบหลังบ้าน SB HARDWARE API ที่พี่โจ้ เป็นคนทำ เช่น ระบบแสกนหน้าออนไลน์ , ออฟไลน์ เป็นต้น",
@@ -60,7 +60,7 @@ export async function GET() {
       },
       {
         server: "SERVER_PROD_HARDWARE",
-        url: API_URL.SERVER_PROD_HARDWARE,
+        url: API_URL.PROD_HARDWARE_API_URL,
         endpoint: "/api/application",
         description:
           "เซิฟเวอร์ Production ระบบหลังบ้าน SB HARDWARE API ที่พี่โจ้ เป็นคนทำ เช่น ระบบแสกนหน้าออนไลน์ , ออฟไลน์ เป็นต้น",
