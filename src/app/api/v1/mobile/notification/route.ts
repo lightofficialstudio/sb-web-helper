@@ -16,19 +16,20 @@ export async function GET(request: NextRequest) {
     const apiUrl = `${API_URL.PROD_SB_API_URL}`;
     const endpoint = `/Notification/week/${user_id}?page=${page}&lang=th`;
     const callAPI = apiUrl + endpoint;
-
-    console.log("Forwarded headers", headers);
-
-    console.log("CallAPI", callAPI);
+    const curlHeader = `--header 'Content-Type: application/json'`;
+    const curlCommand = `curl --location ${curlHeader} \ '${callAPI}' `;
 
     const responseFromAPI = await axios.get(callAPI, {
       headers,
       httpsAgent: agent,
     });
 
-    return NextResponse.json(responseFromAPI.data, {
-      status: responseFromAPI.status,
-    });
+    return NextResponse.json(
+      { data: responseFromAPI.data, curl: curlCommand },
+      {
+        status: responseFromAPI.status,
+      }
+    );
   } catch (error: any) {
     return NextResponse.json(
       {

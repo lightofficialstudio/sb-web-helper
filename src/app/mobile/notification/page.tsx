@@ -1,5 +1,6 @@
 "use client";
 import React, { useEffect, useState } from "react";
+import Image from "next/image";
 import DashboardLayout from "@components/layouts/backend-layout";
 import ContentCard from "@components/layouts/backend/content";
 import { useTranslation } from "react-i18next";
@@ -14,7 +15,12 @@ import MinimalTable from "@components/table/minimal-table-component";
 import { findSchoolName } from "@helpers/find-school-id";
 import { convertTimeZoneToThai } from "@helpers/convert-time-zone-to-thai";
 import { InputFieldComponent } from "@components/input-field/input-field-component";
-import { FiRefreshCw, FiSearch } from "react-icons/fi";
+import {
+  FiArrowLeft,
+  FiArrowRight,
+  FiRefreshCw,
+  FiSearch,
+} from "react-icons/fi";
 import { isOnline } from "@helpers/check-online-device-status";
 import { unwrapResult } from "@reduxjs/toolkit";
 import {
@@ -22,14 +28,26 @@ import {
   CancelSalesState,
   ResponseSchoolList,
   ResponseUserList,
+  ResponseNotification,
 } from "@/stores/type";
 import MinimalModal from "@components/modal/minimal-modal-component";
+import {
+  getNotificationRead,
+  getNotificationType,
+} from "@helpers/get-notification-type";
 import { CallAPI as GET_SERVER_STATUS } from "@stores/actions/server/call-get-server-status";
 import { CallAPI as GET_USER_BY_SCHOOLID } from "@stores/actions/school/call-get-user";
 import { CallAPI as GET_NOTIFICATION } from "@stores/actions/mobile/call-get-notification";
 
 const columns: { key: string; label: string }[] = [
-  { key: "server", label: "เซิฟเวอร์" },
+  { key: "nMessageID", label: "รหัสข้อความ (ID)" },
+  { key: "dSend", label: "วันที่ส่งข้อความ" },
+  { key: "nType", label: "ประเภทข้อความ" },
+  { key: "nStatus", label: "สถานะการอ่าน" },
+  { key: "sTitle", label: "หัวข้อ" },
+  { key: "sMessage", label: "ข้อความ" },
+  { key: "logo", label: "โลโก้" },
+  { key: "action", label: "การกระทำ" },
 ];
 
 export default function Page() {
@@ -47,12 +65,12 @@ export default function Page() {
 
   const [selectedSchool, setSelectedSchool] = useState<string>("");
   // filter by selected school
-  const isLoading = [SCHOOL_LIST_STATE.loading, USER_LIST_STATE.loading].some(
-    Boolean
-  );
-  const [table, setTable] = useState<
-    ResponseGetServerStatus["draftValues"]["Array"]
-  >([]);
+  const isLoading = [
+    SCHOOL_LIST_STATE.loading,
+    USER_LIST_STATE.loading,
+    NOTIFICATION_STATE.loading,
+  ].some(Boolean);
+  const [table, setTable] = useState<ResponseNotification[]>([]);
   const [rowsPerPage, setRowsPerPage] = useState(10);
   const [schoolList, setSchoolList] = useState<any[]>([]);
   const [userList, setUserList] = useState<any[]>([]);
@@ -60,16 +78,16 @@ export default function Page() {
   const [toDate, setToDate] = useState<string>("");
   const [deviceIdSearch, setDeviceIdSearch] = useState<string>("");
   const [modal, setModal] = useState<string>("");
-  const [selectedRow, setSelectedRow] =
-    useState<ResponseGetServerStatus["draftValues"]["Array"][number]>();
+  const [selectedRow, setSelectedRow] = useState<ResponseNotification>();
   const [form, setForm] = useState<{
     schoolID: string;
     userID: string;
   }>({ schoolID: "", userID: "" });
+  const [page, setPage] = useState<number>(1);
 
   const filteredTable = (table ?? []).filter((row) => {
     if (!fromDate && !toDate) return true;
-    const ts = new Date(row.timestamp).getTime();
+    const ts = new Date(row.dSend).getTime();
     const fromTs = fromDate ? new Date(fromDate).getTime() : -Infinity;
     // วันสุดท้าย ให้ตีเป็นเที่ยงคืนถัดไป เพื่อรวมทั้งวัน
     const toTs = toDate
@@ -93,6 +111,20 @@ export default function Page() {
     getUserBySchoolId(form.schoolID);
   }, [form.schoolID]);
 
+  useEffect(() => {
+    if (page != 1) {
+      handleSubmitForm(page);
+    }
+  }, [page]);
+
+  useEffect(() => {
+    if (page != 1 && table.length < 1) {
+      Swal.fire({
+        title: "ไม่พบข้อมูล",
+      });
+    }
+  }, [table]);
+
   const getUserBySchoolId = async (schoolId: string) => {
     try {
       const response = await dispatch(GET_USER_BY_SCHOOLID({ schoolId }));
@@ -110,69 +142,80 @@ export default function Page() {
     }
   };
 
-  const handleSubmitForm = async () => {
+  const handleSubmitForm = async (page?: number) => {
     try {
-      console.log("Click");
-      await dispatch(GET_NOTIFICATION({ user_id: form.userID, page: "1" }));
+      const response = await dispatch(
+        GET_NOTIFICATION({
+          user_id: form.userID,
+          page: page?.toString() ?? "1",
+        })
+      ).unwrap();
+      console.log("RESPONSE", response);
+      setTable(response?.data);
     } catch (error: any) {
       throw new Error(error.message);
     }
   };
 
-  const renderTableData = (
-    data: ResponseGetServerStatus["draftValues"]["Array"]
-  ) =>
+  const renderTableData = (data: ResponseNotification[]) =>
     data.map((row, idx) => (
       <MinimalRow key={idx}>
-        {({
-          index,
-          row,
-        }: {
-          index: number;
-          row: ResponseGetServerStatus["draftValues"]["Array"][number];
-        }) => (
+        {({ index, row }: { index: number; row: ResponseNotification }) => (
           <>
             <td className="p-4 font-medium text-sm text-gray-900 dark:text-white">
               {index}
             </td>
             <td className="p-4 font-medium text-sm text-gray-900">
-              {row.server}
+              {row.nMessageID}
             </td>
             <td className="p-4 font-medium text-sm text-gray-900">
-              {row.description}
+              {convertTimeZoneToThai(new Date(row.dSend))}
             </td>
-            <td className="p-4">
-              {row.Status === "Online" ? (
-                <div>
-                  <span className="inline-block w-3 h-3 bg-green-500 rounded-full mr-2" />
-                  <span className="text-green-600 font-semibold">Online</span>
-                </div>
+            <td className="p-4 font-medium text-sm text-gray-900">
+              {getNotificationType(row.nType)}
+            </td>
+            <td className="p-4 font-medium text-sm text-gray-900">
+              {getNotificationRead(row.nStatus)}
+            </td>
+            <td className="p-4 font-medium text-sm text-gray-900">
+              {row.sTitle}
+            </td>
+            <td className="p-4 font-medium text-sm text-gray-900">
+              {row.sMessage}
+            </td>
+            <td className="p-4 font-medium text-sm text-gray-900">
+              {row.logo ? (
+                <Image
+                  src={row.logo}
+                  alt="Notification Logo"
+                  width={40}
+                  height={40}
+                  className="object-contain rounded"
+                />
               ) : (
-                <div>
-                  <span className="inline-block w-3 h-3 bg-red-500 rounded-full mr-2" />
-                  <span className="text-red-600 font-semibold">Offline</span>
-                </div>
+                <span className="text-gray-400">No Image</span>
               )}
             </td>
             <td className="p-4 font-medium text-sm text-gray-900">
-              {convertTimeZoneToThai(new Date(row.timestamp))}
-            </td>
-            <td className="p-4 text-sm text-blue-600 hover:underline break-all">
-              <a href={row.url} target="_blank" rel="noopener noreferrer">
-                {row.url}
-              </a>
-            </td>
-            <td className="p-4 text-sm font-mono text-gray-800 bg-gray-100 px-2 py-1 rounded break-all">
-              <code>{row.endpoint}</code>
-            </td>
-            <td className="p-4 font-medium text-sm text-gray-900">
+              {/* CURL */}
               <MinimalButton
+                className="mt-2 px-4 py-2 bg-yellow-500 text-white rounded hover:bg-yellow-600"
                 onClick={() => {
-                  setModal("response_open");
-                  setSelectedRow(row);
+                  console.log(
+                    "NOTIFICATION STATE",
+                    NOTIFICATION_STATE?.response?.data?.curl
+                  );
+                  const curlCommand = NOTIFICATION_STATE?.response?.data?.curl;
+                  navigator.clipboard.writeText(curlCommand.toString());
+                  Swal.fire({
+                    icon: "success",
+                    title: "Copied!",
+                    text: "Copy CURL to clipboard.",
+                    confirmButtonText: "OK",
+                  });
                 }}
               >
-                Response
+                Copy CURL
               </MinimalButton>
             </td>
           </>
@@ -197,7 +240,11 @@ export default function Page() {
         {/* หมายเหตุ */}
         <div className="grid grid-cols-1 grid-rows-1 gap-0 w-full">
           <div className="space-y-3 w-full grid-cols-2">
-            <ContentCard title="กรอกรายละเอียด" fullWidth className="w-full">
+            <ContentCard
+              title="ค้นหาการแจ้งเตือนในแอพ"
+              fullWidth
+              className="w-full"
+            >
               {/* ห่อสองช่องด้วย grid จริง ๆ */}
               <div className="grid grid-cols-2 gap-4 w-full">
                 {/* กรอก School Id */}
@@ -219,10 +266,10 @@ export default function Page() {
                   />
                 </div>
 
-                {/* กรอกรหัส User ID (ของผู้ซื้อสินค้า) */}
+                {/* กรอกรหัส User ID  */}
                 <div>
                   <SearchableSelectComponent
-                    label="กรอกรหัส User ID (ของผู้ซื้อสินค้า)"
+                    label="กรอกรหัส User ID ที่ต้องการค้นหา"
                     options={[
                       { label: "เลือกรายการ", value: "" },
                       ...(userList ?? []).map((s) => ({
@@ -234,7 +281,7 @@ export default function Page() {
                     onChange={(event: any) => {
                       setForm({ ...form, userID: event });
                     }}
-                    placeholder="กรอกรหัส User ID (ของผู้ซื้อสินค้า)"
+                    placeholder="กรอกรหัส User ID"
                   />
                 </div>
 
@@ -244,9 +291,17 @@ export default function Page() {
                   <MinimalButton
                     type="button"
                     textSize="base"
-                    className="bg-green-500 hover:bg-green-600"
+                    className={` ${
+                      form?.userID
+                        ? "bg-green-500 hover:bg-green-600"
+                        : "bg-gray-300"
+                    }`}
                     isLoading={isLoading}
-                    onClick={() => handleSubmitForm()}
+                    disabled={!form?.userID}
+                    onClick={async () => {
+                      setPage(1);
+                      await handleSubmitForm(1);
+                    }}
                   >
                     ค้นหา
                   </MinimalButton>
@@ -328,7 +383,7 @@ export default function Page() {
         <ContentCard
           title="ตารางแสดงข้อความแจ้งเตือน"
           className="xl:col-span-4 w-full"
-          hidden={false}
+          hidden={table?.length < 1}
           isLoading={isLoading}
         >
           <MinimalTable
@@ -337,9 +392,34 @@ export default function Page() {
             data={filteredTable}
             rowsPerPage={rowsPerPage}
             onRowsPerPageChange={setRowsPerPage}
+            hiddenProps={true}
           >
             {filteredTable ? renderTableData(filteredTable) : null}
           </MinimalTable>
+          <div className="flex justify-between">
+            <MinimalButton
+              type="submit"
+              textSize="base"
+              className="bg-sky-500 hover:bg-sky-700 w-10 justify-center"
+              isLoading={isLoading}
+              onClick={() => {
+                setPage(page - 1);
+              }}
+            >
+              <FiArrowLeft />
+            </MinimalButton>
+            <MinimalButton
+              type="submit"
+              textSize="base"
+              className="bg-sky-500 hover:bg-sky-700 w-10 justify-center "
+              isLoading={isLoading}
+              onClick={() => {
+                setPage(page + 1);
+              }}
+            >
+              <FiArrowRight />
+            </MinimalButton>
+          </div>
         </ContentCard>
       </div>
     </DashboardLayout>

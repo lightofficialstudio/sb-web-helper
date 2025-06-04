@@ -1,6 +1,6 @@
 import { createSlice, PayloadAction } from "@reduxjs/toolkit";
 import { RequestNotification } from "@stores/type";
-import { CallAPI } from "@stores/actions/authentication/call-post-refresh-token";
+import { CallAPI } from "@stores/actions/mobile/call-get-notification";
 
 const initialState: RequestNotification = {
   draftValues: {

@@ -21,6 +21,7 @@ interface MinimalTableProps {
   onRowsPerPageChange?: (value: number) => void;
   children: React.ReactNode;
   isLoading: boolean;
+  hiddenProps:boolean;
 }
 
 export default function MinimalTable({
@@ -29,7 +30,7 @@ export default function MinimalTable({
   children,
   rowsPerPage: rowsPerPageProp,
   onRowsPerPageChange,
-  isLoading,
+  isLoading, hiddenProps,
 }: Readonly<MinimalTableProps>) {
   const [sortedData, setSortedData] = useState(data);
   const [sortField, setSortField] = useState(header[0]?.key ?? "");
@@ -115,7 +116,7 @@ export default function MinimalTable({
       </table>
 
       {/* Pagination */}
-      <div className="flex justify-between items-center mt-4 text-sm text-gray-600">
+      <div className={`flex justify-between items-center mt-4 text-sm text-gray-600 ${hiddenProps ? 'hidden' : ''}`}>
         <div className="flex gap-2">
           <button
             onClick={() => setCurrentPage((p) => Math.max(p - 1, 1))}
@@ -130,12 +131,12 @@ export default function MinimalTable({
           <button
             onClick={() => setCurrentPage((p) => Math.min(p + 1, totalPages))}
             disabled={currentPage === totalPages}
-            className="px-3 py-1 border rounded disabled:opacity-40"
+            className={`px-3 py-1 border rounded disabled:opacity-40 ${hiddenProps ? 'hidden' : ''}`}
           >
             Next
           </button>
         </div>
-        <div className="flex items-center gap-2">
+        <div className={`flex items-center gap-2 `}>
           <label>Rows per page:</label>
           <select
             value={rowsPerPage}
@@ -145,7 +146,7 @@ export default function MinimalTable({
               setCurrentPage(1);
               onRowsPerPageChange?.(v);
             }}
-            className="border rounded px-2 py-1"
+            className={`border rounded px-2 py-1 `}
           >
             {[5, 10, 20, 50].map((n) => (
               <option key={n} value={n}>

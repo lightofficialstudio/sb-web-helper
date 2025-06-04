@@ -11,6 +11,7 @@ interface MinimalButtonProps {
   className?: string;
   isLoading?: boolean;
   type?: "button" | "submit" | "reset";
+  disabled?: boolean;
 }
 
 export default function MinimalButton({
@@ -22,6 +23,7 @@ export default function MinimalButton({
   className = "",
   isLoading = false,
   type = "button",
+  disabled = false,
 }: Readonly<MinimalButtonProps>) {
   const textSizeClass = {
     sm: "text-sm",
@@ -33,6 +35,7 @@ export default function MinimalButton({
   return (
     <button
       type={type}
+      disabled={disabled}
       onClick={onClick}
       className={`flex items-center gap-2 px-4 py-2 rounded-lg text-white font-semibold
         hover:shadow-md   transition-all duration-500 ease-in-out

@@ -141,6 +141,32 @@ export interface RequestNotification extends DefaultRedux {
   };
 }
 
+export interface ResponseNotification {
+  sMessage: string;
+  sTitle: string;
+  nMessageID: number;
+  dSend: string;
+  nStatus: number;
+  nType: number;
+  push_id: string | null;
+  scheduled_id: string;
+  homework_id: number | null;
+  homework: any | null;
+  sell_id: number | null;
+  file: boolean;
+  letter_id: number;
+  school_id: number;
+  logo: string;
+  letter_status: string;
+  LogStatus: number;
+  replyButtons: any | null;
+  replyResult: any | null;
+  replyStatus: boolean;
+  fileUploads: any | null;
+  NewsCreatedBy: any | null;
+  ReplyType: any | null;
+}
+
 export interface RequestRefreshToken extends DefaultRedux {
   draftValues: {
     school_id: string;
