@@ -85,6 +85,7 @@ export default function Page() {
 
   useEffect(() => {
     const response = GET_SERVER_STATUS_STATE?.response?.data?.data;
+    console.log("Res", response);
     setTable(response);
   }, [GET_SERVER_STATUS_STATE]);
 
@@ -134,8 +135,9 @@ export default function Page() {
             <td className="p-4 text-sm font-mono text-gray-800 bg-gray-100 px-2 py-1 rounded break-all">
               <code>{row.endpoint}</code>
             </td>
-            <td className="p-4 font-medium text-sm text-gray-900">
+            <td className="p-4 font-medium text-sm text-gray-900 ">
               <MinimalButton
+                className="bg-slate-600 dark:bg-gray-600"
                 onClick={() => {
                   setModal("response_open");
                   setSelectedRow(row);

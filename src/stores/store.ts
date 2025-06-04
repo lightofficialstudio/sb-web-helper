@@ -12,6 +12,7 @@ import callGetOnlineDeviceReducer from "@stores/reducers/hardware/call-get-onlin
 import callGetServerStatusReducer from "@stores/reducers/server/call-get-server-status";
 import callGetuserBySchoolIdReducer from "@stores/reducers/school/call-get-user";
 import callRefreshTokenReducer from "@stores/reducers/authentication/call-refresh-token";
+import callGetNotificationReducer from "@stores/reducers/mobile/call-get-notification";
 // #endregion
 
 export const store = configureStore({
@@ -27,6 +28,7 @@ export const store = configureStore({
     callGetServerStatus: callGetServerStatusReducer,
     callGetuserBySchoolId: callGetuserBySchoolIdReducer,
     callRefreshToken: callRefreshTokenReducer,
+    callGetNotification: callGetNotificationReducer,
   },
 });
 

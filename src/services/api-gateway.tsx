@@ -12,25 +12,26 @@ export interface CallBackendAPIProps {
   backendUrl?: string;
 }
 
+let newToken: string = "";
+
 const refreshToken = async () => {
   const state = store.getState();
   const { school_id, user_id, token } = state.callRefreshToken.draftValues;
+
   try {
-    const response = await store.dispatch(
-      CallAPI({
-        school_id,
-        user_id,
-        token,
-      })
-    );
-    if ("payload" in response && response.payload?.token) {
-      process.env.API_TOKEN = response.payload.token;
-      return response.payload.token;
+    const payload = await store
+      .dispatch(CallAPI({ school_id, user_id, token }))
+      .unwrap(); // ✅ รอผลลัพธ์จริง
+
+    if (payload?.data?.token) {
+      newToken = payload.data.token;
+      return newToken;
     }
+    return null;
   } catch (error) {
     console.error("Error refreshing token:", error);
+    return null;
   }
-  return null;
 };
 
 export const callBackendAPI = async ({
@@ -52,9 +53,13 @@ export const callBackendAPI = async ({
     endpoint.startsWith("/") ? endpoint : `/${endpoint}`
   }`;
 
+  // Get school_id and user_id from Redux state
+  const { school_id, user_id, token } =
+    store.getState().callRefreshToken.draftValues;
+
   const headers = {
     ...extendHeader,
-    Authorization: `Bearer ${process.env.API_TOKEN}`,
+    [`JabjaiKey-${school_id}-${user_id}`]: newToken,
     "Content-Type": "application/json",
   };
 
@@ -77,30 +82,43 @@ export const callBackendAPI = async ({
         throw new Error("Unsupported HTTP method");
     }
 
-    if (response.status === 401) {
-      const newToken = await refreshToken();
-      if (newToken) {
-        headers.Authorization = `Bearer ${newToken}`;
-        switch (method) {
-          case API_METHOD.GET:
-            response = await axios.get(url, { headers });
-            break;
-          case API_METHOD.POST:
-            response = await axios.post(url, data, { headers });
-            break;
-          case API_METHOD.PUT:
-            response = await axios.put(url, data, { headers });
-            break;
-          case API_METHOD.DELETE:
-            response = await axios.delete(url, { headers });
-            break;
-        }
+    return response.data;
+  } catch (error: any) {
+    // ✅ ถ้าเจอ 401 ค่อยเรียก refreshToken และ retry ใหม่
+    if (error.response?.status === 401) {
+      await refreshToken();
+
+      // Re-create headers after refreshToken to include updated newToken
+      const retryHeaders = {
+        ...extendHeader,
+        [`JabjaiKey-${school_id}-${user_id}`]: newToken,
+        "Content-Type": "application/json",
+      };
+
+      console.log("retry", retryHeaders);
+
+      // 🔁 ลองเรียก API ใหม่อีกรอบ
+      const retryConfig = { headers: retryHeaders };
+      let retryResponse;
+      switch (method) {
+        case API_METHOD.GET:
+          retryResponse = await axios.get(url, retryConfig);
+          break;
+        case API_METHOD.POST:
+          retryResponse = await axios.post(url, data, retryConfig);
+          break;
+        case API_METHOD.PUT:
+          retryResponse = await axios.put(url, data, retryConfig);
+          break;
+        case API_METHOD.DELETE:
+          retryResponse = await axios.delete(url, retryConfig);
+          break;
       }
+      console.log("Retry", retryResponse?.data);
+      return retryResponse?.data;
     }
 
-    return response.data; // ส่งข้อมูลกลับจาก API
-  } catch (error) {
-    throw new Error((error as Error).message);
+    throw new Error(error.message);
   } finally {
     console.log("API call completed");
   }

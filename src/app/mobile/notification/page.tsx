@@ -24,8 +24,9 @@ import {
   ResponseUserList,
 } from "@/stores/type";
 import MinimalModal from "@components/modal/minimal-modal-component";
-import { CallAPI as GET_SERVER_STATUS } from "@/stores/actions/server/call-get-server-status";
-import { CallAPI as GET_USER_BY_SCHOOLID } from "@/stores/actions/school/call-get-user";
+import { CallAPI as GET_SERVER_STATUS } from "@stores/actions/server/call-get-server-status";
+import { CallAPI as GET_USER_BY_SCHOOLID } from "@stores/actions/school/call-get-user";
+import { CallAPI as GET_NOTIFICATION } from "@stores/actions/mobile/call-get-notification";
 
 const columns: { key: string; label: string }[] = [
   { key: "server", label: "เซิฟเวอร์" },
@@ -35,19 +36,20 @@ export default function Page() {
   const { t } = useTranslation("mock");
   const dispatch = useDispatch<AppDispatch>();
   const SCHOOL_LIST_STATE = useAppSelector((state) => state.callSchoolList);
-  const GET_SERVER_STATUS_STATE = useAppSelector(
-    (state) => state.callGetServerStatus
-  );
+
   const USER_LIST_STATE = useAppSelector(
     (state) => state.callGetuserBySchoolId
   );
 
+  const NOTIFICATION_STATE = useAppSelector(
+    (state) => state.callGetNotification
+  );
+
   const [selectedSchool, setSelectedSchool] = useState<string>("");
   // filter by selected school
-  const isLoading = [
-    SCHOOL_LIST_STATE.loading,
-    GET_SERVER_STATUS_STATE.loading,
-  ].some(Boolean);
+  const isLoading = [SCHOOL_LIST_STATE.loading, USER_LIST_STATE.loading].some(
+    Boolean
+  );
   const [table, setTable] = useState<
     ResponseGetServerStatus["draftValues"]["Array"]
   >([]);
@@ -88,13 +90,8 @@ export default function Page() {
   }, [SCHOOL_LIST_STATE?.response]);
 
   useEffect(() => {
-    dispatch(GET_SERVER_STATUS());
-  }, []);
-
-  useEffect(() => {
-    const response = GET_SERVER_STATUS_STATE?.response?.data?.data;
-    setTable(response);
-  }, [GET_SERVER_STATUS_STATE]);
+    getUserBySchoolId(form.schoolID);
+  }, [form.schoolID]);
 
   const getUserBySchoolId = async (schoolId: string) => {
     try {
@@ -113,9 +110,14 @@ export default function Page() {
     }
   };
 
-  useEffect(() => {
-    getUserBySchoolId(form.schoolID);
-  }, [form.schoolID]);
+  const handleSubmitForm = async () => {
+    try {
+      console.log("Click");
+      await dispatch(GET_NOTIFICATION({ user_id: form.userID, page: "1" }));
+    } catch (error: any) {
+      throw new Error(error.message);
+    }
+  };
 
   const renderTableData = (
     data: ResponseGetServerStatus["draftValues"]["Array"]
@@ -244,6 +246,7 @@ export default function Page() {
                     textSize="base"
                     className="bg-green-500 hover:bg-green-600"
                     isLoading={isLoading}
+                    onClick={() => handleSubmitForm()}
                   >
                     ค้นหา
                   </MinimalButton>

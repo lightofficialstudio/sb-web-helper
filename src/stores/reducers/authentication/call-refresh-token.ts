@@ -4,8 +4,8 @@ import { CallAPI } from "@stores/actions/authentication/call-post-refresh-token"
 
 const initialState: RequestRefreshToken = {
   draftValues: {
-    school_id: "",
-    user_id: "",
+    school_id: "849",
+    user_id: "1233752",
     token: "",
   },
   loading: false,

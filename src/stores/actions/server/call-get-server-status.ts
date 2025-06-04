@@ -3,7 +3,7 @@ import { callBackendAPI, CallBackendAPIProps } from "@services/api-gateway";
 import { API_METHOD } from "@/services/api-method";
 
 // สร้าง async action สำหรับส่งข้อมูลผู้ใช้ไปยัง API
-const API_ENDPOINT = `/api/v1/school/get-user`;
+const API_ENDPOINT = `/api/v1/server/status`;
 export const CallAPI = createAsyncThunk(API_ENDPOINT, async () => {
   const payload: CallBackendAPIProps = {
     method: API_METHOD.GET,
