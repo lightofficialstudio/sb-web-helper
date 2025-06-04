@@ -13,17 +13,21 @@ export async function GET() {
     const SERVER_PROD_SBAPI = `${API_URL.PROD_SB_API_URL}/api/SeverStatus`;
     const SERVER_DEV_SBAPI = `${API_URL.DEV_SB_API_URL}/api/SeverStatus`;
     const SERVER_PROD_PAYSB = `${API_URL.PROD_PAYMENT_API_URL}/api/device/status/registeronlinelogin`;
+    const SERVER_DEV_HARDWARE = `${API_URL.DEV_HARDWARE_API_URL}/api/application`;
+    const SERVER_PROD_HARDWARE = `${API_URL.PROD_HARDWARE_API_URL}/api/application`;
 
     // perform both requests and handle failures individually
     const results = await Promise.allSettled([
       axios.get(SERVER_PROD_SBAPI, { headers }),
       axios.get(SERVER_DEV_SBAPI, { headers }),
       axios.post(SERVER_PROD_PAYSB, { headers }),
+      axios.post(SERVER_DEV_HARDWARE, { headers }),
+      axios.post(SERVER_PROD_HARDWARE, { headers }),
     ]);
 
     const servers = [
       {
-        server: "prod_sb_api",
+        server: "SERVER_PROD_SBAPI",
         url: API_URL.PROD_SB_API_URL,
         endpoint: "/api/SeverStatus",
         description:
@@ -31,7 +35,7 @@ export async function GET() {
         timestamp,
       },
       {
-        server: "dev_sb_api",
+        server: "SERVER_DEV_SBAPI",
         url: API_URL.DEV_SB_API_URL,
         endpoint: "/api/SeverStatus",
         description:
@@ -39,11 +43,27 @@ export async function GET() {
         timestamp,
       },
       {
-        server: "prod_pay_sb",
+        server: "SERVER_PROD_PAYSB",
         url: API_URL.PROD_PAYMENT_API_URL,
         endpoint: "/api/device/status/registeronlinelogin",
         description:
           "เซิฟเวอร์ Production ระบบหลังบ้าน SB PAYMENT API ที่ Vimal เป็นคนทำ เช่น ระบบจ่ายเงินผ่านเครื่อง Canteen,ตัดยอดเงินออนไลน์,ตัดยอดเงินออฟไลน์ เป็นต้น",
+        timestamp,
+      },
+      {
+        server: "SERVER_DEV_HARDWARE",
+        url: API_URL.SERVER_DEV_HARDWARE,
+        endpoint: "/api/application",
+        description:
+          "เซิฟเวอร์ Dev ระบบหลังบ้าน SB HARDWARE API ที่พี่โจ้ เป็นคนทำ เช่น ระบบแสกนหน้าออนไลน์ , ออฟไลน์ เป็นต้น",
+        timestamp,
+      },
+      {
+        server: "SERVER_PROD_HARDWARE",
+        url: API_URL.SERVER_PROD_HARDWARE,
+        endpoint: "/api/application",
+        description:
+          "เซิฟเวอร์ Production ระบบหลังบ้าน SB HARDWARE API ที่พี่โจ้ เป็นคนทำ เช่น ระบบแสกนหน้าออนไลน์ , ออฟไลน์ เป็นต้น",
         timestamp,
       },
     ];
