@@ -1,4 +1,5 @@
 import { store } from "@stores/store";
+import { NextRequest } from "next/server";
 
 export const getHeaders = () => {
   const state = store.getState();
@@ -12,8 +13,6 @@ export const getHeaders = () => {
     [`JabjaiKey-${school_id}-${user_id}`]: token,
   };
 };
-
-import { NextRequest } from "next/server";
 
 export function sanitizeForwardHeaders(
   request: NextRequest

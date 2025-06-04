@@ -4,6 +4,7 @@ import "@styles/globals.css";
 import ClientProvider from "@components/providers/client-providers";
 import LocaleProvider from "@components/providers/i18n-provider"; // Import the new ClientProvider
 import SchoolReduxProvider from "@components/providers/school-list-provider"; // Import the new ClientProvider
+import AuthenticationReduxProvider from "@/components/providers/auth-provider";
 
 export default function RootLayout({
   children,
@@ -30,7 +31,9 @@ export default function RootLayout({
         {/* Move client-related providers to a separate component */}
         <ClientProvider>
           <LocaleProvider locale="en" />
-          <SchoolReduxProvider>{children}</SchoolReduxProvider>
+          <AuthenticationReduxProvider>
+            <SchoolReduxProvider>{children}</SchoolReduxProvider>
+          </AuthenticationReduxProvider>
         </ClientProvider>
       </body>
     </html>

@@ -1,9 +1,9 @@
 // types.ts
-export interface DefaultRedux {
+export interface DefaultRedux<T = any> {
   loading: boolean;
   error: string;
   success: string;
-  response: any;
+  response: T;
 }
 
 export interface UserState extends DefaultRedux {
@@ -171,6 +171,25 @@ export interface RequestRefreshToken extends DefaultRedux {
   draftValues: {
     school_id: string;
     user_id: string;
+    token: string;
+  };
+}
+
+export interface RequestLoginAdmin extends DefaultRedux<ResponseLoginAdmin> {
+  draftValues: {
+    username: string;
+    password: string;
+  };
+}
+
+export interface ResponseLoginAdmin {
+  status: number;
+  data: {
+    id: string;
+    admin_id: number;
+    username: string;
+    name: string;
+    lastname: string;
     token: string;
   };
 }

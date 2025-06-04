@@ -1,17 +1,26 @@
 "use client";
 
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import Image from "next/image";
 import i18n from "@/i18n";
 import { useTranslation } from "react-i18next";
+import { useDispatch, useSelector } from "react-redux";
+import { AppDispatch, RootState, useAppSelector } from "@stores/store";
 
 export default function UserDropdown() {
+  const dispatch = useDispatch<AppDispatch>();
+  const AUTHENTICATION = useAppSelector((state) => state.callAdminLogin);
+
   const [isOpen, setIsOpen] = useState(false);
   const { t } = useTranslation(); // ← ถ้าอยากใช้ t ในอนาคต
   const changeLanguage = (lng: string) => {
     i18n.changeLanguage(lng);
     setIsOpen(false); // ปิด dropdown หลังเปลี่ยน
   };
+
+  useEffect(() => {
+    console.log("AUTHENTICATION", AUTHENTICATION);
+  }, []);
 
   return (
     <div className="relative">
@@ -54,7 +63,8 @@ export default function UserDropdown() {
         <div className="absolute right-0 mt-3 w-56 bg-white dark:bg-gray-800 shadow-lg rounded-lg z-[60] border border-gray-200 dark:border-gray-700 text-sm animate-fade-in-down transition-all duration-300">
           <div className="px-4 py-3 border-b border-gray-200 dark:border-gray-700">
             <p className="font-semibold text-gray-800 dark:text-white">
-              Wilbur Stroman
+              {AUTHENTICATION.response.data.name ?? "ชื่อ"}{" "}
+              {AUTHENTICATION.response.data.lastname ?? "นามสกุล"}
             </p>
             <p className="text-gray-500 dark:text-gray-400 text-xs">
               wilbur@email.com
