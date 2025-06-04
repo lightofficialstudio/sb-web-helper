@@ -10,7 +10,17 @@ const initialState: RequestLoginAdmin = {
   loading: false,
   error: "",
   success: "",
-  response: {},
+  response: {
+    status: 0,
+    data: {
+      id: "",
+      admin_id: 0,
+      username: "",
+      name: "",
+      lastname: "",
+      token: "",
+    },
+  },
 };
 
 const Slice = createSlice({

@@ -1,6 +1,5 @@
 import { NextRequest, NextResponse } from "next/server";
 import { API_URL } from "@/services/api-url";
-import { headers } from "@/services/api-header";
 import axios from "axios";
 import { RequestRefreshToken } from "@/stores/type";
 
@@ -22,7 +21,7 @@ export async function POST(request: NextRequest) {
       sID: temp_user_id,
     };
 
-    const responseFromAPI = await axios.post(callAPI, payload, { headers });
+    const responseFromAPI = await axios.post(callAPI, payload, {});
 
     return NextResponse.json({
       status: responseFromAPI.status,
