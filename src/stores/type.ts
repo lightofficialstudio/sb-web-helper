@@ -133,3 +133,18 @@ export interface RequestLogin extends DefaultRedux {
     school_id: string;
   };
 }
+
+export interface RequestNotification extends DefaultRedux {
+  draftValues: {
+    user_id: string;
+    page: string;
+  };
+}
+
+export interface RequestRefreshToken extends DefaultRedux {
+  draftValues: {
+    school_id: string;
+    user_id: string;
+    token: string;
+  };
+}

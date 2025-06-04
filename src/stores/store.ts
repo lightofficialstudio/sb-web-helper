@@ -11,6 +11,7 @@ import callPostOfflineDeviceReducer from "@stores/reducers/hardware/call-post-of
 import callGetOnlineDeviceReducer from "@stores/reducers/hardware/call-get-online-device";
 import callGetServerStatusReducer from "@stores/reducers/server/call-get-server-status";
 import callGetuserBySchoolIdReducer from "@stores/reducers/school/call-get-user";
+import callRefreshTokenReducer from "@stores/reducers/authentication/call-refresh-token";
 // #endregion
 
 export const store = configureStore({
@@ -25,6 +26,7 @@ export const store = configureStore({
     callGetOnlineDevice: callGetOnlineDeviceReducer,
     callGetServerStatus: callGetServerStatusReducer,
     callGetuserBySchoolId: callGetuserBySchoolIdReducer,
+    callRefreshToken: callRefreshTokenReducer,
   },
 });
 
