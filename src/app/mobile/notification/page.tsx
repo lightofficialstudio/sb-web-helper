@@ -29,12 +29,6 @@ import { CallAPI as GET_USER_BY_SCHOOLID } from "@/stores/actions/school/call-ge
 
 const columns: { key: string; label: string }[] = [
   { key: "server", label: "เซิฟเวอร์" },
-  { key: "description", label: "คำอธิบาย" },
-  { key: "Status", label: "สถานะเซิฟเวอร์" },
-  { key: "timestamp", label: "ตรวจสอบล่าสุดเมื่อ" },
-  { key: "url", label: "URL" },
-  { key: "endpoint", label: "ENDPOINT" },
-  { key: "response", label: "RESPONSE" },
 ];
 
 export default function Page() {
@@ -331,7 +325,7 @@ export default function Page() {
         <ContentCard
           title="ตารางแสดงข้อความแจ้งเตือน"
           className="xl:col-span-4 w-full"
-          hidden={true}
+          hidden={false}
           isLoading={isLoading}
         >
           <MinimalTable
