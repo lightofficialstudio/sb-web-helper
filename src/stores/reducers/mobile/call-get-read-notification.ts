@@ -52,7 +52,7 @@ const initialState: RequestNotificationReadMessage = {
 };
 
 const Slice = createSlice({
-  name: "callGetNotification",
+  name: "callGetReadNotification",
   initialState,
   reducers: {},
   extraReducers: (builder) => {
