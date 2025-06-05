@@ -193,3 +193,10 @@ export interface ResponseLoginAdmin {
     token: string;
   };
 }
+
+export interface RequestNotificationReadMessage extends DefaultRedux {
+  draftValues: {
+    user_id: string;
+    message_id: string;
+  };
+}

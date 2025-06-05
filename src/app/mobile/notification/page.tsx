@@ -198,25 +198,34 @@ export default function Page() {
             </td>
             <td className="p-4 font-medium text-sm text-gray-900">
               {/* CURL */}
-              <MinimalButton
-                className="mt-2 px-4 py-2 bg-yellow-500 text-white rounded hover:bg-yellow-600"
-                onClick={() => {
-                  console.log(
-                    "NOTIFICATION STATE",
-                    NOTIFICATION_STATE?.response?.data?.curl
-                  );
-                  const curlCommand = NOTIFICATION_STATE?.response?.data?.curl;
-                  navigator.clipboard.writeText(curlCommand.toString());
-                  Swal.fire({
-                    icon: "success",
-                    title: "Copied!",
-                    text: "Copy CURL to clipboard.",
-                    confirmButtonText: "OK",
-                  });
-                }}
-              >
-                Copy CURL
-              </MinimalButton>
+              <div className="grid grid-cols-1 justify-between">
+                <MinimalButton
+                  className=" bg-green-500 text-white rounded hover:bg-green-600 w-24 h-10 text-sm"
+                  onClick={() => {
+                    console.log(
+                      "NOTIFICATION STATE",
+                      NOTIFICATION_STATE?.response?.data?.curl
+                    );
+                    const curlCommand =
+                      NOTIFICATION_STATE?.response?.data?.curl;
+                    navigator.clipboard.writeText(curlCommand.toString());
+                    Swal.fire({
+                      icon: "success",
+                      title: "Copied!",
+                      text: "Copy CURL to clipboard.",
+                      confirmButtonText: "OK",
+                    });
+                  }}
+                >
+                  CURL
+                </MinimalButton>
+                <MinimalButton
+                  className="mt-2 px-4 py-2 bg-orange-500 text-white rounded hover:bg-orange-600 w-24 h-10 text-sm"
+                  onClick={() => {}}
+                >
+                  ดูข้อความ
+                </MinimalButton>
+              </div>
             </td>
           </>
         )}
