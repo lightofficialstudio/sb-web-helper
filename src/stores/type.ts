@@ -194,9 +194,53 @@ export interface ResponseLoginAdmin {
   };
 }
 
-export interface RequestNotificationReadMessage extends DefaultRedux {
+export interface RequestNotificationReadMessage
+  extends DefaultRedux<ResponseNotificationReadMessage> {
   draftValues: {
     user_id: string;
     message_id: string;
   };
+}
+export interface ResponseNotificationReadMessage extends DefaultRedux {
+  SchoolID: number;
+  senderName: string;
+  senderNameEN: string;
+  DepartmentName: string;
+  DepartmentNameEN: string;
+  leaveStart: string; // ISO date string
+  leaveEnd: string; // ISO date string
+  letterDescription: string;
+  letterType: string;
+  letterTypeEN: string;
+  senderJob: string;
+  senderClassroom: string | null;
+  senderClassroomEN: string | null;
+  status: string;
+  HomeNumber: string;
+  Road: string;
+  Tumbon: string;
+  Aumpher: string;
+  Province: string;
+  Phone: string;
+  pageStatus: string;
+  Code: string | null;
+  sendRequestDate: string; // ISO date string
+  sendApproveDate: string; // ISO date string
+  Season: number;
+  file: any[]; // ปรับเป็นชนิดที่ถูกต้องตามโครงสร้างจริงถ้ามี
+  ApprovedStatus: {
+    StatusCode: number;
+    TextEN: string;
+    TextTH: string;
+    ApprovalAmount: number;
+  };
+  approveDatas: {
+    NameTH: string;
+    NameEN: string;
+    UserID: number;
+    ApproveDate: string; // ISO date string
+    StatusCode: string;
+    TextEN: string;
+    TextTH: string;
+  }[];
 }
