@@ -9,7 +9,7 @@ const API_ENDPOINT = `/api/v1/mobile/notification/read-message`;
 export const CallAPI = createAsyncThunk(
   API_METHOD.GET + API_ENDPOINT,
   async (request: RequestNotificationReadMessage["draftValues"]) => {
-    const PARAMETER = `?userid=${request.user_id}&messageID=${request.message_id}`;
+    const PARAMETER = `?user_id=${request.user_id}&message_id=${request.message_id}`;
     const payload: CallBackendAPIProps = {
       method: API_METHOD.GET,
       endpoint: API_ENDPOINT + PARAMETER,

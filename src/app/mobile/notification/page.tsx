@@ -38,6 +38,7 @@ import {
 import { CallAPI as GET_SERVER_STATUS } from "@stores/actions/server/call-get-server-status";
 import { CallAPI as GET_USER_BY_SCHOOLID } from "@stores/actions/school/call-get-user";
 import { CallAPI as GET_NOTIFICATION } from "@stores/actions/mobile/call-get-notification";
+import { CallAPI as GET_NOTIFICATION_MESSAGE } from "@stores/actions/mobile/call-get-read-notification";
 
 const columns: { key: string; label: string }[] = [
   { key: "nMessageID", label: "รหัสข้อความ (ID)" },
@@ -63,12 +64,17 @@ export default function Page() {
     (state) => state.callGetNotification
   );
 
+  const NOTIFICATION_READ_MESSAGE_STATE = useAppSelector(
+    (state) => state.callGetNotificationMessage
+  );
+
   const [selectedSchool, setSelectedSchool] = useState<string>("");
   // filter by selected school
   const isLoading = [
     SCHOOL_LIST_STATE.loading,
     USER_LIST_STATE.loading,
     NOTIFICATION_STATE.loading,
+    NOTIFICATION_READ_MESSAGE_STATE.loading,
   ].some(Boolean);
   const [table, setTable] = useState<ResponseNotification[]>([]);
   const [rowsPerPage, setRowsPerPage] = useState(10);
@@ -128,7 +134,7 @@ export default function Page() {
   const getUserBySchoolId = async (schoolId: string) => {
     try {
       const response = await dispatch(GET_USER_BY_SCHOOLID({ schoolId }));
-      await setUserList(
+      setUserList(
         response?.payload?.data?.map(
           (item: ResponseUserList["draftValues"]) => ({
             label: `${item?.Name} \t ${item?.LastName}\t(ID : ${item?.UserID} Username : ${item?.username})`,
@@ -139,6 +145,25 @@ export default function Page() {
       console.log(response);
     } catch (error) {
       throw new Error((error as Error).message);
+    }
+  };
+
+  const getMessageByUserAndMessageId = async (
+    userId: string,
+    messageId: string
+  ) => {
+    try {
+      await dispatch(
+        GET_NOTIFICATION_MESSAGE({
+          user_id: userId,
+          message_id: messageId,
+        })
+      ).unwrap();
+    } catch (error: any) {
+      throw new Error(
+        "Function [getMessageByUserAndMessageId] :",
+        error.message
+      );
     }
   };
 
@@ -221,7 +246,12 @@ export default function Page() {
                 </MinimalButton>
                 <MinimalButton
                   className="mt-2 px-4 py-2 bg-orange-500 text-white rounded hover:bg-orange-600 w-24 h-10 text-sm"
-                  onClick={() => {}}
+                  onClick={() => {
+                    getMessageByUserAndMessageId(
+                      form.userID,
+                      row.nMessageID.toString()
+                    );
+                  }}
                 >
                   ดูข้อความ
                 </MinimalButton>

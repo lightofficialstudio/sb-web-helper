@@ -202,45 +202,38 @@ export interface RequestNotificationReadMessage
   };
 }
 export interface ResponseNotificationReadMessage extends DefaultRedux {
-  SchoolID: number;
-  senderName: string;
-  senderNameEN: string;
-  DepartmentName: string;
-  DepartmentNameEN: string;
-  leaveStart: string; // ISO date string
-  leaveEnd: string; // ISO date string
-  letterDescription: string;
-  letterType: string;
-  letterTypeEN: string;
-  senderJob: string;
-  senderClassroom: string | null;
-  senderClassroomEN: string | null;
-  status: string;
-  HomeNumber: string;
-  Road: string;
-  Tumbon: string;
-  Aumpher: string;
-  Province: string;
-  Phone: string;
-  pageStatus: string;
-  Code: string | null;
-  sendRequestDate: string; // ISO date string
-  sendApproveDate: string; // ISO date string
-  Season: number;
-  file: any[]; // ปรับเป็นชนิดที่ถูกต้องตามโครงสร้างจริงถ้ามี
-  ApprovedStatus: {
-    StatusCode: number;
-    TextEN: string;
-    TextTH: string;
-    ApprovalAmount: number;
+  data: {
+    sMessage: string;
+    sTitle: string;
+    nMessageID: number;
+    dSend: string; // ISO datetime string
+    nStatus: number;
+    nType: number;
+    push_id: number | null;
+    scheduled_id: string;
+    homework_id: number | null;
+    homework: {
+      dayend: string | null;
+      daynotification: string | null;
+      daystart: string | null;
+      detail: string | null;
+      planename: string | null;
+      teachername: string | null;
+      SchoolID: number;
+    };
+    sell_id: number | null;
+    file: boolean;
+    letter_id: number | null;
+    school_id: number;
+    logo: string | null;
+    letter_status: string | null;
+    LogStatus: number;
+    replyButtons: any | null;
+    replyResult: any | null;
+    replyStatus: boolean;
+    fileUploads: any | null;
+    NewsCreatedBy: any | null;
+    ReplyType: string;
   };
-  approveDatas: {
-    NameTH: string;
-    NameEN: string;
-    UserID: number;
-    ApproveDate: string; // ISO date string
-    StatusCode: string;
-    TextEN: string;
-    TextTH: string;
-  }[];
+  curl: string;
 }

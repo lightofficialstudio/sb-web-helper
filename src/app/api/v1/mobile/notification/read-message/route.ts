@@ -14,7 +14,9 @@ export async function GET(request: NextRequest) {
     const user_id = searchParams.get("user_id");
     const message_id = searchParams.get("message_id");
     const apiUrl = `${API_URL.PROD_SB_API_URL}`;
-    const endpoint = `/api/LetterDetail?userid=${user_id}&messageID=${message_id}`;
+    // const endpoint = `/api/LetterDetail?userid=${user_id}&messageID=${message_id}`;
+    const endpoint = `/api/messagebox/ReadMessag/${user_id}/${message_id}?lang=th`;
+
     const callAPI = apiUrl + endpoint;
     const curlHeader = `--header 'Content-Type: application/json'`;
     const curlCommand = `curl --location ${curlHeader} \ '${callAPI}' `;
