@@ -187,25 +187,25 @@ export default function Page() {
             <td className="p-4 font-medium text-sm text-gray-900 dark:text-white">
               {index}
             </td>
-            <td className="p-4 font-medium text-sm text-gray-900">
+            <td className="p-4 font-medium text-sm text-gray-900 dark:text-white">
               {row.nMessageID}
             </td>
-            <td className="p-4 font-medium text-sm text-gray-900">
+            <td className="p-4 font-medium text-sm text-gray-900 dark:text-white">
               {convertTimeZoneToThai(new Date(row.dSend))}
             </td>
-            <td className="p-4 font-medium text-sm text-gray-900">
+            <td className="p-4 font-medium text-sm text-gray-900 dark:text-white">
               {getNotificationType(row.nType)}
             </td>
-            <td className="p-4 font-medium text-sm text-gray-900">
+            <td className="p-4 font-medium text-sm text-gray-900 dark:text-white">
               {getNotificationRead(row.nStatus)}
             </td>
-            <td className="p-4 font-medium text-sm text-gray-900">
+            <td className="p-4 font-medium text-sm text-gray-900 dark:text-white">
               {row.sTitle}
             </td>
-            <td className="p-4 font-medium text-sm text-gray-900">
+            <td className="p-4 font-medium text-sm text-gray-900 dark:text-white">
               {row.sMessage}
             </td>
-            <td className="p-4 font-medium text-sm text-gray-900">
+            <td className="p-4 font-medium text-sm text-gray-900 dark:text-white">
               {row.logo ? (
                 <Image
                   src={row.logo}
@@ -218,7 +218,7 @@ export default function Page() {
                 <span className="text-gray-400">No Image</span>
               )}
             </td>
-            <td className="p-4 font-medium text-sm text-gray-900">
+            <td className="p-4 font-medium text-sm text-gray-900 dark:text-white">
               {/* CURL */}
               <div className="grid grid-cols-1 justify-between">
                 <MinimalButton
