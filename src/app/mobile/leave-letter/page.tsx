@@ -184,28 +184,28 @@ export default function Page() {
       <MinimalRow key={idx}>
         {({ index, row }: { index: number; row: ResponseNotification }) => (
           <>
-            <td className="p-4 font-medium text-sm text-gray-900 dark:text-white">
+            <td className="p-4 font-medium text-sm text-gray-900 dark:text-gray-200">
               {index}
             </td>
-            <td className="p-4 font-medium text-sm text-gray-900 dark:text-white">
+            <td className="p-4 font-medium text-sm text-gray-900 dark:text-gray-200">
               {row.nMessageID}
             </td>
-            <td className="p-4 font-medium text-sm text-gray-900 dark:text-white">
+            <td className="p-4 font-medium text-sm text-gray-900 dark:text-gray-200">
               {convertTimeZoneToThai(new Date(row.dSend))}
             </td>
-            <td className="p-4 font-medium text-sm text-gray-900 dark:text-white">
+            <td className="p-4 font-medium text-sm text-gray-900 dark:text-gray-200">
               {getNotificationType(row.nType)}
             </td>
-            <td className="p-4 font-medium text-sm text-gray-900 dark:text-white">
+            <td className="p-4 font-medium text-sm text-gray-900 dark:text-gray-200">
               {getNotificationRead(row.nStatus)}
             </td>
-            <td className="p-4 font-medium text-sm text-gray-900 dark:text-white">
+            <td className="p-4 font-medium text-sm text-gray-900 dark:text-gray-200">
               {row.sTitle}
             </td>
-            <td className="p-4 font-medium text-sm text-gray-900 dark:text-white">
+            <td className="p-4 font-medium text-sm text-gray-900 dark:text-gray-200">
               {row.sMessage}
             </td>
-            <td className="p-4 font-medium text-sm text-gray-900 dark:text-white">
+            <td className="p-4 font-medium text-sm text-gray-900 dark:text-gray-200">
               {row.logo ? (
                 <Image
                   src={row.logo}
@@ -218,7 +218,7 @@ export default function Page() {
                 <span className="text-gray-400">No Image</span>
               )}
             </td>
-            <td className="p-4 font-medium text-sm text-gray-900 dark:text-white">
+            <td className="p-4 font-medium text-sm text-gray-900 dark:text-gray-200">
               {/* CURL */}
               <div className="grid grid-cols-1 justify-between">
                 <MinimalButton
@@ -274,7 +274,9 @@ export default function Page() {
         <dl className="grid grid-cols-1 gap-y-3">
           {/* รหัสข้อความ */}
           <div className="flex">
-            <dt className="w-32 font-medium text-gray-600">Message ID:</dt>
+            <dt className="w-32 font-medium text-gray-600 dark:text-gray-200">
+              Message ID:
+            </dt>
             <dd className="flex-1 text-gray-900">
               {NOTIFICATION_READ_MESSAGE_STATE.response.data.nMessageID}
             </dd>
@@ -282,7 +284,9 @@ export default function Page() {
 
           {/* วันที่ส่ง */}
           <div className="flex">
-            <dt className="w-32 font-medium text-gray-600">วันที่ส่ง:</dt>
+            <dt className="w-32 font-medium text-gray-600 dark:text-gray-200">
+              วันที่ส่ง:
+            </dt>
             <dd className="flex-1 text-gray-900">
               {NOTIFICATION_READ_MESSAGE_STATE.response.data.dSend
                 ? convertTimeZoneToThai(
@@ -296,7 +300,9 @@ export default function Page() {
 
           {/* สถานะ */}
           <div className="flex">
-            <dt className="w-32 font-medium text-gray-600">สถานะ:</dt>
+            <dt className="w-32 font-medium text-gray-600 dark:text-gray-200">
+              สถานะ:
+            </dt>
             <dd className="flex-1 text-gray-900">
               {NOTIFICATION_READ_MESSAGE_STATE.response.data.nStatus === 1 ? (
                 <span className="text-green-600 font-semibold">อ่านแล้ว</span>
@@ -308,7 +314,9 @@ export default function Page() {
 
           {/* ประเภทข้อความ */}
           <div className="flex">
-            <dt className="w-32 font-medium text-gray-600">ประเภท:</dt>
+            <dt className="w-32 font-medium text-gray-600 dark:text-gray-200">
+              ประเภท:
+            </dt>
             <dd className="flex-1 text-gray-900">
               {NOTIFICATION_READ_MESSAGE_STATE.response.data.nType === 1 &&
                 "แจ้งเช็คชื่อ"}
@@ -329,11 +337,13 @@ export default function Page() {
           {/* ข้อมูล homework (ถ้ามี) */}
           {NOTIFICATION_READ_MESSAGE_STATE.response.data.homework && (
             <>
-              <dt className="w-32 font-medium text-gray-600">Homework:</dt>
+              <dt className="w-32 font-medium text-gray-600 dark:text-gray-200">
+                Homework:
+              </dt>
               <dd className="flex-1 text-gray-900">
                 <dl className="grid grid-cols-1 gap-y-2">
                   <div className="flex">
-                    <dt className="w-32 font-medium text-gray-600">
+                    <dt className="w-32 font-medium text-gray-600 dark:text-gray-200">
                       Day Start:
                     </dt>
                     <dd className="flex-1 text-gray-900">
@@ -342,28 +352,34 @@ export default function Page() {
                     </dd>
                   </div>
                   <div className="flex">
-                    <dt className="w-32 font-medium text-gray-600">Day End:</dt>
+                    <dt className="w-32 font-medium text-gray-600 dark:text-gray-200">
+                      Day End:
+                    </dt>
                     <dd className="flex-1 text-gray-900">
                       {NOTIFICATION_READ_MESSAGE_STATE.response.data.homework
                         .dayend || "-"}
                     </dd>
                   </div>
                   <div className="flex">
-                    <dt className="w-32 font-medium text-gray-600">Detail:</dt>
+                    <dt className="w-32 font-medium text-gray-600 dark:text-gray-200">
+                      Detail:
+                    </dt>
                     <dd className="flex-1 text-gray-900">
                       {NOTIFICATION_READ_MESSAGE_STATE.response.data.homework
                         .detail || "-"}
                     </dd>
                   </div>
                   <div className="flex">
-                    <dt className="w-32 font-medium text-gray-600">Teacher:</dt>
+                    <dt className="w-32 font-medium text-gray-600 dark:text-gray-200">
+                      Teacher:
+                    </dt>
                     <dd className="flex-1 text-gray-900">
                       {NOTIFICATION_READ_MESSAGE_STATE.response.data.homework
                         .teachername || "-"}
                     </dd>
                   </div>
                   <div className="flex">
-                    <dt className="w-32 font-medium text-gray-600">
+                    <dt className="w-32 font-medium text-gray-600 dark:text-gray-200">
                       School ID:
                     </dt>
                     <dd className="flex-1 text-gray-900">
@@ -380,7 +396,9 @@ export default function Page() {
 
           {/* รหัสโรงเรียน */}
           <div className="flex">
-            <dt className="w-32 font-medium text-gray-600">School ID:</dt>
+            <dt className="w-32 font-medium text-gray-600 dark:text-gray-200">
+              School ID:
+            </dt>
             <dd className="flex-1 text-gray-900">
               {NOTIFICATION_READ_MESSAGE_STATE.response.data.school_id}
             </dd>
@@ -388,7 +406,9 @@ export default function Page() {
 
           {/* ไฟล์แนบ */}
           <div className="flex">
-            <dt className="w-32 font-medium text-gray-600">แนบไฟล์:</dt>
+            <dt className="w-32 font-medium text-gray-600 dark:text-gray-200">
+              แนบไฟล์:
+            </dt>
             <dd className="flex-1 text-gray-900">
               {NOTIFICATION_READ_MESSAGE_STATE.response.data.file
                 ? "มีไฟล์แนบ"
@@ -398,7 +418,9 @@ export default function Page() {
 
           {/* Logo (กรณีมี) */}
           <div className="flex">
-            <dt className="w-32 font-medium text-gray-600">Logo URL:</dt>
+            <dt className="w-32 font-medium text-gray-600 dark:text-gray-200">
+              Logo URL:
+            </dt>
             <dd className="flex-1 text-blue-600 break-all">
               {NOTIFICATION_READ_MESSAGE_STATE.response.data.logo || "-"}
             </dd>

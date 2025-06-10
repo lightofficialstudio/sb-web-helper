@@ -41,20 +41,24 @@ export default function MinimalModal({
       {/* Modal content */}
       <div
         className={`
-                    relative bg-white w-full max-w-4xl rounded-xl shadow-xl p-6 transition-all duration-300
+                    relative bg-white dark:bg-gray-800 w-full max-w-4xl rounded-xl shadow-xl p-6 transition-all duration-300
                     transform ${
                       visible ? "scale-100 opacity-100" : "scale-95 opacity-0"
                     }
                 `}
       >
-        <h2 className="text-xl font-bold mb-4">{title}</h2>
+        <h2 className="text-xl font-bold mb-4 text-gray-900 dark:text-gray-200">
+          {title}
+        </h2>
         <button
           onClick={handleClose}
-          className="absolute top-3 right-4 text-gray-400 hover:text-black text-2xl"
+          className="absolute top-3 right-4 text-gray-400 dark:text-gray-300 hover:text-black dark:hover:text-white text-2xl"
         >
           &times;
         </button>
-        <div className="max-h-[75vh] overflow-y-auto space-y-4">{children}</div>
+        <div className="max-h-[75vh] overflow-y-auto space-y-4 ">
+          {children}
+        </div>
       </div>
     </div>
   );
