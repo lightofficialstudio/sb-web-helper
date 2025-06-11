@@ -41,7 +41,7 @@ export default function SignInPanel({ visible }: { visible: boolean }) {
       });
       setTimeout(() => {
         router.replace("/backend");
-      }, 2000);
+      }, 500);
     } catch (error: any) {
       throw new Error("Login Error Function", error.message);
     }
