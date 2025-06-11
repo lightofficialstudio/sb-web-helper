@@ -492,28 +492,6 @@ export default function Page() {
                   />
                 </div>
 
-                {/* จากวันที่ */}
-                <div>
-                  <DatePickerComponent
-                    label="จากวันที่"
-                    value={fromDate}
-                    onChange={setFromDate}
-                    className="w-full"
-                    hidden={form.userID === undefined}
-                  />
-                </div>
-
-                {/* ถึงวันที่ */}
-                <div>
-                  <DatePickerComponent
-                    label="ถึงวันที่"
-                    value={toDate}
-                    onChange={setToDate}
-                    className="w-full"
-                    hidden={form.userID === undefined}
-                  />
-                </div>
-
                 <div></div>
 
                 <div className="flex justify-end w-full">
