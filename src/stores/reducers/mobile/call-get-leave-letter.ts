@@ -1,6 +1,6 @@
 import { createSlice, PayloadAction } from "@reduxjs/toolkit";
 import { RequestLeaveLetter } from "@stores/type";
-import { CallAPI } from "@stores/actions/mobile/call-get-read-notification";
+import { CallAPI } from "@stores/actions/mobile/call-get-leave-letter";
 
 const initialState: RequestLeaveLetter = {
   draftValues: {
