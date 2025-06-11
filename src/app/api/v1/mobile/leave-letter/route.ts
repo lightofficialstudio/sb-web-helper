@@ -19,7 +19,7 @@ export async function GET(request: NextRequest) {
     const endpoint = `/api/LeaveLetter/report?userid=${user_id}&dateStart=${start_date}&dateEnd=${end_date}`;
     const callAPI = apiUrl + endpoint;
     const curlCommand = convertToCurl(apiUrl, endpoint);
-
+    console.log(headers);
     const responseFromAPI = await axios.get(callAPI, {
       headers,
       httpsAgent: agent,

@@ -15,6 +15,8 @@ import MinimalTable from "@components/table/minimal-table-component";
 import { findSchoolName } from "@helpers/find-school-id";
 import { convertTimeZoneToThai } from "@helpers/convert-time-zone-to-thai";
 import { InputFieldComponent } from "@components/input-field/input-field-component";
+import DatePickerComponent from "@components/input-field/date-picker-component";
+
 import {
   FiArrowLeft,
   FiArrowRight,
@@ -35,6 +37,7 @@ import {
   getNotificationRead,
   getNotificationType,
 } from "@helpers/get-notification-type";
+
 import { CallAPI as GET_SERVER_STATUS } from "@stores/actions/server/call-get-server-status";
 import { CallAPI as GET_USER_BY_SCHOOLID } from "@stores/actions/school/call-get-user";
 import { CallAPI as GET_NOTIFICATION } from "@stores/actions/mobile/call-get-notification";
@@ -85,7 +88,9 @@ export default function Page() {
   const [form, setForm] = useState<{
     schoolID: string;
     userID: string;
-  }>({ schoolID: "", userID: "" });
+    startDate: string;
+    endDate: string;
+  }>({ schoolID: "", userID: "", startDate: "", endDate: "" });
   const [page, setPage] = useState<number>(1);
 
   const filteredTable = (table ?? []).filter((row) => {
@@ -447,11 +452,7 @@ export default function Page() {
         {/* หมายเหตุ */}
         <div className="grid grid-cols-1 grid-rows-1 gap-0 w-full">
           <div className="space-y-3 w-full grid-cols-2">
-            <ContentCard
-              title="ค้นหาการแจ้งเตือนในแอพ"
-              fullWidth
-              className="w-full"
-            >
+            <ContentCard title="ค้นหาจดหมายลาหยุด" fullWidth className="w-full">
               {/* ห่อสองช่องด้วย grid จริง ๆ */}
               <div className="grid grid-cols-2 gap-4 w-full">
                 {/* กรอก School Id */}
@@ -489,6 +490,28 @@ export default function Page() {
                       setForm({ ...form, userID: event });
                     }}
                     placeholder="กรอกรหัส User ID"
+                  />
+                </div>
+
+                {/* จากวันที่ */}
+                <div>
+                  <DatePickerComponent
+                    label="จากวันที่"
+                    value={fromDate}
+                    onChange={setFromDate}
+                    className="w-full"
+                    hidden={form.userID === undefined}
+                  />
+                </div>
+
+                {/* ถึงวันที่ */}
+                <div>
+                  <DatePickerComponent
+                    label="ถึงวันที่"
+                    value={toDate}
+                    onChange={setToDate}
+                    className="w-full"
+                    hidden={form.userID === undefined}
                   />
                 </div>
 
@@ -556,26 +579,6 @@ export default function Page() {
                   className="w-full"
                 />
               </div>
-
-              {/* จากวันที่ */}
-              {/* <div>
-                <DatePickerComponent
-                  label="จากวันที่"
-                  value={fromDate}
-                  onChange={setFromDate}
-                  className="w-full"
-                />
-              </div> */}
-
-              {/* ถึงวันที่ */}
-              {/* <div>
-                <DatePickerComponent
-                  label="ถึงวันที่"
-                  value={toDate}
-                  onChange={setToDate}
-                  className="w-full"
-                />
-              </div> */}
             </div>
           </form>
         </ContentCard>

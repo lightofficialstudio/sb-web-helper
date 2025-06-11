@@ -15,6 +15,7 @@ import callRefreshTokenReducer from "@stores/reducers/authentication/call-refres
 import callGetNotificationReducer from "@stores/reducers/mobile/call-get-notification";
 import callAdminLoginReducer from "@stores/reducers/authentication/call-get-login-admin";
 import callGetNotificationMessageReducer from "@stores/reducers/mobile/call-get-read-notification";
+import callGetLeaveLetterListReducer from "@stores/reducers/mobile/call-get-leave-letter";
 // #endregion
 
 export const store = configureStore({
@@ -33,6 +34,7 @@ export const store = configureStore({
     callGetNotification: callGetNotificationReducer,
     callAdminLogin: callAdminLoginReducer,
     callGetNotificationMessage: callGetNotificationMessageReducer,
+    callGetLeaveLetterList: callGetLeaveLetterListReducer,
   },
 });
 

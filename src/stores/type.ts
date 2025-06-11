@@ -237,3 +237,31 @@ export interface ResponseNotificationReadMessage extends DefaultRedux {
   };
   curl: string;
 }
+
+export interface RequestLeaveLetter extends DefaultRedux<ResponseLeaveLetter> {
+  draftValues: {
+    user_id: string;
+    page: string;
+  };
+}
+
+export interface ResponseLeaveLetter {
+  data: {
+    SchoolID: number;
+    letterId: number;
+    status: string;
+    letterSubmitDate: string; // ISO date string
+    letterType: string;
+    letterTypeEN: string;
+    senderName: string;
+    senderNameEN: string;
+    userType: string;
+    ApprovedStatus: {
+      StatusCode: number;
+      TextEN: string;
+      TextTH: string;
+      ApprovalAmount: number;
+    };
+  };
+  curl: string;
+}
