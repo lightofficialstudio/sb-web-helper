@@ -63,8 +63,8 @@ export default function Page() {
     (state) => state.callGetuserBySchoolId
   );
 
-  const NOTIFICATION_STATE = useAppSelector(
-    (state) => state.callGetNotification
+  const LEAVE_LETTER_LIST = useAppSelector(
+    (state) => state.callGetLeaveLetterList
   );
 
   const NOTIFICATION_READ_MESSAGE_STATE = useAppSelector(
@@ -231,10 +231,9 @@ export default function Page() {
                   onClick={() => {
                     console.log(
                       "NOTIFICATION STATE",
-                      NOTIFICATION_STATE?.response?.data?.curl
+                      LEAVE_LETTER_LIST?.response?.data?.curl
                     );
-                    const curlCommand =
-                      NOTIFICATION_STATE?.response?.data?.curl;
+                    const curlCommand = LEAVE_LETTER_LIST?.response?.data?.curl;
                     navigator.clipboard.writeText(curlCommand.toString());
                     Swal.fire({
                       icon: "success",
@@ -596,7 +595,7 @@ export default function Page() {
           isLoading={isLoading}
         >
           <MinimalTable
-            isLoading={NOTIFICATION_STATE.loading}
+            isLoading={LEAVE_LETTER_LIST.loading}
             header={columns}
             data={filteredTable}
             rowsPerPage={rowsPerPage}
