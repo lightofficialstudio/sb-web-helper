@@ -172,10 +172,32 @@ export default function Page() {
         })
       ).unwrap();
 
+      console.log("res", response.raw.Status);
+
+      if (response.raw.Status === "Error") {
+        Swal.fire({
+          icon: "error",
+          title: "เกิดข้อผิดพลาด แจ้งเตือน 7 วันล่าสุด Error!",
+          html: `
+            <div class="text-left text-sm">
+              <p class="mb-2 font-semibold text-red-600">Copy อันนี้แจ้งพี่โจ้เร็วเข้า!!</p>
+              <pre class="bg-gray-100 text-gray-800 p-4 rounded-md overflow-x-auto text-xs border border-gray-300">
+<code>${response.curl}</code>
+              </pre>
+            </div>
+          `,
+          customClass: {
+            popup: "w-[90vw] max-w-4xl", // makes modal wider
+          },
+        });
+      }
+
       setTable(response?.data);
       setTodayTable(response2?.data);
     } catch (error: any) {
-      throw new Error(error.message);
+      throw new Error(
+        `Error in function [handleSubmitForm] ${JSON.stringify(error.message)}`
+      );
     }
   };
 

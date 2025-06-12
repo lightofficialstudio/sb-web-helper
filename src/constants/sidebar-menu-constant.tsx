@@ -40,6 +40,10 @@ export const menu: MenuItem[] = [
         label: "อัปโหลดการย้ายข้อมูลนักเรียน (User Balance)",
         href: "/support/upload/migrate-student",
       },
+      {
+        label: "แก้สถานะจดหมายลาหยุด",
+        href: "/support/update/leave-letter",
+      },
     ],
   },
   {

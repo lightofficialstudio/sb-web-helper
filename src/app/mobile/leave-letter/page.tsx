@@ -84,18 +84,16 @@ export default function Page() {
   }, [form.schoolID]);
 
   useEffect(() => {
-    if (page != 1) {
-      handleSubmitForm(page);
-    }
-  }, [page]);
-
-  useEffect(() => {
-    if (page != 1 && table.length < 1) {
+    if (table.length < 1) {
       Swal.fire({
         title: "ไม่พบข้อมูล",
       });
     }
   }, [table]);
+
+  useEffect(() => {
+    page === 0 ? setPage(1) : setPage(page);
+  }, [page]);
 
   const getUserBySchoolId = async (schoolId: string) => {
     try {
@@ -154,7 +152,7 @@ export default function Page() {
         }) => (
           <>
             <td className="p-4 font-medium text-sm text-gray-900 dark:text-gray-200">
-              {index + 1}
+              {index}
             </td>
             <td className="p-4 font-medium text-sm text-gray-900 dark:text-gray-200">
               {row.letterId}
@@ -173,10 +171,10 @@ export default function Page() {
             <td className="p-4 font-medium text-sm text-gray-900 dark:text-gray-200">
               <span
                 className={`inline-block px-3 py-1 text-sm font-semibold text-white ${
-                  row.userType === "1" ? "bg-orange-400" : "bg-orange-400"
+                  row.userType === "0" ? "bg-orange-400" : "bg-orange-400"
                 } rounded-full`}
               >
-                {row.userType === "1" ? "นักเรียน" : "คุณครู"}
+                {row.userType === "0" ? "นักเรียน" : "คุณครู"}
               </span>
             </td>
             <td className="p-4 font-medium text-sm text-gray-900 dark:text-gray-200">
@@ -523,9 +521,9 @@ export default function Page() {
 
         {/* ตาราง */}
         <ContentCard
-          title="ตารางแสดงข้อความแจ้งเตือน"
+          title={`ตารางแสดงข้อความแจ้งเตือน (หน้าที่ ${page})`}
           className="xl:col-span-4 w-full"
-          isLoading={isLoading}
+          hidden={table.length < 1}
         >
           <MinimalTable
             isLoading={LEAVE_LETTER_LIST.loading}
@@ -545,6 +543,7 @@ export default function Page() {
               isLoading={isLoading}
               onClick={() => {
                 setPage(page - 1);
+                handleSubmitForm(page - 1);
               }}
             >
               <FiArrowLeft />
@@ -556,6 +555,7 @@ export default function Page() {
               isLoading={isLoading}
               onClick={() => {
                 setPage(page + 1);
+                handleSubmitForm(page + 1);
               }}
             >
               <FiArrowRight />
