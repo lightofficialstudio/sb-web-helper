@@ -24,7 +24,7 @@ export default function SignInPanel({ visible }: { visible: boolean }) {
     try {
       Swal.fire({
         icon: "error",
-        title: "การเข้าสู่ระบบล้มเหลว",
+        title: "เข้าสู่ระบบล้มเหลว",
         text: message,
       });
     } catch (error: any) {
@@ -36,7 +36,7 @@ export default function SignInPanel({ visible }: { visible: boolean }) {
     try {
       Swal.fire({
         icon: "success",
-        title: "การเข้าสู่ระบบสำเร็จ",
+        title: "เข้าสู่ระบบสำเร็จ",
         text: "",
       });
       setTimeout(() => {

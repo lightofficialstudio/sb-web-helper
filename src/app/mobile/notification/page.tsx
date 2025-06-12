@@ -12,30 +12,15 @@ import Swal from "sweetalert2";
 import { SearchableSelectComponent } from "@/components/input-field/searchable-select-component";
 import { MinimalRow } from "@components/table/minimal-row-component";
 import MinimalTable from "@components/table/minimal-table-component";
-import { findSchoolName } from "@helpers/find-school-id";
 import { convertTimeZoneToThai } from "@helpers/convert-time-zone-to-thai";
 import { InputFieldComponent } from "@components/input-field/input-field-component";
-import {
-  FiArrowLeft,
-  FiArrowRight,
-  FiRefreshCw,
-  FiSearch,
-} from "react-icons/fi";
-import { isOnline } from "@helpers/check-online-device-status";
-import { unwrapResult } from "@reduxjs/toolkit";
-import {
-  ResponseGetServerStatus,
-  CancelSalesState,
-  ResponseSchoolList,
-  ResponseUserList,
-  ResponseNotification,
-} from "@/stores/type";
+import { FiArrowLeft, FiArrowRight, FiSearch } from "react-icons/fi";
+import { ResponseUserList, ResponseNotification } from "@/stores/type";
 import MinimalModal from "@components/modal/minimal-modal-component";
 import {
   getNotificationRead,
   getNotificationType,
 } from "@helpers/get-notification-type";
-import { CallAPI as GET_SERVER_STATUS } from "@stores/actions/server/call-get-server-status";
 import { CallAPI as GET_USER_BY_SCHOOLID } from "@stores/actions/school/call-get-user";
 import { CallAPI as GET_NOTIFICATION } from "@stores/actions/mobile/call-get-notification";
 import { CallAPI as GET_NOTIFICATION_MESSAGE } from "@stores/actions/mobile/call-get-read-notification";

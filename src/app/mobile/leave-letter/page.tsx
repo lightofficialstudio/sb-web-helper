@@ -1,6 +1,5 @@
-"use client";
+`use client`;
 import React, { useEffect, useState } from "react";
-import Image from "next/image";
 import DashboardLayout from "@components/layouts/backend-layout";
 import ContentCard from "@components/layouts/backend/content";
 import { useTranslation } from "react-i18next";
@@ -12,45 +11,23 @@ import Swal from "sweetalert2";
 import { SearchableSelectComponent } from "@/components/input-field/searchable-select-component";
 import { MinimalRow } from "@components/table/minimal-row-component";
 import MinimalTable from "@components/table/minimal-table-component";
-import { findSchoolName } from "@helpers/find-school-id";
 import { convertTimeZoneToThai } from "@helpers/convert-time-zone-to-thai";
 import { InputFieldComponent } from "@components/input-field/input-field-component";
-import DatePickerComponent from "@components/input-field/date-picker-component";
 
-import {
-  FiArrowLeft,
-  FiArrowRight,
-  FiRefreshCw,
-  FiSearch,
-} from "react-icons/fi";
-import { isOnline } from "@helpers/check-online-device-status";
-import { unwrapResult } from "@reduxjs/toolkit";
-import {
-  ResponseGetServerStatus,
-  CancelSalesState,
-  ResponseSchoolList,
-  ResponseUserList,
-  ResponseNotification,
-} from "@/stores/type";
+import { FiArrowLeft, FiArrowRight, FiSearch } from "react-icons/fi";
+import * as type from "@/stores/type";
 import MinimalModal from "@components/modal/minimal-modal-component";
-import {
-  getNotificationRead,
-  getNotificationType,
-} from "@helpers/get-notification-type";
 
-import { CallAPI as GET_SERVER_STATUS } from "@stores/actions/server/call-get-server-status";
 import { CallAPI as GET_USER_BY_SCHOOLID } from "@stores/actions/school/call-get-user";
-import { CallAPI as GET_NOTIFICATION } from "@stores/actions/mobile/call-get-notification";
-import { CallAPI as GET_NOTIFICATION_MESSAGE } from "@stores/actions/mobile/call-get-read-notification";
+import { CallAPI as GET_LEAVE_LETTER_LIST } from "@stores/actions/mobile/call-get-leave-letter";
 
 const columns: { key: string; label: string }[] = [
-  { key: "nMessageID", label: "รหัสข้อความ (ID)" },
-  { key: "dSend", label: "วันที่ส่งข้อความ" },
-  { key: "nType", label: "ประเภทข้อความ" },
-  { key: "nStatus", label: "สถานะการอ่าน" },
-  { key: "sTitle", label: "หัวข้อ" },
-  { key: "sMessage", label: "ข้อความ" },
-  { key: "logo", label: "โลโก้" },
+  { key: "letterId", label: "รหัสจดหมาย" },
+  { key: "letterSubmitDate", label: "วันที่ส่งคำร้อง" },
+  { key: "letterType", label: "ประเภทการลา" },
+  { key: "senderName", label: "ชื่อผู้ส่งคำร้อง" },
+  { key: "userType", label: "ประเภทผู้ใช้งาน" },
+  { key: "status", label: "สถานะ" },
   { key: "action", label: "การกระทำ" },
 ];
 
@@ -76,7 +53,7 @@ export default function Page() {
   const isLoading = [SCHOOL_LIST_STATE.loading, USER_LIST_STATE.loading].some(
     Boolean
   );
-  const [table, setTable] = useState<ResponseNotification[]>([]);
+  const [table, setTable] = useState<type.ResponseLeaveLetter[]>([]);
   const [rowsPerPage, setRowsPerPage] = useState(10);
   const [schoolList, setSchoolList] = useState<any[]>([]);
   const [userList, setUserList] = useState<any[]>([]);
@@ -84,7 +61,7 @@ export default function Page() {
   const [toDate, setToDate] = useState<string>("");
   const [deviceIdSearch, setDeviceIdSearch] = useState<string>("");
   const [modal, setModal] = useState<string>("");
-  const [selectedRow, setSelectedRow] = useState<ResponseNotification>();
+  const [selectedRow, setSelectedRow] = useState<type.ResponseLeaveLetter>();
   const [form, setForm] = useState<{
     schoolID: string;
     userID: string;
@@ -92,19 +69,6 @@ export default function Page() {
     endDate: string;
   }>({ schoolID: "", userID: "", startDate: "", endDate: "" });
   const [page, setPage] = useState<number>(1);
-
-  const filteredTable = (table ?? []).filter((row) => {
-    if (!fromDate && !toDate) return true;
-    const ts = new Date(row.dSend).getTime();
-    const fromTs = fromDate ? new Date(fromDate).getTime() : -Infinity;
-    // วันสุดท้าย ให้ตีเป็นเที่ยงคืนถัดไป เพื่อรวมทั้งวัน
-    const toTs = toDate
-      ? new Date(
-          new Date(toDate).setDate(new Date(toDate).getDate() + 1)
-        ).getTime()
-      : Infinity;
-    return ts >= fromTs && ts < toTs;
-  });
 
   useEffect(() => {
     setSchoolList(
@@ -138,7 +102,7 @@ export default function Page() {
       const response = await dispatch(GET_USER_BY_SCHOOLID({ schoolId }));
       setUserList(
         response?.payload?.data?.map(
-          (item: ResponseUserList["draftValues"]) => ({
+          (item: type.ResponseUserList["draftValues"]) => ({
             label: `${item?.Name} \t ${item?.LastName}\t(ID : ${item?.UserID} Username : ${item?.username})`,
             value: item?.UserID,
           })
@@ -150,30 +114,24 @@ export default function Page() {
     }
   };
 
-  const getMessageByUserAndMessageId = async (
-    userId: string,
-    messageId: string
-  ) => {
+  const getLeaveLetterDetail = async (userId: string, other: string) => {
     try {
       await dispatch(
-        GET_NOTIFICATION_MESSAGE({
+        GET_LEAVE_LETTER_LIST({
           user_id: userId,
-          message_id: messageId,
+          page: other,
         })
       ).unwrap();
       setModal("response_open");
     } catch (error: any) {
-      throw new Error(
-        "Function [getMessageByUserAndMessageId] :",
-        error.message
-      );
+      throw new Error("Function [getLeaveLetterDetail] :", error.message);
     }
   };
 
   const handleSubmitForm = async (page?: number) => {
     try {
       const response = await dispatch(
-        GET_NOTIFICATION({
+        GET_LEAVE_LETTER_LIST({
           user_id: form.userID,
           page: page?.toString() ?? "1",
         })
@@ -184,56 +142,56 @@ export default function Page() {
     }
   };
 
-  const renderTableData = (data: ResponseNotification[]) =>
+  const renderTableData = (data: type.ResponseLeaveLetter[]) =>
     data.map((row, idx) => (
       <MinimalRow key={idx}>
-        {({ index, row }: { index: number; row: ResponseNotification }) => (
+        {({
+          index,
+          row,
+        }: {
+          index: number;
+          row: type.ResponseLeaveLetter["data"];
+        }) => (
           <>
             <td className="p-4 font-medium text-sm text-gray-900 dark:text-gray-200">
-              {index}
+              {index + 1}
             </td>
             <td className="p-4 font-medium text-sm text-gray-900 dark:text-gray-200">
-              {row.nMessageID}
+              {row.letterId}
             </td>
             <td className="p-4 font-medium text-sm text-gray-900 dark:text-gray-200">
-              {convertTimeZoneToThai(new Date(row.dSend))}
+              {convertTimeZoneToThai(new Date(row.letterSubmitDate))}
             </td>
             <td className="p-4 font-medium text-sm text-gray-900 dark:text-gray-200">
-              {getNotificationType(row.nType)}
+              <span className="inline-block px-3 py-1 text-sm font-semibold text-white bg-blue-500 rounded-full">
+                {row.letterType}
+              </span>
             </td>
             <td className="p-4 font-medium text-sm text-gray-900 dark:text-gray-200">
-              {getNotificationRead(row.nStatus)}
+              {row.senderName}
             </td>
             <td className="p-4 font-medium text-sm text-gray-900 dark:text-gray-200">
-              {row.sTitle}
+              <span
+                className={`inline-block px-3 py-1 text-sm font-semibold text-white ${
+                  row.userType === "1" ? "bg-orange-400" : "bg-orange-400"
+                } rounded-full`}
+              >
+                {row.userType === "1" ? "นักเรียน" : "คุณครู"}
+              </span>
             </td>
             <td className="p-4 font-medium text-sm text-gray-900 dark:text-gray-200">
-              {row.sMessage}
+              <span
+                className={`inline-block px-3 py-1 text-sm font-semibold text-white bg-green-600 rounded-full`}
+              >
+                {row.ApprovedStatus?.TextTH || "-"}
+              </span>
             </td>
             <td className="p-4 font-medium text-sm text-gray-900 dark:text-gray-200">
-              {row.logo ? (
-                <Image
-                  src={row.logo}
-                  alt="Notification Logo"
-                  width={40}
-                  height={40}
-                  className="object-contain rounded"
-                />
-              ) : (
-                <span className="text-gray-400">No Image</span>
-              )}
-            </td>
-            <td className="p-4 font-medium text-sm text-gray-900 dark:text-gray-200">
-              {/* CURL */}
               <div className="grid grid-cols-1 justify-between">
                 <MinimalButton
                   className=" bg-green-500 text-white rounded hover:bg-green-600 w-24 h-10 text-sm"
                   onClick={() => {
-                    console.log(
-                      "NOTIFICATION STATE",
-                      LEAVE_LETTER_LIST?.response?.data?.curl
-                    );
-                    const curlCommand = LEAVE_LETTER_LIST?.response?.data?.curl;
+                    const curlCommand = LEAVE_LETTER_LIST?.response?.curl || "";
                     navigator.clipboard.writeText(curlCommand.toString());
                     Swal.fire({
                       icon: "success",
@@ -248,10 +206,7 @@ export default function Page() {
                 <MinimalButton
                   className="mt-2 px-4 py-2 bg-orange-500 text-white rounded hover:bg-orange-600 w-24 h-10 text-sm"
                   onClick={() => {
-                    getMessageByUserAndMessageId(
-                      form.userID,
-                      row.nMessageID.toString()
-                    );
+                    getLeaveLetterDetail(form.userID, row.letterId.toString());
                   }}
                 >
                   ดูข้อความ
@@ -575,12 +530,12 @@ export default function Page() {
           <MinimalTable
             isLoading={LEAVE_LETTER_LIST.loading}
             header={columns}
-            data={filteredTable}
+            data={table}
             rowsPerPage={rowsPerPage}
             onRowsPerPageChange={setRowsPerPage}
             hiddenProps={true}
           >
-            {filteredTable ? renderTableData(filteredTable) : null}
+            {table ? renderTableData(table) : null}
           </MinimalTable>
           <div className="flex justify-between">
             <MinimalButton
