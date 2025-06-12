@@ -595,14 +595,14 @@ export default function Page() {
           isLoading={isLoading}
         >
           <MinimalTable
-            isLoading={NOTIFICATION_WEEK_LIST.loading}
+            isLoading={NOTIFICATION_TODAY_LIST.loading}
             header={columns}
-            data={filteredTable}
+            data={todayTable}
             rowsPerPage={rowsPerPage}
             onRowsPerPageChange={setRowsPerPage}
             hiddenProps={true}
           >
-            {filteredTable ? renderTableData(filteredTable) : null}
+            {todayTable ? renderTableData(todayTable) : null}
           </MinimalTable>
           <div className="flex justify-between">
             <MinimalButton
