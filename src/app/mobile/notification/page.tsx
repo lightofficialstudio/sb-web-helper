@@ -170,7 +170,7 @@ export default function Page() {
           user_id: form.userID,
           page: page?.toString() ?? "1",
         })
-      );
+      ).unwrap();
 
       setTable(response?.data);
       setTodayTable(response2?.data);
