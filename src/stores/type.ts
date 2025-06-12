@@ -245,6 +245,14 @@ export interface RequestLeaveLetter extends DefaultRedux<ResponseLeaveLetter> {
   };
 }
 
+export interface RequestFixStatusLeaveLetter
+  extends DefaultRedux<ResponseLeaveLetter> {
+  draftValues: {
+    school_id: string;
+    letter_id: string;
+  };
+}
+
 export interface ResponseLeaveLetter {
   data: {
     SchoolID: number;

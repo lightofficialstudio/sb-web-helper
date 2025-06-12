@@ -20,6 +20,7 @@ import MinimalModal from "@components/modal/minimal-modal-component";
 
 import { CallAPI as GET_USER_BY_SCHOOLID } from "@stores/actions/school/call-get-user";
 import { CallAPI as GET_LEAVE_LETTER_LIST } from "@stores/actions/mobile/call-get-leave-letter";
+import { CallAPI as FIX_LEAVE_LETTER_DETAIL } from "@stores/actions/mobile/call-get-fix-leave-letter-status";
 
 const columns: { key: string; label: string }[] = [
   { key: "letterId", label: "รหัสจดหมาย" },
@@ -65,10 +66,9 @@ export default function Page() {
   const [form, setForm] = useState<{
     schoolID: string;
     userID: string;
-    startDate: string;
-    endDate: string;
-  }>({ schoolID: "", userID: "", startDate: "", endDate: "" });
-  const [page, setPage] = useState<number>(1);
+    letter_id: string;
+  }>({ schoolID: "", userID: "", letter_id: "" });
+  const [page, setPage] = useState<number>(0);
 
   useEffect(() => {
     setSchoolList(
@@ -84,7 +84,7 @@ export default function Page() {
   }, [form.schoolID]);
 
   useEffect(() => {
-    if (table.length < 1) {
+    if (page !== 0 && table.length < 1) {
       Swal.fire({
         title: "ไม่พบข้อมูล",
       });
@@ -112,17 +112,20 @@ export default function Page() {
     }
   };
 
-  const getLeaveLetterDetail = async (userId: string, other: string) => {
+  const confirmFixStatusLeaveLetter = async (letter_id: string) => {
     try {
       await dispatch(
-        GET_LEAVE_LETTER_LIST({
-          user_id: userId,
-          page: other,
+        FIX_LEAVE_LETTER_DETAIL({
+          school_id: form.schoolID,
+          letter_id: letter_id,
         })
       ).unwrap();
       setModal("response_open");
     } catch (error: any) {
-      throw new Error("Function [getLeaveLetterDetail] :", error.message);
+      throw new Error(
+        "Function [confirmFixStatusLeaveLetter] :",
+        error.message
+      );
     }
   };
 
@@ -202,12 +205,13 @@ export default function Page() {
                   CURL
                 </MinimalButton>
                 <MinimalButton
-                  className="mt-2 px-4 py-2 bg-orange-500 text-white rounded hover:bg-orange-600 w-24 h-10 text-sm"
+                  className="mt-2 px-4 py-2 bg-orange-500 text-white rounded hover:bg-orange-600 w-24 h-10 text-[0.75rem]"
                   onClick={() => {
-                    getLeaveLetterDetail(form.userID, row.letterId.toString());
+                    setForm({ ...form, letter_id: row.letterId.toString() });
+                    setModal("confirm_fix_letter");
                   }}
                 >
-                  ดูข้อความ
+                  แก้ไขสถานะ
                 </MinimalButton>
               </div>
             </td>
@@ -218,187 +222,25 @@ export default function Page() {
 
   const renderModal = () => (
     <MinimalModal
-      title="รายละเอียดข้อความแจ้งเตือน"
+      title="ยืนยันการแก้ไขสถานะ"
       onClose={() => setModal("")}
+      confirmMode
+      onConfirm={() => {
+        confirmFixStatusLeaveLetter(form.letter_id);
+      }}
     >
-      <div className="p-4 space-y-4">
-        {/* ข้อความหลัก */}
-        <p className="text-base text-gray-800">
-          {NOTIFICATION_READ_MESSAGE_STATE.response.data.sMessage || "-"}
-        </p>
-
-        {/* รายละเอียดแบบ key / value */}
-        <dl className="grid grid-cols-1 gap-y-3">
-          {/* รหัสข้อความ */}
-          <div className="flex">
-            <dt className="w-32 font-medium text-gray-600 dark:text-gray-200">
-              Message ID:
-            </dt>
-            <dd className="flex-1 text-gray-900">
-              {NOTIFICATION_READ_MESSAGE_STATE.response.data.nMessageID}
-            </dd>
-          </div>
-
-          {/* วันที่ส่ง */}
-          <div className="flex">
-            <dt className="w-32 font-medium text-gray-600 dark:text-gray-200">
-              วันที่ส่ง:
-            </dt>
-            <dd className="flex-1 text-gray-900">
-              {NOTIFICATION_READ_MESSAGE_STATE.response.data.dSend
-                ? convertTimeZoneToThai(
-                    new Date(
-                      NOTIFICATION_READ_MESSAGE_STATE.response.data.dSend
-                    )
-                  )
-                : "-"}
-            </dd>
-          </div>
-
-          {/* สถานะ */}
-          <div className="flex">
-            <dt className="w-32 font-medium text-gray-600 dark:text-gray-200">
-              สถานะ:
-            </dt>
-            <dd className="flex-1 text-gray-900">
-              {NOTIFICATION_READ_MESSAGE_STATE.response.data.nStatus === 1 ? (
-                <span className="text-green-600 font-semibold">อ่านแล้ว</span>
-              ) : (
-                <span className="text-red-600 font-semibold">ยังไม่อ่าน</span>
-              )}
-            </dd>
-          </div>
-
-          {/* ประเภทข้อความ */}
-          <div className="flex">
-            <dt className="w-32 font-medium text-gray-600 dark:text-gray-200">
-              ประเภท:
-            </dt>
-            <dd className="flex-1 text-gray-900">
-              {NOTIFICATION_READ_MESSAGE_STATE.response.data.nType === 1 &&
-                "แจ้งเช็คชื่อ"}
-              {NOTIFICATION_READ_MESSAGE_STATE.response.data.nType === 2 &&
-                "แจ้งซื้อสินค้า"}
-              {NOTIFICATION_READ_MESSAGE_STATE.response.data.nType === 3 &&
-                "แจ้งย้อนหลังการใช้จ่าย"}
-              {NOTIFICATION_READ_MESSAGE_STATE.response.data.nType === 5 &&
-                "ระบบแจ้งเตือนทั่วไป"}
-              {NOTIFICATION_READ_MESSAGE_STATE.response.data.nType === 8 &&
-                "แจ้งเตือนกทั่วไป"}
-              {![1, 2, 3, 5, 8].includes(
-                NOTIFICATION_READ_MESSAGE_STATE.response.data.nType
-              ) && "ไม่ทราบประเภท"}
-            </dd>
-          </div>
-
-          {/* ข้อมูล homework (ถ้ามี) */}
-          {NOTIFICATION_READ_MESSAGE_STATE.response.data.homework && (
-            <>
-              <dt className="w-32 font-medium text-gray-600 dark:text-gray-200">
-                Homework:
-              </dt>
-              <dd className="flex-1 text-gray-900">
-                <dl className="grid grid-cols-1 gap-y-2">
-                  <div className="flex">
-                    <dt className="w-32 font-medium text-gray-600 dark:text-gray-200">
-                      Day Start:
-                    </dt>
-                    <dd className="flex-1 text-gray-900">
-                      {NOTIFICATION_READ_MESSAGE_STATE.response.data.homework
-                        .daystart || "-"}
-                    </dd>
-                  </div>
-                  <div className="flex">
-                    <dt className="w-32 font-medium text-gray-600 dark:text-gray-200">
-                      Day End:
-                    </dt>
-                    <dd className="flex-1 text-gray-900">
-                      {NOTIFICATION_READ_MESSAGE_STATE.response.data.homework
-                        .dayend || "-"}
-                    </dd>
-                  </div>
-                  <div className="flex">
-                    <dt className="w-32 font-medium text-gray-600 dark:text-gray-200">
-                      Detail:
-                    </dt>
-                    <dd className="flex-1 text-gray-900">
-                      {NOTIFICATION_READ_MESSAGE_STATE.response.data.homework
-                        .detail || "-"}
-                    </dd>
-                  </div>
-                  <div className="flex">
-                    <dt className="w-32 font-medium text-gray-600 dark:text-gray-200">
-                      Teacher:
-                    </dt>
-                    <dd className="flex-1 text-gray-900">
-                      {NOTIFICATION_READ_MESSAGE_STATE.response.data.homework
-                        .teachername || "-"}
-                    </dd>
-                  </div>
-                  <div className="flex">
-                    <dt className="w-32 font-medium text-gray-600 dark:text-gray-200">
-                      School ID:
-                    </dt>
-                    <dd className="flex-1 text-gray-900">
-                      {
-                        NOTIFICATION_READ_MESSAGE_STATE.response.data.homework
-                          .SchoolID
-                      }
-                    </dd>
-                  </div>
-                </dl>
-              </dd>
-            </>
-          )}
-
-          {/* รหัสโรงเรียน */}
-          <div className="flex">
-            <dt className="w-32 font-medium text-gray-600 dark:text-gray-200">
-              School ID:
-            </dt>
-            <dd className="flex-1 text-gray-900">
-              {NOTIFICATION_READ_MESSAGE_STATE.response.data.school_id}
-            </dd>
-          </div>
-
-          {/* ไฟล์แนบ */}
-          <div className="flex">
-            <dt className="w-32 font-medium text-gray-600 dark:text-gray-200">
-              แนบไฟล์:
-            </dt>
-            <dd className="flex-1 text-gray-900">
-              {NOTIFICATION_READ_MESSAGE_STATE.response.data.file
-                ? "มีไฟล์แนบ"
-                : "ไม่มีไฟล์แนบ"}
-            </dd>
-          </div>
-
-          {/* Logo (กรณีมี) */}
-          <div className="flex">
-            <dt className="w-32 font-medium text-gray-600 dark:text-gray-200">
-              Logo URL:
-            </dt>
-            <dd className="flex-1 text-blue-600 break-all">
-              {NOTIFICATION_READ_MESSAGE_STATE.response.data.logo || "-"}
-            </dd>
-          </div>
-        </dl>
-
-        {/* แสดงคำสั่ง curl */}
-        <div className="mt-4">
-          <h3 className="font-medium text-gray-600 mb-1">Curl Command:</h3>
-          <pre className="whitespace-pre-wrap bg-gray-100 p-3 rounded text-xs">
-            {NOTIFICATION_READ_MESSAGE_STATE.response.curl}
-          </pre>
-        </div>
-      </div>
+      <p className="text-gray-700 dark:text-gray-300">
+        สามารถกดยืนยันได้เลย หากสถานะถูกต้องอยู่แล้ว ก็กดไปได้เลย ไม่เป็นอะไร
+        หากสถานะผิดจะแก้ให้ถูก คุณต้องการแก้ไขสถานะที่รหัสข้อความ :
+        {form.letter_id}
+      </p>
     </MinimalModal>
   );
 
   return (
     <DashboardLayout>
       {isLoading && <BaseLoadingComponent />}
-      {modal === "response_open" && renderModal()}
+      {modal === "confirm_fix_letter" && renderModal()}
 
       <div className="w-full space-y-4">
         {/* หมายเหตุ */}

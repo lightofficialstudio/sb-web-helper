@@ -11,10 +11,10 @@ const agent = new https.Agent({ rejectUnauthorized: false });
 export async function GET(request: NextRequest) {
   const { searchParams } = new URL(request.url);
   const headers = sanitizeForwardHeaders(request);
-  const user_id = searchParams.get("user_id");
-  const page = searchParams.get("page");
+  const letter_id = searchParams.get("letter_id");
+  const school_id = searchParams.get("school_id");
   const apiUrl = `${API_URL.PROD_SB_API_URL}`;
-  const endpoint = `/api/LeaveLetterList?userid=${user_id}/${page}`;
+  const endpoint = `/api/LeaveCalendar/update?letterid=${letter_id}&schooid=${school_id}`;
   const callAPI = apiUrl + endpoint;
   const curlCommand = convertToCurl(apiUrl, endpoint);
   try {
