@@ -1,5 +1,5 @@
-`use client`;
-import React, { useEffect, useState } from "react";
+"use client";
+import { useEffect, useState } from "react";
 import DashboardLayout from "@components/layouts/backend-layout";
 import ContentCard from "@components/layouts/backend/content";
 import { useTranslation } from "react-i18next";

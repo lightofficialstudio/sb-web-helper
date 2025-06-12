@@ -12,7 +12,8 @@ import callGetOnlineDeviceReducer from "@stores/reducers/hardware/call-get-onlin
 import callGetServerStatusReducer from "@stores/reducers/server/call-get-server-status";
 import callGetuserBySchoolIdReducer from "@stores/reducers/school/call-get-user";
 import callRefreshTokenReducer from "@stores/reducers/authentication/call-refresh-token";
-import callGetNotificationReducer from "@stores/reducers/mobile/call-get-notification";
+import callGetNotificationTodayListReducer from "@/stores/reducers/mobile/call-get-notification-today-list";
+import callGetNotificationWeekListReducer from "@/stores/reducers/mobile/call-get-notification-week-list";
 import callAdminLoginReducer from "@stores/reducers/authentication/call-get-login-admin";
 import callGetNotificationMessageReducer from "@stores/reducers/mobile/call-get-read-notification";
 import callGetLeaveLetterListReducer from "@stores/reducers/mobile/call-get-leave-letter";
@@ -31,7 +32,8 @@ export const store = configureStore({
     callGetServerStatus: callGetServerStatusReducer,
     callGetuserBySchoolId: callGetuserBySchoolIdReducer,
     callRefreshToken: callRefreshTokenReducer,
-    callGetNotification: callGetNotificationReducer,
+    callGetNotificationWeekList: callGetNotificationWeekListReducer,
+    callGetNotificationTodayList: callGetNotificationTodayListReducer,
     callAdminLogin: callAdminLoginReducer,
     callGetNotificationMessage: callGetNotificationMessageReducer,
     callGetLeaveLetterList: callGetLeaveLetterListReducer,

@@ -22,7 +22,8 @@ import {
   getNotificationType,
 } from "@helpers/get-notification-type";
 import { CallAPI as GET_USER_BY_SCHOOLID } from "@stores/actions/school/call-get-user";
-import { CallAPI as GET_NOTIFICATION } from "@stores/actions/mobile/call-get-notification";
+import { CallAPI as GET_NOTIFICATION_TODAY_LIST } from "@stores/actions/mobile/call-get-notification-today-list";
+import { CallAPI as GET_NOTIFICATION_WEEK_LIST } from "@stores/actions/mobile/call-get-notification-week-list";
 import { CallAPI as GET_NOTIFICATION_MESSAGE } from "@stores/actions/mobile/call-get-read-notification";
 
 const columns: { key: string; label: string }[] = [
@@ -45,8 +46,12 @@ export default function Page() {
     (state) => state.callGetuserBySchoolId
   );
 
-  const NOTIFICATION_STATE = useAppSelector(
-    (state) => state.callGetNotification
+  const NOTIFICATION_TODAY_LIST = useAppSelector(
+    (state) => state.callGetNotificationTodayList
+  );
+
+  const NOTIFICATION_WEEK_LIST = useAppSelector(
+    (state) => state.callGetNotificationWeekList
   );
 
   const NOTIFICATION_READ_MESSAGE_STATE = useAppSelector(
@@ -59,6 +64,7 @@ export default function Page() {
     Boolean
   );
   const [table, setTable] = useState<ResponseNotification[]>([]);
+  const [todayTable, setTodayTable] = useState<ResponseNotification[]>([]);
   const [rowsPerPage, setRowsPerPage] = useState(10);
   const [schoolList, setSchoolList] = useState<any[]>([]);
   const [userList, setUserList] = useState<any[]>([]);
@@ -153,12 +159,21 @@ export default function Page() {
   const handleSubmitForm = async (page?: number) => {
     try {
       const response = await dispatch(
-        GET_NOTIFICATION({
+        GET_NOTIFICATION_WEEK_LIST({
           user_id: form.userID,
           page: page?.toString() ?? "1",
         })
       ).unwrap();
+
+      const response2 = await dispatch(
+        GET_NOTIFICATION_TODAY_LIST({
+          user_id: form.userID,
+          page: page?.toString() ?? "1",
+        })
+      );
+
       setTable(response?.data);
+      setTodayTable(response2?.data);
     } catch (error: any) {
       throw new Error(error.message);
     }
@@ -211,10 +226,10 @@ export default function Page() {
                   onClick={() => {
                     console.log(
                       "NOTIFICATION STATE",
-                      NOTIFICATION_STATE?.response?.data?.curl
+                      NOTIFICATION_WEEK_LIST?.response?.data?.curl
                     );
                     const curlCommand =
-                      NOTIFICATION_STATE?.response?.data?.curl;
+                      NOTIFICATION_WEEK_LIST?.response?.data?.curl;
                     navigator.clipboard.writeText(curlCommand.toString());
                     Swal.fire({
                       icon: "success",
@@ -575,12 +590,54 @@ export default function Page() {
 
         {/* ตาราง */}
         <ContentCard
-          title="ตารางแสดงข้อความแจ้งเตือน"
+          title="ตารางแสดงข้อความแจ้งเตือน (เฉพาะวันนี้)"
           className="xl:col-span-4 w-full"
           isLoading={isLoading}
         >
           <MinimalTable
-            isLoading={NOTIFICATION_STATE.loading}
+            isLoading={NOTIFICATION_WEEK_LIST.loading}
+            header={columns}
+            data={filteredTable}
+            rowsPerPage={rowsPerPage}
+            onRowsPerPageChange={setRowsPerPage}
+            hiddenProps={true}
+          >
+            {filteredTable ? renderTableData(filteredTable) : null}
+          </MinimalTable>
+          <div className="flex justify-between">
+            <MinimalButton
+              type="submit"
+              textSize="base"
+              className="bg-sky-500 hover:bg-sky-700 w-10 justify-center"
+              isLoading={isLoading}
+              onClick={() => {
+                setPage(page - 1);
+              }}
+            >
+              <FiArrowLeft />
+            </MinimalButton>
+            <MinimalButton
+              type="submit"
+              textSize="base"
+              className="bg-sky-500 hover:bg-sky-700 w-10 justify-center "
+              isLoading={isLoading}
+              onClick={() => {
+                setPage(page + 1);
+              }}
+            >
+              <FiArrowRight />
+            </MinimalButton>
+          </div>
+        </ContentCard>
+
+        {/* ตาราง */}
+        <ContentCard
+          title="ตารางแสดงข้อความแจ้งเตือน (7 วันล่าสุด) ไม่นับวันนี้"
+          className="xl:col-span-4 w-full"
+          isLoading={isLoading}
+        >
+          <MinimalTable
+            isLoading={NOTIFICATION_WEEK_LIST.loading}
             header={columns}
             data={filteredTable}
             rowsPerPage={rowsPerPage}
