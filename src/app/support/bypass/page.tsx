@@ -1,5 +1,5 @@
 "use client";
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useState, useRef } from "react";
 import DashboardLayout from "@components/layouts/backend-layout";
 import ContentCard from "@components/layouts/backend/content";
 import { useTranslation } from "react-i18next";
@@ -15,19 +15,13 @@ import * as type from "@stores/type";
 
 const columns: { key: string; label: string }[] = [
   { key: "school_id", label: "รหัสโรงเรียน" },
-  { key: "school_code", label: "รหัสสถานศึกษา" },
   { key: "company_name", label: "ชื่อโรงเรียน" },
-  { key: "school_type", label: "ประเภทระบบ" },
-  { key: "SchoolTypes", label: "ประเภทโรงเรียน" },
   { key: "province", label: "จังหวัด" },
-  { key: "PROVINCE_NAME", label: "ชื่อจังหวัด (เต็ม)" },
   { key: "school_group", label: "กลุ่มโรงเรียน" },
   { key: "school_class", label: "ระดับชั้นที่เปิดสอน" },
   { key: "school_grade", label: "เกรดโรงเรียน" },
   { key: "isActive", label: "สถานะการใช้งาน" },
-  { key: "active_date", label: "วันที่เริ่มใช้งาน" },
-  { key: "sale_name", label: "ผู้ดูแลการขาย" },
-  { key: "support_name", label: "ผู้ดูแลระบบ/ซัพพอร์ต" },
+
   { key: "action", label: "การกระทำ" }, // เช่น ปุ่มแก้ไข ลบ ฯลฯ
 ];
 
@@ -40,6 +34,42 @@ export default function Page() {
   );
 
   const [selectedSchool, setSelectedSchool] = useState<string>("");
+  const [dropdownOpen, setDropdownOpen] = useState<number | null>(null);
+
+  const handleEdit = (row: any) => {
+    console.log("Edit", row);
+    setDropdownOpen(null);
+  };
+
+  const handleDelete = (row: any) => {
+    console.log("Delete", row);
+    setDropdownOpen(null);
+  };
+
+  const dropdownRef = useRef<HTMLDivElement>(null);
+
+  useEffect(() => {
+    const handleClickOutside = (event: MouseEvent) => {
+      if (
+        dropdownRef.current &&
+        !dropdownRef.current.contains(event.target as Node)
+      ) {
+        setDropdownOpen(null);
+      }
+    };
+    document.addEventListener("mousedown", handleClickOutside);
+    return () => {
+      document.removeEventListener("mousedown", handleClickOutside);
+    };
+  }, []);
+
+  useEffect(() => {
+    const data = SCHOOL_LIST_WITH_DETAIL?.response?.data?.data ?? [];
+    const filtered = selectedSchool
+      ? data.filter((d) => String(d.school_id) === selectedSchool)
+      : data;
+    setTable(filtered);
+  }, [selectedSchool, SCHOOL_LIST_WITH_DETAIL]);
   const [table, setTable] = useState<
     type.ResponseSchoolListWithMoreDetail["data"]["data"]
   >([]);
@@ -65,89 +95,11 @@ export default function Page() {
 
   useEffect(() => {
     const data = SCHOOL_LIST_WITH_DETAIL?.response?.data?.data ?? [];
-    setTable(data);
+    const filtered = selectedSchool
+      ? data.filter((d) => String(d.school_id) === selectedSchool)
+      : data;
+    setTable(filtered);
   }, [SCHOOL_LIST_WITH_DETAIL]);
-
-  const renderTableData = (
-    data: type.ResponseSchoolListWithMoreDetail["data"]["data"]
-  ) =>
-    data.map((row, idx) => (
-      <MinimalRow key={idx}>
-        {() => (
-          <>
-            <td className="p-4 text-sm font-medium text-gray-900 dark:text-gray-100">
-              {row.school_id}
-            </td>
-            <td className="p-4 text-sm text-gray-700 dark:text-gray-200">
-              {row.school_code}
-            </td>
-            <td className="p-4 text-sm text-gray-700 dark:text-gray-200">
-              <span className="font-semibold">{row.company_name}</span>
-            </td>
-            <td className="p-4 text-sm text-gray-700 dark:text-gray-200">
-              <code className="bg-gray-100 dark:bg-gray-700 px-2 py-1 rounded">
-                {row.school_pass}
-              </code>
-            </td>
-            <td className="p-4 text-sm text-gray-700 dark:text-gray-200">
-              <span className="inline-block bg-indigo-100 text-indigo-800 dark:bg-indigo-700 dark:text-indigo-200 px-3 py-1 rounded-full text-xs">
-                {row.school_type}
-              </span>
-            </td>
-            <td className="p-4 text-sm text-gray-700 dark:text-gray-200">
-              <span className="inline-block bg-purple-100 text-purple-800 dark:bg-purple-700 dark:text-purple-200 px-3 py-1 rounded-full text-xs">
-                {row.SchoolTypes}
-              </span>
-            </td>
-            <td className="p-4 text-sm text-gray-700 dark:text-gray-200">
-              {row.province}
-            </td>
-            <td className="p-4 text-sm text-gray-700 dark:text-gray-200">
-              {row.PROVINCE_NAME}
-            </td>
-            <td className="p-4 text-sm text-gray-700 dark:text-gray-200">
-              {row.school_group || "-"}
-            </td>
-            <td className="p-4 text-sm text-gray-700 dark:text-gray-200">
-              {row.school_class || "-"}
-            </td>
-            <td className="p-4 text-sm text-gray-700 dark:text-gray-200">
-              <span className="inline-block bg-blue-100 text-blue-800 dark:bg-blue-700 dark:text-blue-200 px-3 py-1 rounded-full text-xs">
-                {row.school_grade}
-              </span>
-            </td>
-            <td className="p-4 text-sm text-gray-700 dark:text-gray-200">
-              <span
-                className={`inline-block px-3 py-1 text-xs font-semibold rounded-full ${
-                  row.isActive === "active"
-                    ? "bg-green-100 text-green-800 dark:bg-green-700 dark:text-green-200"
-                    : "bg-red-100 text-red-800 dark:bg-red-700 dark:text-red-200"
-                }`}
-              >
-                {row.isActive}
-              </span>
-            </td>
-            <td className="p-4 text-sm text-gray-700 dark:text-gray-200">
-              {row.active_date}
-            </td>
-            <td className="p-4 text-sm text-gray-700 dark:text-gray-200">
-              {row.sale_name || "-"}
-            </td>
-            <td className="p-4 text-sm text-gray-700 dark:text-gray-200">
-              {row.support_name || "-"}
-            </td>
-            <td className="p-4">
-              <MinimalButton
-                className="px-4 py-2 bg-blue-600 text-white rounded hover:bg-blue-700 text-xs"
-                onClick={() => {}}
-              >
-                แก้ไข
-              </MinimalButton>
-            </td>
-          </>
-        )}
-      </MinimalRow>
-    ));
 
   return (
     <DashboardLayout>
@@ -201,9 +153,138 @@ export default function Page() {
             data={table}
             rowsPerPage={rowsPerPage}
             onRowsPerPageChange={setRowsPerPage}
-          >
-            {table ? renderTableData(table) : null}
-          </MinimalTable>
+            rowRenderer={(row, idx) => (
+              <tr key={idx}>
+                <td className="p-4 text-sm font-medium text-gray-900 dark:text-gray-100">
+                  {idx + 1}
+                </td>
+                <td className="p-4 text-sm font-medium text-gray-900 dark:text-gray-100">
+                  {row.school_id}
+                </td>
+
+                <td className="p-4 text-sm text-gray-700 dark:text-gray-200">
+                  <span className="font-semibold">{row.company_name}</span>
+                </td>
+
+                <td className="p-4 text-sm text-gray-700 dark:text-gray-200">
+                  {row.province}
+                </td>
+
+                <td className="p-4 text-sm text-gray-700 dark:text-gray-200">
+                  {row.school_group || "-"}
+                </td>
+                <td className="p-4 text-sm text-gray-700 dark:text-gray-200">
+                  {row.school_class || "-"}
+                </td>
+                <td className="p-4 text-sm text-gray-700 dark:text-gray-200">
+                  <span
+                    className={`inline-block px-3 py-1 text-xs font-semibold rounded-full transition-all duration-500
+                      ${
+                        row.school_grade === "A"
+                          ? "bg-green-200 text-green-900 dark:bg-green-700 dark:text-green-100 animate-pulse"
+                          : row.school_grade === "B"
+                          ? "bg-blue-200 text-blue-900 dark:bg-blue-700 dark:text-blue-100 animate-pulse"
+                          : row.school_grade === "C"
+                          ? "bg-yellow-200 text-yellow-900 dark:bg-yellow-700 dark:text-yellow-100 animate-pulse"
+                          : row.school_grade === "D"
+                          ? "bg-orange-200 text-orange-900 dark:bg-orange-700 dark:text-orange-100 animate-pulse"
+                          : row.school_grade === "E"
+                          ? "bg-red-200 text-red-900 dark:bg-red-700 dark:text-red-100 animate-pulse"
+                          : "bg-gray-200 text-gray-800 dark:bg-gray-700 dark:text-gray-200"
+                      }`}
+                  >
+                    {row.school_grade}
+                  </span>
+                </td>
+                <td className="p-4 text-sm text-gray-700 dark:text-gray-200">
+                  <span
+                    className={`inline-block px-3 py-1 text-xs font-semibold rounded-full ${
+                      row.isActive === "active"
+                        ? "bg-green-100 text-green-800 dark:bg-green-700 dark:text-green-200"
+                        : "bg-red-100 text-red-800 dark:bg-red-700 dark:text-red-200"
+                    }`}
+                  >
+                    {row.isActive}
+                  </span>
+                </td>
+
+                <td className="p-4 relative">
+                  <div
+                    ref={dropdownRef}
+                    className="relative inline-block text-left"
+                  >
+                    <MinimalButton
+                      className="px-4 py-2 bg-blue-600 text-white rounded hover:bg-blue-700 text-xs"
+                      onClick={() => setDropdownOpen(idx)}
+                    >
+                      จัดการ
+                    </MinimalButton>
+
+                    <div
+                      className={`absolute right-0 z-10 mt-2 w-52 origin-top-right rounded-md bg-white dark:bg-gray-800 shadow-lg ring-1 ring-black ring-opacity-5 focus:outline-none transition-all duration-300 ease-in-out transform ${
+                        dropdownOpen === idx
+                          ? "opacity-100 scale-100"
+                          : "opacity-0 scale-95"
+                      }`}
+                      style={{
+                        pointerEvents: dropdownOpen === idx ? "auto" : "none",
+                      }}
+                    >
+                      <ul className="py-1 text-sm text-gray-700 dark:text-gray-100">
+                        <li className="group relative px-4 py-2 hover:bg-gray-100 dark:hover:bg-gray-700 cursor-pointer">
+                          Login
+                          <ul className="absolute right-full top-0 mr-1 w-48 bg-white dark:bg-gray-700 rounded-md shadow-lg hidden group-hover:block transition-all duration-300">
+                            <li className="px-4 py-2 hover:bg-gray-100 dark:hover:bg-gray-600 cursor-pointer">
+                              Production
+                            </li>
+                            <li className="px-4 py-2 hover:bg-gray-100 dark:hover:bg-gray-600 cursor-pointer">
+                              Dev
+                            </li>
+                            <li className="px-4 py-2 hover:bg-gray-100 dark:hover:bg-gray-600 cursor-pointer">
+                              Beta
+                            </li>
+                          </ul>
+                        </li>
+                        <li className="group relative px-4 py-2 hover:bg-gray-100 dark:hover:bg-gray-700 cursor-pointer">
+                          Academic
+                          <ul className="absolute right-full top-0 mr-1 w-48 bg-white dark:bg-gray-700 rounded-md shadow-lg hidden group-hover:block transition-all duration-300">
+                            <li className="px-4 py-2 hover:bg-gray-100 dark:hover:bg-gray-600 cursor-pointer">
+                              Login Grade
+                            </li>
+                            <li className="px-4 py-2 hover:bg-gray-100 dark:hover:bg-gray-600 cursor-pointer">
+                              Login Grade Memory
+                            </li>
+                            <li className="px-4 py-2 hover:bg-gray-100 dark:hover:bg-gray-600 cursor-pointer">
+                              Login Academic
+                            </li>
+                            <li className="px-4 py-2 hover:bg-gray-100 dark:hover:bg-gray-600 cursor-pointer">
+                              Login Dev Academic
+                            </li>
+                          </ul>
+                        </li>
+                        <li className="px-4 py-2 hover:bg-gray-100 dark:hover:bg-gray-700 cursor-pointer">
+                          Accounting Dev
+                        </li>
+                        <li className="px-4 py-2 hover:bg-gray-100 dark:hover:bg-gray-700 cursor-pointer">
+                          Login Library
+                        </li>
+                        <li className="px-4 py-2 hover:bg-gray-100 dark:hover:bg-gray-700 cursor-pointer">
+                          Login Canteen
+                        </li>
+                        <li className="px-4 py-2 hover:bg-gray-100 dark:hover:bg-gray-700 cursor-pointer">
+                          Login Kindergarten
+                        </li>
+                        <li className="px-4 py-2 hover:bg-gray-100 dark:hover:bg-gray-700 cursor-pointer">
+                          Edit
+                        </li>
+                      </ul>
+                    </div>
+                  </div>
+                </td>
+              </tr>
+            )}
+            children={undefined}
+          />
         </ContentCard>
       </div>
     </DashboardLayout>
