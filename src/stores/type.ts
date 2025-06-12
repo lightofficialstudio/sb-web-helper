@@ -273,3 +273,29 @@ export interface ResponseLeaveLetter {
   };
   curl: string;
 }
+
+export interface RequestSchoolListWithMoreDetail
+  extends DefaultRedux<ResponseSchoolListWithMoreDetail> {
+  draftValues: {};
+}
+export interface ResponseSchoolListWithMoreDetail {
+  data: {
+    data: {
+      company_name: string;
+      school_pass: string;
+      school_type: string;
+      school_id: number;
+      isActive: string;
+      province: string;
+      school_code: string;
+      active_date: string; // รูปแบบ: "DD/MM/YYYY"
+      PROVINCE_NAME: string;
+      SchoolTypes: string;
+      school_group: string;
+      school_class: string | null;
+      sale_name: string;
+      support_name: string;
+      school_grade: string;
+    }[];
+  };
+}
